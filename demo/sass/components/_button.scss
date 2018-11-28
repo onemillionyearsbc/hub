@@ -1,0 +1,14 @@
+.btn {
+    font-size: 1.5rem;
+    background: $button-background;
+    border-radius: 0.8rem;
+    color: $color-white;
+    box-shadow: 0;
+    padding: 1rem 3rem;
+    transition: color 1s ease, background 1s ease;
+}
+
+.btn:hover {
+    background: $button-hover-background;
+    color: $button-hover-color;
+}

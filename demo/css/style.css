@@ -15,6 +15,19 @@ body {
   font-weight: 300;
   line-height: 1.6; }
 
+.btn {
+  font-size: 1.5rem;
+  background: #1b96de;
+  border-radius: 0.8rem;
+  color: #fff;
+  box-shadow: 0;
+  padding: 1rem 3rem;
+  transition: color 1s ease, background 1s ease; }
+
+.btn:hover {
+  background: #040542;
+  color: #8fcbfd; }
+
 .header__topbar {
   display: flex;
   /*!important*/
@@ -24,40 +37,47 @@ body {
   background-color: #dbd7d5;
   font-size: 2rem;
   align-items: center; }
+  .header__topbar .topleft {
+    padding-left: 20rem; }
   .header__topbar .topright {
-    margin-right: 10rem;
+    padding-right: 20rem;
     display: flex;
     /*!important*/
     flex: 1 0 auto;
     flex-wrap: wrap;
     text-transform: uppercase;
-    justify-content: flex-end; }
+    justify-content: flex-end;
+    align-items: center; }
     .header__topbar .topright__banner {
       margin-right: 5rem;
       font-weight: bold; }
 
-.header__navbar {
-  background-color: #44444b; }
-  .header__navbar ul {
+.navbar {
+  background-color: #44444b;
+  display: flex;
+  /*!important*/
+  flex: 1 0 auto;
+  flex-wrap: wrap; }
+  .navbar ul {
     list-style-type: none;
     display: flex;
     /*!important*/
     flex: 1 1 auto;
     flex-wrap: wrap;
     align-items: center;
-    justify-content: center; }
-    .header__navbar ul li a {
+    margin-left: 20rem; }
+    .navbar ul li a {
       color: #fdfdff;
       text-decoration: none;
       padding: 1rem;
       font-size: 1.5rem; }
-      .header__navbar ul li a .icon {
+      .navbar ul li a .icon {
         margin-right: 2rem;
         font-size: 2rem; }
-    .header__navbar ul li .star {
+    .navbar ul li .star {
       position: relative;
       top: 1.9rem; }
-    .header__navbar ul li .circle {
+    .navbar ul li .circle {
       position: relative;
       top: -3.1rem;
       left: 1.9rem;
@@ -71,3 +91,84 @@ body {
       background: #fa0000;
       padding: 0;
       margin: 0; }
+  .navbar__right {
+    margin-right: 20rem;
+    align-items: center;
+    justify-content: flex-end; }
+
+.container {
+  background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.2)), url(../../img/eggs.jpg) fixed no-repeat;
+  background-size: 100%; }
+
+.searchpanel {
+  padding-left: 20rem;
+  min-height: 100vh;
+  min-width: 100vw;
+  font-size: 8rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: black; }
+  .searchpanel__slogan {
+    margin-top: -2rem;
+    font-size: 5.5rem;
+    font-weight: 400;
+    text-transform: uppercase; }
+  .searchpanel__grid {
+    padding-right: 20rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-transform: none;
+    display: grid;
+    grid-template-rows: 1fr 10px 3fr 10px 3fr 2fr;
+    grid-template-columns: 3fr 10px 3fr 10px 1fr; }
+    .searchpanel__grid .textbox {
+      margin-left: 2rem;
+      font-size: 2rem; }
+    .searchpanel__grid .searchbox {
+      font-size: 2rem; }
+    .searchpanel__grid--item-1 {
+      font-size: 1.5rem;
+      grid-row: 1 / 2;
+      grid-column: 1 / 1; }
+    .searchpanel__grid--item-2 {
+      grid-row: 1 / 2;
+      grid-column: 3 / 4; }
+    .searchpanel__grid--item-3 {
+      border: 1px solid #aaa;
+      border-radius: 5px;
+      grid-row: 3 / 4;
+      grid-column: 1 / 2;
+      background: white;
+      display: flex;
+      color: #aaa;
+      align-items: center;
+      justify-content: left; }
+    .searchpanel__grid--item-4 {
+      border: 1px solid #aaa;
+      border-radius: 5px;
+      grid-row: 3 / 4;
+      grid-column: 3 / 4;
+      background: white;
+      display: flex;
+      color: #aaa;
+      align-items: center;
+      justify-content: left; }
+    .searchpanel__grid--item-5 {
+      border: 1px solid #aaa;
+      border-radius: 5px;
+      grid-row: 3 / 4;
+      grid-column: 5 / 6;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #ca6c14; }
+    .searchpanel__grid--item-6 {
+      grid-row: 5 / 6;
+      grid-column: 1 / 4;
+      background: rgba(27, 150, 222, 0.8); }
+    .searchpanel__grid--item-7 {
+      grid-row: 6 / -1;
+      grid-column: 1 / 1; }
+      .searchpanel__grid--item-7 .noborder {
+        border: none; }
