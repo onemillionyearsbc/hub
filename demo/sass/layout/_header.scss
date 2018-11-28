@@ -1,0 +1,53 @@
+.header {
+    padding-top: 1rem;
+    background-color: $color-grey-light-1;
+    font-size: 2rem;
+    &__topright {
+        text-transform: uppercase;
+    }
+
+    &__navbar {
+        background-color: $color-grey-dark-2;
+       
+        ul {
+            list-style-type: none;
+            display: flex;/*!important*/
+            flex: 1 1 auto;
+            flex-wrap: wrap;
+            
+            li {
+                a { 
+                    color: $text-primary;
+                    text-decoration: none;
+                    // display: inline-block;
+                    padding: 1rem;
+                    font-size: 1.5rem;
+                    .icon {
+                        margin-right: 2rem;
+                        font-size: 2rem;  
+                    }
+                    
+                    // transition: color 1s ease, background 1s ease, padding 1s ease
+                }
+
+                .circle {
+                    position:relative;
+                    top:-3.1rem;
+                    left:1.9rem;
+                    width: 1.3rem;
+                    height: 1.3rem;
+                    border-radius: 50%;
+                    font-size: 0.9rem;
+                    color: $color-white;
+                    line-height: 1.6rem;
+                    text-align: center;
+                    background: $color-red;
+                    padding: 0;
+                    margin: 0;
+                    // display: none;
+                }
+            }
+        }
+        
+    }    
+}
