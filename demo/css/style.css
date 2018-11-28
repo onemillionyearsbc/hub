@@ -15,39 +15,59 @@ body {
   font-weight: 300;
   line-height: 1.6; }
 
-.header {
+.header__topbar {
+  display: flex;
+  /*!important*/
+  flex: 0 0 auto;
+  flex-wrap: wrap;
   padding-top: 1rem;
   background-color: #dbd7d5;
-  font-size: 2rem; }
-  .header__topright {
-    text-transform: uppercase; }
-  .header__navbar {
-    background-color: #44444b; }
-    .header__navbar ul {
-      list-style-type: none;
-      display: flex;
-      /*!important*/
-      flex: 1 1 auto;
-      flex-wrap: wrap; }
-      .header__navbar ul li a {
-        color: #fdfdff;
-        text-decoration: none;
-        padding: 1rem;
-        font-size: 1.5rem; }
-        .header__navbar ul li a .icon {
-          margin-right: 2rem;
-          font-size: 2rem; }
-      .header__navbar ul li .circle {
-        position: relative;
-        top: -3.1rem;
-        left: 1.9rem;
-        width: 1.3rem;
-        height: 1.3rem;
-        border-radius: 50%;
-        font-size: 0.9rem;
-        color: #fff;
-        line-height: 1.6rem;
-        text-align: center;
-        background: #fa0000;
-        padding: 0;
-        margin: 0; }
+  font-size: 2rem;
+  align-items: center; }
+  .header__topbar .topright {
+    margin-right: 10rem;
+    display: flex;
+    /*!important*/
+    flex: 1 0 auto;
+    flex-wrap: wrap;
+    text-transform: uppercase;
+    justify-content: flex-end; }
+    .header__topbar .topright__banner {
+      margin-right: 5rem;
+      font-weight: bold; }
+
+.header__navbar {
+  background-color: #44444b; }
+  .header__navbar ul {
+    list-style-type: none;
+    display: flex;
+    /*!important*/
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center; }
+    .header__navbar ul li a {
+      color: #fdfdff;
+      text-decoration: none;
+      padding: 1rem;
+      font-size: 1.5rem; }
+      .header__navbar ul li a .icon {
+        margin-right: 2rem;
+        font-size: 2rem; }
+    .header__navbar ul li .star {
+      position: relative;
+      top: 1.9rem; }
+    .header__navbar ul li .circle {
+      position: relative;
+      top: -3.1rem;
+      left: 1.9rem;
+      width: 1.3rem;
+      height: 1.3rem;
+      border-radius: 50%;
+      font-size: 0.9rem;
+      color: #fff;
+      line-height: 1.6rem;
+      text-align: center;
+      background: #fa0000;
+      padding: 0;
+      margin: 0; }

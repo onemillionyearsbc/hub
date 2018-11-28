@@ -1,11 +1,28 @@
 .header {
-    padding-top: 1rem;
-    background-color: $color-grey-light-1;
-    font-size: 2rem;
-    &__topright {
-        text-transform: uppercase;
+    &__topbar {
+        display: flex;/*!important*/
+        flex: 0 0 auto;
+        flex-wrap: wrap;
+        padding-top: 1rem;
+        background-color: $color-grey-light-1;
+        font-size: 2rem;
+        align-items: center;
+
+        .topright {
+            margin-right: 10rem;
+            display: flex;/*!important*/
+            flex: 1 0 auto;
+            flex-wrap: wrap;
+            text-transform: uppercase;
+            justify-content: flex-end;  
+            &__banner {
+                margin-right: 5rem;
+                font-weight: bold;
+            }
+        }
     }
 
+   
     &__navbar {
         background-color: $color-grey-dark-2;
        
@@ -14,7 +31,8 @@
             display: flex;/*!important*/
             flex: 1 1 auto;
             flex-wrap: wrap;
-            
+            align-items: center;
+            justify-content: center;         
             li {
                 a { 
                     color: $text-primary;
@@ -30,6 +48,10 @@
                     // transition: color 1s ease, background 1s ease, padding 1s ease
                 }
 
+                .star {
+                    position:relative;
+                    top:1.9rem;
+                }
                 .circle {
                     position:relative;
                     top:-3.1rem;
