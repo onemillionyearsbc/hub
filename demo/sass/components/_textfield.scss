@@ -1,0 +1,11 @@
+.textfield {
+    border: 1px solid $color-grey-light-2;
+    border-radius: 5px;
+    background: $color-white;
+    display: flex;
+    color: $color-grey-light-2;
+    align-items: center;
+    justify-content: left;
+    text-indent: 1rem;
+    font-size: 2rem;
+}

@@ -9,13 +9,14 @@
     <link href="https://fonts.googleapis.com/css?family=Josefin+Sans:300,400,400i|Nunito:300,300i" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <link rel="shortcut icon" type="image/png" href="img/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
     <script src="scripts/fontawesome-all.js"></script>
     <title>Hub++ Back to the Future of Recruiting</title>
 </head>
 
 <body>
     <div class="container">
-        <header class="header">
+        <header class="header animated slideInLeft delay-2s">
             <div class="header__topbar">
                 <div class="topleft">
                     <img src="img/logo-small.png" alt="1MYBC">
@@ -28,22 +29,70 @@
         </header>
 
         <div class="content">
-            <nav class="navbar">
+            <nav class="navbar animated slideInRight delay-2s">
                 <ul class="navbar__left">
                     <li class="item-1"><a href="#jobs">IT Jobs</a></li>
                     <li><a href="#companies">Companies Hiring</a></li>
                     <li><a href="#tools">Blockchain tools</a></li>
                 </ul>
                 <ul class="navbar__right">
+
+                    <!-- <svg class="star"></svg>
+                    <use xlink:href="img/sprite.svg#star-full"></use> -->
                     <li><a href="#saved" class="link-icon star"><i class="icon fas fa-star"></i>Saved Jobs<div class="circle">10</div></a></li>
 
                     <li><a href="#signin" class="link-icon"><i class="icon far fa-user"></i>Sign In</a></li>
                 </ul>
             </nav>
+
             <div class="searchpanel">
-                <p class="searchpanel__bollocks">Blockchain Hub++</p>
-                <p class="searchpanel__slogan">Back to the Future of Recruitment</p>
-                <div class="searchpanel__grid">
+                <p class="searchpanel__bollocks animated zoomIn delay-2s">Blockchain Hub++</p>
+                <p class="searchpanel__slogan animated zoomIn delay-2s">Back to the Future of Recruitment</p>
+                <div class="searchpanel__grid animated slideInLeft delay-2s">
+                    <div class="searchpanel__grid--item-1">
+                        <p>What</p>
+                    </div>
+                    <div class="searchpanel__grid--item-2">
+                        <p>Where</p>
+                    </div>
+                    <form class="searchpanel__grid--searchform" role="search">
+                        <input type="text" class="textfield form-control" name="what" placeholder="Job title, skill or company">
+                        <input type="text" class="textfield form-control" name="where" placeholder="Town, city or postcode">
+                        <button type="submit" class="btn btn--orange">SEARCH</button>
+                    </form>
+                    <div class="searchpanel__grid--blob">
+                        <div class="left">
+                            <p>Salary Type</p>
+                            <div class="left__blob">
+                                <p class="left__blob--box item-1">Any</p>
+                                <p class="left__blob--box">Annual</p>
+                                <p class="left__blob--box">Daily</p>
+                                <p class="left__blob--box">Hourly</p>
+                            </div>
+                        </div>
+                        <div class="mid">
+                            <p>Job Type</p>
+                            <div class="mid__blob">
+                                    <p class="left__blob--box item-1">All</p>
+                                    <p class="left__blob--box">Permanent</p>
+                                    <p class="left__blob--box">Contract</p>
+                            </div>
+                        </div>
+                        <div class="right">
+                            <p>Recruiter Type</p>
+                            <div class="right__blob">
+                                    <p class="left__blob--box item-1">Any</p>
+                                    <p class="left__blob--box">Employer</p>
+                                    <p class="left__blob--box">Agency</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="searchpanel__grid--blob-button">
+                        <p class=blob-button-text>Fewer Options</p>
+                    </div>
+                </div>
+
+                <!-- <div class="searchpanel__grid">
                     <div class="item searchpanel__grid--item-1">
                         <p>What</p>
                     </div>
@@ -52,7 +101,7 @@
                     </div>
                     <div class="item searchpanel__grid--item-3">
                         <div class="textbox">Job title, skill or company</div>
-                        <!-- <input class="text" type="text"> -->
+                       
                     </div>
 
                     <div class="item searchpanel__grid--item-4">
@@ -61,14 +110,8 @@
                     <div class="item searchpanel__grid--item-5">
                             <div class="searchbox">SEARCH</div>
                     </div>
-                    <!-- <div class="item searchpanel__grid--item-6"></div> 
-                    <div class="item searchpanel__grid--item-7">
-                        <button class="btn noborder" type="submit" class="btn">Fewer Options</button>
-                    </div>  -->
-                    <!-- the blob button-->
-                    <!-- <div class="searchpanel__grid--item-6"></div>
-                    <div class="searchpanel__grid--item-7"></div> -->
-                </div>
+                   
+                </div> -->
             </div>
         </div>
 </body>
