@@ -1,11 +1,41 @@
-.textfield {
-    border: 1px solid $color-grey-light-2;
-    border-radius: 5px;
-    background: $color-white;
-    display: flex;
-    color: $color-grey-light-2;
-    align-items: center;
-    justify-content: left;
-    text-indent: 1rem;
-    font-size: 2rem;
+.form {
+   
+    &__textfield {
+        border: 1px solid $color-grey-light-2;
+        border-radius: 5px;
+        background: $color-white;
+        display: flex;
+        height: 5rem;
+        width: 45rem;
+        color: $color-grey-dark-2;
+        align-items: center;
+        justify-content: left;
+        text-indent: 1rem;
+        font-size: 2rem;
+     
+        
+    }
+
+    button {
+        height: 5rem;
+    }
+  
+
+
+    &__label {
+        font-size: 2rem;
+        color: $color-grey-dark-2;
+        margin-left: 1.3rem;
+        display: block;
+        transition: all .3s;
+    }
+
+    &__textfield:placeholder-shown + &__label {
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-4rem);
+        
+    }
 }
+
+

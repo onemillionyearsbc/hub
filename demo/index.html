@@ -55,12 +55,29 @@
                     <div class="searchpanel__grid--item-2">
                         <p>Where</p>
                     </div>
-                    <form class="searchpanel__grid--searchform" role="search">
-                        <input type="text" class="textfield form-control" name="what" placeholder="Job title, skill or company">
-                        <input type="text" class="textfield form-control" name="where" placeholder="Town, city or postcode">
-                        <button type="submit" class="btn btn--orange">SEARCH</button>
-                    </form>
-                    <div class="searchpanel__grid--blob">
+                    <div class="form-container">
+                        <form class="form" role="search" action="#"  autocomplete="off">
+                            <div class="form__group">
+                                <input type="text" class="form__textfield" placeholder="Job title, skill or company" id="job"
+                                    required>
+                                <label for="job" class="form__label">Job title, skill or company</label>
+                            </div>
+                            <div class="form_group">
+                                <input type="text" class="form__textfield" placeholder="Town, city or postcode" id="location"
+                                    required>
+                                <label for="location" class="form__label">Town, city or postcode</label>
+                            </div>
+                            <!-- <div class="form__button"> -->
+                            <button class="btn btn--orange">SEARCH</button>
+                            <!-- </div> -->
+
+                        </form>
+                    </div>
+
+                </div>
+
+                <div id="blobpanel" class="searchpanel__container" display="off">
+                    <div class="searchpanel__container--blob">
                         <div class="left">
                             <p>Salary Type</p>
                             <div class="left__blob">
@@ -73,47 +90,52 @@
                         <div class="mid">
                             <p>Job Type</p>
                             <div class="mid__blob">
-                                    <p class="left__blob--box item-1">All</p>
-                                    <p class="left__blob--box">Permanent</p>
-                                    <p class="left__blob--box">Contract</p>
+                                <p class="mid__blob--box item-1">All</p>
+                                <p class="mid__blob--box">Permanent</p>
+                                <p class="mid__blob--box">Contract</p>
                             </div>
                         </div>
                         <div class="right">
                             <p>Recruiter Type</p>
                             <div class="right__blob">
-                                    <p class="left__blob--box item-1">Any</p>
-                                    <p class="left__blob--box">Employer</p>
-                                    <p class="left__blob--box">Agency</p>
+                                <p class="left__blob--box item-1">Any</p>
+                                <p class="left__blob--box">Employer</p>
+                                <p class="left__blob--box">Agency</p>
                             </div>
                         </div>
                     </div>
-                    <div class="searchpanel__grid--blob-button">
-                        <p class=blob-button-text>Fewer Options</p>
-                    </div>
                 </div>
-
-                <!-- <div class="searchpanel__grid">
-                    <div class="item searchpanel__grid--item-1">
-                        <p>What</p>
-                    </div>
-                    <div class="item searchpanel__grid--item-2">
-                        <p>Where</p>
-                    </div>
-                    <div class="item searchpanel__grid--item-3">
-                        <div class="textbox">Job title, skill or company</div>
-                       
-                    </div>
-
-                    <div class="item searchpanel__grid--item-4">
-                        <div class="textbox">Town, city or postcode</div>
-                    </div>
-                    <div class="item searchpanel__grid--item-5">
-                            <div class="searchbox">SEARCH</div>
-                    </div>
-                   
-                </div> -->
+                <button id="btn2" class="searchpanel--blob-button2">
+                    More Options
+                </button>
             </div>
+            <div class="dummy"></div>
         </div>
 </body>
+<script>
+    var toggleButton = document.getElementById('btn2');
+    var grid = document.querySelector('.searchpanel__grid');
+
+    toggleButton.addEventListener('click', togglePanelIn, false);
+    var panel = document.getElementById('blobpanel');
+    function togglePanelIn() {
+        var displayAttr = panel.getAttribute('display');
+        if (displayAttr == "off") {
+            panel.style.height = "100px";
+            panel.setAttribute('display', 'on');
+            toggleButton.innerHTML = "Fewer Options";
+            toggleButton.style.top = "-76px";
+        } else {
+
+            panel.style.height = "0px";
+            panel.setAttribute('display', 'off');
+            toggleButton.innerHTML = "More Options";
+            toggleButton.style.top = "-100px";
+        }
+        toggleButton.blur();
+    }
+
+</script>
+
 
 </html>
