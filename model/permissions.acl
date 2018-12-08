@@ -1,17 +1,35 @@
-/*
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+/* TOP to BOTTOM: first rule found that apples will be used, rest of rules are ignored */
+rule JohnCanDelete {
+	  description: "john can delete an account that he is part of"
+    participant(m): "io.onemillionyearsbc.hubtutorial.HubRecruiter#johndoe@ibm.com"
+    operation: DELETE
+    resource(v): "io.onemillionyearsbc.hubtutorial.HubAccount"
+  	condition: (v.owner.getIdentifier() == m.getIdentifier())
+    action: ALLOW
+}
 
+rule JohnCannotDelete {
+	  description: "john cannot delete or view an asset"
+    participant: "io.onemillionyearsbc.hubtutorial.HubRecruiter#johndoe@ibm.com"
+    operation: DELETE
+    resource: "org.hyperledger.composer.system.Asset"
+    action: DENY
+}
+
+rule Default {
+    description: "Allow all participants access to all resources"
+    participant: "org.hyperledger.composer.system.Participant"
+    operation: ALL
+    resource: "io.onemillionyearsbc.hubtutorial.*"
+    action: ALLOW
+}
+rule SystemACL {
+    description: "All Access - grant everything to everybody"
+    participant: "org.hyperledger.composer.system.Participant"
+    operation: ALL
+    resource: "org.hyperledger.composer.system.**"
+    action: ALLOW
+}
 rule NetworkAdminUser {
     description: "Grant business network administrators full access to user resources"
     participant: "org.hyperledger.composer.system.NetworkAdmin"
@@ -19,7 +37,6 @@ rule NetworkAdminUser {
     resource: "**"
     action: ALLOW
 }
-
 rule NetworkAdminSystem {
     description: "Grant business network administrators full access to system resources"
     participant: "org.hyperledger.composer.system.NetworkAdmin"
@@ -27,3 +44,9 @@ rule NetworkAdminSystem {
     resource: "org.hyperledger.composer.system.**"
     action: ALLOW
 }
+
+
+  
+
+
+  
