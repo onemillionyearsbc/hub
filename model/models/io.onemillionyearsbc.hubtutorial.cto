@@ -1,0 +1,89 @@
+
+/* 1. single namespace */
+
+namespace io.onemillionyearsbc.hubtutorial
+
+/**
+  Six types of resource definitions
+  1. Assets, 
+  2. Participants, 
+  3. Transactions
+  4. Events (notifications)
+  5. Enumerated types (labels) - within a class
+  6. Concepts (grouping of fields) */
+
+
+/* <class name> <name> <identified by <field>> */
+
+/* 
+Stuff added:
+
+1. abstract keyword for HubUser and transaction CreateAccount
+2. extends keyword for HubRecruiter, HubJobSeeker and transactions CreateJobSeekerAccount. CreateRecruiterAccount
+3. concept Address
+4. title enum
+*/
+
+/* Class Definitions */
+
+abstract participant HubUser identified by email {
+  o String      email /* eg email */
+  o String      password 
+}
+
+participant HubRecruiter extends HubUser {
+  o String company
+}
+
+participant HubJobSeeker extends HubUser {
+  o Name name
+  o Address address
+}
+
+concept Name {
+  o String title optional
+  o String firstName
+  o String lastName
+}
+
+enum Title {
+  o DR
+  o MR
+  o MRS
+  o MISS
+  o MS
+}
+
+concept Address {
+  o String street optional
+  o String city optional
+  o String postCode optional
+  o String country
+}
+
+asset HubAccount identified by accountId {
+  o String      accountId
+  --> HubUser   owner /* relationship, HubAccount contains a HubUser */
+  o AccountType accountType default="JOBSEEKER"
+}
+
+abstract transaction CreateAccount {
+  o String userName /* eg email */
+  o String password
+  o AccountType accountType default="JOBSEEKER"
+}
+
+transaction CreateRecruiterAccount extends CreateAccount {
+  --> HubRecruiter recruiter
+}
+
+transaction CreateJobSeekerAccount extends CreateAccount {
+  --> HubRecruiter jobSeeker
+}
+
+
+
+enum AccountType {
+  o   JOBSEEKER
+  o   RECRUITER
+}
