@@ -1,0 +1,58 @@
+.loginform {
+   
+    &__card-title {
+        text-align: center;
+        font-size: 2rem;  
+        text-transform: uppercase;
+        font-weight: 900;
+        padding-bottom: 2rem;
+    }
+
+    &__textfield {
+        border: 1px solid $color-grey-light-2;
+        border-radius: 5px; 
+        display: flex;
+        width: 45rem;
+        color: $color-grey-dark-2;
+        align-items: center;
+        justify-content: left;
+        text-indent: 1rem;
+        font-size: 2rem;   
+        background: white;
+         width: 100%;
+        outline: none;
+        font-weight: 500;
+        height: 4.5rem;
+    }
+  
+    &__label {
+        font-size: 1.2rem;
+        color: $color-grey-dark-2;
+        margin-left: 1.3rem;
+        display: block;
+        transition: all .3s;
+    }
+
+    &__textfield:placeholder-shown + &__label {
+        opacity: 1;
+        visibility: hidden;
+        transform: translateY(-4rem);
+        
+    }
+}
+
+.input-group {
+    border: 2px solid #eee;
+    position: relative;
+    background: #eee;
+    margin: 0px 0;
+    // padding: 10px;
+  }
+
+  .instruct {
+      background: transparent;
+      text-align: right;
+      font-size: 1.2rem;
+      margin-right: 5px;
+      margin-bottom: 10px;
+  }

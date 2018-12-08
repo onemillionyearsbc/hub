@@ -1,0 +1,203 @@
+
+.form-collection {
+    width: 550px;
+    height: 350px;
+    padding-top: 3rem;
+    margin: 0 auto;
+  }
+  
+  .limit-width {
+    width: 500px;
+  }
+  
+  .form-collection {
+    z-index: 2;
+  }
+  
+  /*Styling Card */
+  .card {
+    font-family: "Open Sans", sans-serif;
+    background: #fff;
+    position: absolute;
+    -webkit-transition: 0.3s ease all;
+    transition: 0.3s ease all;
+  }
+  
+  .card-body {
+    background: #eee;
+    padding: 20px;
+  }
+  
+  .box-btn {
+    text-decoration: none;
+    text-align: center;
+    text-transform: uppercase;
+    display: block;
+    padding: 15px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #444;
+    background: rgba(0, 0, 0, 0);
+    -webkit-transition: 0.2s ease all;
+    transition: 0.2s ease all;
+    border-radius: 3px;
+  }
+  .box-btn:hover {
+    background: rgba(0, 0, 0, 0.06);
+  }
+  .box-btn:active {
+    background: rgba(0, 0, 0, 0.1);
+  }
+
+  
+  .card-footer button {
+    width: 100%;
+    padding: 25px;
+    // font-size: 24px;
+    font-size: 2rem;
+    text-transform: uppercase;
+    font-weight: 600;
+    background: $button-orange-background;
+    border: none;
+    color: #fff;
+    box-shadow: none;
+    outline: none;
+    cursor: pointer;
+  }
+  
+  /*Animation Classes And Prerequisits */
+  
+  .above {
+    z-index: 1;
+  }
+  
+  .below {
+    z-index: 0;
+    margin-left: 100px;
+  }
+  
+  .turned {
+    opacity: 0.8;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
+  }
+  
+  .sign-up-card, .log-in-card {
+    box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22);
+  }
+  
+  .sign-up-card.turned {
+    filter: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg"><filter id="filter"><feGaussianBlur stdDeviation="0.8" /></filter></svg>#filter');
+    -webkit-filter: blur(0.8px);
+    filter: blur(0.8px);
+    webkit-filter: blur(0.8px);
+    -webkit-transform: rotateZ(-90deg) translate3d(0, 100px, 0) scale(0.7);
+    transform: rotateZ(-90deg) translate3d(0, 100px, 0) scale(0.7);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  }
+  
+  .log-in-card.turned {
+    filter: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg"><filter id="filter"><feGaussianBlur stdDeviation="1" /></filter></svg>#filter');
+    -webkit-filter: blur(1px);
+    filter: blur(1px);
+    webkit-filter: blur(1px);
+    -webkit-transform: rotateZ(-90deg) translateX(0px) translateY(100px) scale(0.7);
+    transform: rotateZ(-90deg) translateX(0px) translateY(100px) scale(0.7);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  }
+  
+  .animation-state-1 .sign-up-card.below {
+    -webkit-transform: rotateZ(-7deg) translateY(150px) scale(0.78);
+    transform: rotateZ(-7deg) translateY(150px) scale(0.78);
+    opacity: 1;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+    filter: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg"><filter id="filter"><feGaussianBlur stdDeviation="0.4" /></filter></svg>#filter');
+    -webkit-filter: blur(0.4px);
+    filter: blur(0.4px);
+    webkit-filter: blur(0.4px);
+  }
+  .animation-state-1 .log-in-card.above {
+    -webkit-transform: rotateZ(-83deg) translateY(-180px) translateX(100px) scale(0.78);
+    transform: rotateZ(-83deg) translateY(-180px) translateX(100px) scale(0.78);
+    opacity: 1;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+    filter: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg"><filter id="filter"><feGaussianBlur stdDeviation="0.5" /></filter></svg>#filter');
+    -webkit-filter: blur(0.5px);
+    filter: blur(0.5px);
+    webkit-filter: blur(0.5px);
+  }
+  
+  .animation-state-finish .sign-up-card.above {
+    -webkit-transform-origin: left top;
+    transform-origin: left top;
+    -webkit-transform: rotateZ(5deg) translateY(0px) scale(1);
+    transform: rotateZ(5deg) translateY(0px) scale(1);
+    opacity: 1;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+    filter: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg"><filter id="filter"><feGaussianBlur stdDeviation="0" /></filter></svg>#filter');
+    -webkit-filter: blur(0);
+    filter: blur(0);
+    webkit-filter: blur(0);
+  }
+  .animation-state-finish .log-in-card.below {
+    -webkit-transform: rotateZ(-90deg) translateX(0px) translateY(100px) scale(0.7);
+    transform: rotateZ(-90deg) translateX(0px) translateY(100px) scale(0.7);
+    opacity: 0.8;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
+    filter: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg"><filter id="filter"><feGaussianBlur stdDeviation="1" /></filter></svg>#filter');
+    -webkit-filter: blur(1px);
+    filter: blur(1px);
+    webkit-filter: blur(1px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  }
+  
+  .animation-state-1 .log-in-card.below {
+    -webkit-transform: rotateZ(-10deg) translateY(180px) scale(0.78);
+    transform: rotateZ(-10deg) translateY(180px) scale(0.78);
+    opacity: 1;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+    filter: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg"><filter id="filter"><feGaussianBlur stdDeviation="0.5" /></filter></svg>#filter');
+    -webkit-filter: blur(0.5px);
+    filter: blur(0.5px);
+    webkit-filter: blur(0.5px);
+  }
+  .animation-state-1 .sign-up-card.above {
+    -webkit-transform: rotateZ(-80deg) translateY(-170px) translateX(100px) scale(0.78);
+    transform: rotateZ(-80deg) translateY(-170px) translateX(100px) scale(0.78);
+    opacity: 1;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+    filter: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg"><filter id="filter"><feGaussianBlur stdDeviation="0.4" /></filter></svg>#filter');
+    -webkit-filter: blur(0.4px);
+    filter: blur(0.4px);
+    webkit-filter: blur(0.4px);
+  }
+  
+  .animation-state-finish .log-in-card.above {
+    -webkit-transform-origin: left top;
+    transform-origin: left top;
+    -webkit-transform: rotateZ(5deg) translateY(0px) scale(1);
+    transform: rotateZ(5deg) translateY(0px) scale(1);
+    opacity: 1;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+    filter: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg"><filter id="filter"><feGaussianBlur stdDeviation="0" /></filter></svg>#filter');
+    -webkit-filter: blur(0);
+    filter: blur(0);
+    webkit-filter: blur(0);
+  }
+  .animation-state-finish .sign-up-card.below {
+    filter: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg"><filter id="filter"><feGaussianBlur stdDeviation="0.4" /></filter></svg>#filter');
+    -webkit-filter: blur(0.4px);
+    filter: blur(0.4px);
+    webkit-filter: blur(0.4px);
+    -webkit-transform: rotateZ(-90deg) translate3d(0, 100px, 0) scale(0.7);
+    transform: rotateZ(-90deg) translate3d(0, 100px, 0) scale(0.7);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+    opacity: 0.7;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
+  }
+  

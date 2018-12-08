@@ -11,17 +11,14 @@
         align-items: center;
         justify-content: left;
         text-indent: 1rem;
-        font-size: 2rem;
-     
-        
+        font-size: 2rem;  
     }
 
-    button {
+    // use our button class
+    .btn {
         height: 5rem;
     }
   
-
-
     &__label {
         font-size: 2rem;
         color: $color-grey-dark-2;
@@ -31,7 +28,7 @@
     }
 
     &__textfield:placeholder-shown + &__label {
-        opacity: 0;
+        opacity: 1;
         visibility: hidden;
         transform: translateY(-4rem);
         

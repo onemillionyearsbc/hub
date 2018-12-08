@@ -1,0 +1,11 @@
+.container {
+    background: linear-gradient(rgba(255, 255, 255, 0.9),
+    rgba(255, 255, 255, 0.5)),
+    url(../../img/eggs.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 50% 0%;
+    background-attachment: fixed;
+    height: 110vh;
+    width: 100vw;
+}

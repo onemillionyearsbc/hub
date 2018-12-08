@@ -1,0 +1,73 @@
+.tabs {
+    // width: 100%;
+    font-family: "Nunito", sans-serif;
+    height: 950px;  
+    width: 82%;
+    width: 1050px;
+    float: none;
+    list-style: none;
+    position: relative;
+    
+    margin-left: $site-global-margin;
+    margin-right: $site-global-margin;
+    margin: 0 auto;
+    margin-top: 10px;
+    padding-bottom: 10px;
+
+    // margin-bottom: 10px;
+    text-align: left;
+    li {
+      float: left;
+      display: block;
+    }
+    input[type="radio"] {
+      position: absolute;
+      top: 0;
+      left: -9999px;
+    }
+    .tablabel {
+  
+      display: block;
+      padding: 14px 21px;
+      border-radius: 2px 2px 0 0;
+      font-size: 20px;
+      font-weight: 700;
+      text-transform: uppercase;
+      background: $tabs-base-color;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+      cursor: pointer;
+      position: relative;
+      top: 4px; 
+      transition: all 0.2s ease-in-out;
+      &:hover {
+        background: darken($tabs-base-color, 10);
+      }
+    }
+    .tab-content{
+        margin: 0 auto;
+      z-index: 2;
+      display: none; 
+      overflow: hidden;
+      width: 90%;
+      height: 55%;
+      font-size: 17px;
+      line-height: 25px;
+    //   padding: 25px;  
+      position: absolute;
+      top: 53px;
+      left: 0; 
+      background: darken($tabs-base-color, 15);
+    }
+    //The Magic
+    [id^="tab"]:checked + label { 
+      top: 0;
+      padding-top: 17px; 
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+      background: darken($tabs-base-color, 15); 
+    }
+    [id^="tab"]:checked ~ [id^="tab-content"] {
+      display: block;
+    }
+  }
