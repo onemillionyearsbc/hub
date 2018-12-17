@@ -1,5 +1,5 @@
 
-const csvFilePath = './data.csv';
+const csvFilePath = './seekers.csv';
 const csv = require('csvtojson')
 
 csv()
@@ -15,10 +15,14 @@ async function start() {
 	for (var key in jsonArray) {
 		if (jsonArray.hasOwnProperty(key)) {
 			var val = jsonArray[key];
-			// console.log(`username = ${val.username}`);
+			// console.log(val);
+			// console.log(`email = ${val.email}; password = ${val.password}; company = ${company_name}`);
+			console.log(`email = ${val.email}; password = ${val.password}; id number = ${val.company_name}`);
+			
 		}
 	}
+	console.log("done!");
 }
 
 start();
-console.log("done!");
+

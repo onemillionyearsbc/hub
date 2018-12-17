@@ -1,10 +1,10 @@
 /**
- * Create Recruiter Account Transaction. Create new participants and assets automtically.
- * @param {io.onemillionyearsbc.hubtutorial.CreateHubUser} userData
+ * Create Recruiter Transaction. Create new participants and assets automtically.
+ * @param {io.onemillionyearsbc.hubtutorial.CreateHubUserRecruiter} userData
  * @transaction
  */
 
-async function CreateHubUser(userData) {
+async function CreateHubUserRecruiter(userData) {
     var factory = getFactory();
     var NS = 'io.onemillionyearsbc.hubtutorial';
 
@@ -15,7 +15,6 @@ async function CreateHubUser(userData) {
   
    // 1. create the HubRecruiter
     var recruiter = factory.newResource(NS, 'HubRecruiter', userData.email);
-    recruiter.password = userData.password;
     recruiter.company = userData.company;
     recruiter.hubTokenBalance = userData.hubTokenBalance;
 
@@ -28,28 +27,64 @@ async function CreateHubUser(userData) {
 };
 
 /**
+ * Create Recruiter Transaction. Create new participants and assets automtically.
+ * @param {io.onemillionyearsbc.hubtutorial.CreateHubUserJobSeeker} userData
+ * @transaction
+ */
+
+async function CreateHubUserJobSeeker(userData) {
+    var factory = getFactory();
+    var NS = 'io.onemillionyearsbc.hubtutorial';
+
+  
+   // 1. create the HubJobSeeker
+    var seeker = factory.newResource(NS, 'HubJobSeeker', userData.email);
+
+    var seekerParams = factory.newConcept(NS, 'HubJobSeekerParameters');
+    seekerParams.title = userData.seekerParams.title;
+    seekerParams.firstName = userData.seekerParams.firstName;
+    seekerParams.lastName = userData.seekerParams.lastName;
+
+    seeker.hubTokenBalance = userData.hubTokenBalance;
+
+
+    // usually it will be ...get registry, add new object
+    // 2. Add the new participant resource to the registry
+    const participantRegistry = await getParticipantRegistry(NS + '.HubJobSeeker');
+
+    await participantRegistry.addAll([seeker]);
+};
+/**
  * Create Recruiter Account Transaction. Create new participants and assets automtically.
  * @param {io.onemillionyearsbc.hubtutorial.CreateRecruiterAccount} accountData
  * @transaction
  */
 
+ 
 async function CreateRecruiterAccount(accountData) {
+    var tokens = accountData.email.split(".");
+    var suffix = tokens[tokens.length - 1];
+    if (suffix == "de") {
+        throw "no germans allowed";
+    }
+
     var factory = getFactory();
     var NS = 'io.onemillionyearsbc.hubtutorial';
 
 
     // 1. create the HubRecruiter
     var recruiter = factory.newResource(NS, 'HubRecruiter', accountData.email);
-    recruiter.password = accountData.password;
     recruiter.company = accountData.company;
-
+  	recruiter.hubTokenBalance = accountData.hubTokenBalance;
+   
 
     // Create a Hub Account for the recruiter
   
-    var recruiterAccount = factory.newResource(NS, 'HubAccount', accountData.accountId);
+    var recruiterAccount = factory.newResource(NS, 'HubAccount', accountData.email);
     recruiterAccount.owner = factory.newRelationship(NS, 'HubUser', accountData.email);
     recruiterAccount.accountType = "RECRUITER";
     recruiterAccount.dateCreated = new Date();
+    recruiterAccount.password = accountData.password;
 
     // usually it will be ...get registry, add new object
     // 2. Get the HubUser participant
@@ -84,7 +119,7 @@ async function CreateRecruiterAccount(accountData) {
  * @transaction
  */
 
-function CreateJobSeekerAccount(accountData) {
+async function CreateJobSeekerAccount(accountData) {
     var factory = getFactory();
     var NS = 'io.onemillionyearsbc.hubtutorial';
 
@@ -94,7 +129,7 @@ function CreateJobSeekerAccount(accountData) {
     // 1. create the HubJobSeeker
     console.log("Creating User Account with user name " + email);
     var seeker = factory.newResource(NS, 'HubJobSeeker', email);
-    seeker.password = accountData.password;
+   
 
     // 2 create address concept
     var seekerAddress = factory.newConcept(NS, 'Address');
@@ -117,24 +152,33 @@ function CreateJobSeekerAccount(accountData) {
 
     // 4 Create a HubAccount for the job seeker
   
-    var seekerAccount = factory.newResource(NS, 'HubAccount', accountData.accountId);
+    var seekerAccount = factory.newResource(NS, 'HubAccount', accountData.email);
     seekerAccount.owner = factory.newRelationship(NS, 'HubUser',email);
     seekerAccount.accountType = "JOBSEEKER";
     seekerAccount.dateCreated = new Date();
+    seekerAccount.password = accountData.password;
 
     // usually it will be ...get registry, add new object
     // 5 Wire in the HubUser participant and HubAccount asset
 
-    return getParticipantRegistry(NS + '.HubJobSeeker')
-        .then(function(participantRegistry){
-            return participantRegistry.addAll([seeker])
-        })
-        .then(function(){
-            return getAssetRegistry(NS + '.HubAccount');
-        })
-        .then(function(accountRegistry) {
-            accountRegistry.addAll([seekerAccount]);
-        });
+    // return getParticipantRegistry(NS + '.HubJobSeeker')
+    //     .then(function(participantRegistry){
+    //         return participantRegistry.addAll([seeker])
+    //     })
+    //     .then(function(){
+    //         return getAssetRegistry(NS + '.HubAccount');
+    //     })
+    //     .then(function(accountRegistry) {
+    //         accountRegistry.addAll([seekerAccount]);
+    //     });
+
+    const participantRegistry = await getParticipantRegistry(NS + '.HubJobSeeker');
+
+    await participantRegistry.addAll([seeker]);
+
+    const accountRegistry = await getAssetRegistry(NS + '.HubAccount');
+
+    await accountRegistry.addAll([seekerAccount]);
 };
 
 /**
@@ -142,73 +186,149 @@ function CreateJobSeekerAccount(accountData) {
  * @param {io.onemillionyearsbc.hubtutorial.CreateHubJobSeekerDemoData} accountData
  * @transaction
  */
-function CreateHubJobSeekerDemoData(accountData) {
- 	var factory = getFactory();
-    var NS = 'io.onemillionyearsbc.hubtutorial';
+// function CreateHubJobSeekerDemoData(accountData) {
+//  	var factory = getFactory();
+//     var NS = 'io.onemillionyearsbc.hubtutorial';
   
-    // 1. create the HubJobSeeker
-    var andy = generateAndyUserData(factory, NS);
-    var carmen = generateCarmenUserData(factory, NS);
+//     // 1. create the HubJobSeeker
+//     var andy = generateAndyUserData(factory, NS);
+//     var carmen = generateCarmenUserData(factory, NS);
 
-    // usually it will be ...get registry, add new object
-    // 2. Get the HubUser participant
-    return getParticipantRegistry(NS + '.HubJobSeeker')
-        .then(function(participantRegistry){
-            return participantRegistry.addAll([andy, carmen])
-        });
-};
-
-function generateAndyUserData(factory, NS) {
+//     // usually it will be ...get registry, add new object
+//     // 2. Get the HubUser participant
+//     return getParticipantRegistry(NS + '.HubJobSeeker')
+//         .then(function(participantRegistry){
+//             return participantRegistry.addAll([andy, carmen])
+//         });
+// };
+// 
+// function generateAndyUserData(factory, NS) {
     
-    // 1. create the HubJobSeeker
-    var seeker = factory.newResource(NS, 'HubJobSeeker', 'andy@hub.com');
-    seeker.password = 'ChangeMe';
+//     // 1. create the HubJobSeeker
+//     var seeker = factory.newResource(NS, 'HubJobSeeker', 'andy@hub.com');
+//     seeker.password = 'ChangeMe';
 
-    // create address concept
-    var seekerAddress = factory.newConcept(NS, 'Address');
-    seekerAddress.street = "15 Hamworthy Road";
-    seekerAddress.city = "Swindon";
-    seekerAddress.postCode = "SN3 4JP";
-    seekerAddress.country = "UK";
+//     // create address concept
+//     var seekerAddress = factory.newConcept(NS, 'Address');
+//     seekerAddress.street = "15 Hamworthy Road";
+//     seekerAddress.city = "Swindon";
+//     seekerAddress.postCode = "SN3 4JP";
+//     seekerAddress.country = "UK";
 
-    seeker.address = seekerAddress;
+//     seeker.address = seekerAddress;
    
 
-    // create name concept
-    var seekerName = factory.newConcept(NS, 'Name');
-    seekerName.title = "MR";
-    seekerName.firstName = "Andrew";
-    seekerName.lastName = "Richardson";
+//     // create name concept
+//     var seekerName = factory.newConcept(NS, 'Name');
+//     seekerName.title = "MR";
+//     seekerName.firstName = "Andrew";
+//     seekerName.lastName = "Richardson";
 
-    seeker.name = seekerName;
+//     seeker.name = seekerName;
 
-    return seeker
-}
+//     return seeker
+// }
 
-function generateCarmenUserData(factory, NS) {
-    // 1. create the HubJobSeeker
-    var seeker = factory.newResource(NS, 'HubJobSeeker', 'carmen@hub.com');
-    seeker.password = 'ChangeMeToo';
+// function generateCarmenUserData(factory, NS) {
+//     // 1. create the HubJobSeeker
+//     var seeker = factory.newResource(NS, 'HubJobSeeker', 'carmen@hub.com');
+//     seeker.password = 'ChangeMeToo';
 
-    // create address concept
-    var seekerAddress = factory.newConcept(NS, 'Address');
-    seekerAddress.street = "15 Silly Street";
-    seekerAddress.city = "Bucharest";
-    seekerAddress.postCode = "150789";
-    seekerAddress.country = "Romania";
+//     // create address concept
+//     var seekerAddress = factory.newConcept(NS, 'Address');
+//     seekerAddress.street = "15 Silly Street";
+//     seekerAddress.city = "Bucharest";
+//     seekerAddress.postCode = "150789";
+//     seekerAddress.country = "Romania";
 
-    seeker.address = seekerAddress;
+//     seeker.address = seekerAddress;
    
 
-    // create name concept
-    var seekerName = factory.newConcept(NS, 'Name');
-    seekerName.title = "MISS";
-    seekerName.firstName = "Carmen";
-    seekerName.lastName = "Bahrim";
+//     // create name concept
+//     var seekerName = factory.newConcept(NS, 'Name');
+//     seekerName.title = "MISS";
+//     seekerName.firstName = "Carmen";
+//     seekerName.lastName = "Bahrim";
 
-    seeker.name = seekerName;
+//     seeker.name = seekerName;
 
-    return seeker
+//     return seeker
+// }
+
+
+/**
+ * Return HubAccount according to email and password
+ * @param {io.onemillionyearsbc.hubtutorial.GetHubAccount} credentials
+ * @returns {io.onemillionyearsbc.hubtutorial.HubAccount} The account
+ * @transaction
+ */
+async function GetHubAccount(credentials) {
+     let results = await query('selectHubAccountByUserAndPassword', {
+     	"email": `${credentials.email}`,
+     	"password": `${credentials.password}`,
+     });
+    
+    if (results.length == 1) {
+        return results[0];
+    } 
+  	return undefined;
 }
+
+// TODO GetHubUser: this should call GetHubAccount and, if successful, should then use the email id to get 
+// the HubUser record.
+
+/**
+ * Return HubUser according to email and password
+ * @param {io.onemillionyearsbc.hubtutorial.GetHubRecruiter} credentials
+ * @returns {io.onemillionyearsbc.hubtutorial.HubRecruiter} The user
+ * @transaction
+ */
+async function GetHubRecruiter(credentials) {
+    let results = await query('selectHubAccountByUserAndPassword', {
+        "email": `${credentials.email}`,
+        "password": `${credentials.password}`,
+    });
+   
+    if (results.length == 1) {
+       account = results[0];
+       let user = await query('selectHubRecruiterByEmail', {
+            "email": `${credentials.email}`,
+       });
+       if (user.length == 1) {
+            return user[0];
+       }
+    };
+      
+    return undefined;
+}
+
+/**
+ * Return HubUser according to email and password
+ * @param {io.onemillionyearsbc.hubtutorial.GetHubJobSeeker} credentials
+ * @returns {io.onemillionyearsbc.hubtutorial.HubJobSeeker} The user
+ * @transaction
+ */
+async function GetHubJobSeeker(credentials) {
+    let results = await query('selectHubAccountByUserAndPassword', {
+        "email": `${credentials.email}`,
+        "password": `${credentials.password}`,
+    });
+   
+    if (results.length == 1) {
+       account = results[0];
+       let user = await query('selectHubJobSeekerByEmail', {
+            "email": `${credentials.email}`,
+       });
+       if (user.length == 1) {
+            return user[0];
+       }
+    };
+      
+    return undefined;
+}
+
+
+
+
 
 
