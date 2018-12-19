@@ -128,61 +128,64 @@
                     Sign In</label>
                 <div id="tab-content2" class="tab-content" role="tabpanel" aria-labelledby="specification" aria-hidden="true">
                     <div class="form-collection  animated fadeInUp delay-2s">
-                        <div class="card elevation-3 limit-width log-in-card above ">
+                        <form id="rl" class="myForm" top="true">
+                            <div class="card elevation-3 limit-width log-in-card above" top="true">
 
-                            <div class="card-body loginform">
-                                <div class="title">
-                                    <p class="loginform__card-title">Recruiter Sign In <p>
+                                <div class="card-body loginform">
+                                    <div class="title">
+                                        <p class="loginform__card-title">Recruiter Sign In <p>
+                                    </div>
+                                    <div class="input-group email">
+                                        <input id="email" class="loginform__textfield" type="text" placeholder="Email"
+                                            autocomplete="off" />
+                                        <label for="email" class="loginform__label">Email</label>
+                                    </div>
+                                    <div class="input-group password">
+                                        <input id="password" class="loginform__textfield" type="password" placeholder="Password"
+                                            autocomplete="off" />
+                                        <label for="password" class="loginform__label">Password</label>
+                                    </div>
+                                    <a href="#" class="box-btn">Forgot Password?</a>
                                 </div>
-                                <div class="input-group email">
-                                    <input id="email" class="loginform__textfield" type="text" placeholder="Email"
-                                        autocomplete="off" />
-                                    <label for="email" class="loginform__label">Email</label>
+                                <div class="card-footer">
+                                    <button type="button" class="submit">Sign in</button>
                                 </div>
-                                <div class="input-group password">
-                                    <input id="password" class="loginform__textfield" type="password" placeholder="Password"
-                                        autocomplete="off" />
-                                    <label for="password" class="loginform__label">Password</label>
-                                </div>
-                                <a href="#" class="box-btn">Forgot Password?</a>
                             </div>
-                            <div class="card-footer">
-                                <button type="submit" class="login-btn">Sign in</button>
-                            </div>
-                        </div>
+                        </form>
+                        <form id="rr" class="myForm" top="false">
+                            <div class="card elevation-2 limit-width sign-up-card below turned" top="false">
 
-                        <div class="card elevation-2 limit-width sign-up-card below turned">
+                                <div class="card-body loginform">
+                                    <div class="title">
+                                        <p class="loginform__card-title">Recruiter Register</p>
+                                    </div>
+                                    <div class="input-group fullname">
+                                        <input id="name" class="loginform__textfield" type="text" placeholder="Full Name"
+                                            autocomplete="off" />
+                                        <label for="name" class="loginform__label">Full Name</label>
+                                    </div>
+                                    <div class="input-group email">
+                                        <input id="email" class="loginform__textfield" type="email" placeholder="Email"
+                                            autocomplete="off" />
+                                        <label for="email" class="loginform__label">Email</label>
+                                    </div>
+                                    <div class="input-group password">
+                                        <input id="password" class="loginform__textfield" type="password" placeholder="Password"
+                                            autocomplete="off" />
+                                        <label for="password" class="loginform__label">Password</label>
+                                    </div>
+                                    <div class="input-group company">
+                                        <input id="company" class="loginform__textfield" type="text" placeholder="Company"
+                                            autocomplete="off" />
+                                        <label for="company" class="loginform__label">Company</label>
+                                    </div>
 
-                            <div class="card-body loginform">
-                                <div class="title">
-                                    <p class="loginform__card-title">Recruiter Register</p>
                                 </div>
-                                <div class="input-group fullname">
-                                    <input id="name" class="loginform__textfield" type="text" placeholder="Full Name"
-                                        autocomplete="off" />
-                                    <label for="name" class="loginform__label">Full Name</label>
+                                <div id="bum" class="card-footer">
+                                    <button type="button" class="submit">Register</button>
                                 </div>
-                                <div class="input-group email">
-                                    <input id="email" class="loginform__textfield" type="email" placeholder="Email"
-                                        autocomplete="off" />
-                                    <label for="email" class="loginform__label">Email</label>
-                                </div>
-                                <div class="input-group password">
-                                    <input id="password" class="loginform__textfield" type="password" placeholder="Password"
-                                        autocomplete="off" />
-                                    <label for="password" class="loginform__label">Password</label>
-                                </div>
-                                <div class="input-group company">
-                                    <input id="company" class="loginform__textfield" type="text" placeholder="Company"
-                                        autocomplete="off" />
-                                    <label for="company" class="loginform__label">Location</label>
-                                </div>
-
                             </div>
-                            <div class="card-footer">
-                                <button type="submit" class="signup-btn">Register</button>
-                            </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
             </li>
@@ -193,7 +196,6 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script>
     $(document).on('click', '.below button', function () {
-        console.log("hello world");
         var belowCard = $('.below'),
             aboveCard = $('.above'),
             parent = $('.form-collection');
@@ -203,6 +205,20 @@
             aboveCard.removeClass('above');
             belowCard.addClass('above');
             aboveCard.addClass('below');
+            // document.querySelectorAll("myForm").reset();
+
+            var forms = document.getElementsByClassName('myForm'), i;
+
+            console.log("bollocks, form length=" + forms.length);
+            for (i = 0; i < forms.length; i++) {
+                forms[i].reset();
+                var top = forms[i].getAttribute("top");
+                if (top == "false") {
+                    forms[i].setAttribute("top", "true");
+                } else {
+                    forms[i].setAttribute("top", "false");
+                }
+            }
             setTimeout(function () {
                 parent.addClass('animation-state-finish');
                 parent.removeClass('animation-state-1');
@@ -214,6 +230,88 @@
             }, 10)
         }, 300);
     });
+</script>
+<script type="text/javascript">
+
+    var forms = document.getElementsByClassName('submit'), i;
+
+    for (i = 0; i < forms.length; i++) {
+        forms[i].addEventListener('click', formHandler);
+    };
+
+    function formHandler(e) {
+
+        var btn = e.target;
+        form = btn.parentElement.parentElement.parentElement;
+        var onTop = form.getAttribute("top");
+
+        // don't fire the submit form data stuff unless the screen is on top
+        // otherwise it fires when we bring the screen to the front as well
+        if (onTop == "false") {
+            return;
+        }
+
+        // document.getElementById("uniqueID").value;
+        e.preventDefault();
+
+        var el = form.querySelectorAll('input');
+        var myData = {};
+       
+        for (var x = 0; x < el.length; x++) {
+            var id = el[x].id;
+            var value = el[x].value;
+            myData[id] = value;
+            console.log(id + "--" + value);
+            // myData += name + '=' + value + '&'
+        }
+        console.log(myData["email"]);
+        var formData = {
+            $class: "io.onemillionyearsbc.hubtutorial.CreateRecruiterAccount",
+            company: myData["company"],
+            accountType: "RECRUITER",
+            email: myData["email"],
+            password: myData["password"]
+        };
+
+        var data = JSON.stringify(formData);
+        console.log(data);
+
+
+        loadJSON(data);
+    };
+
+    // function formData(form) {
+    //     var el = form.querySelectorAll('input');
+    //     var myData = {};
+    //     console.log(el.length);
+    //     for (var x = 0; x < el.length; x++) {
+    //         var id = el[x].id;
+    //         var value = el[x].value;
+    //         myData[id] = value;
+    //         // myData += name + '=' + value + '&'
+    //     }
+    //     // return myData.slice(0, -1);
+    //     return myData;
+    // }
+    async function loadJSON(data) {
+        try {
+            const url = 'http://84.117.182.193:3000/api/io.onemillionyearsbc.hubtutorial.CreateRecruiterAccount';
+            const myData = data;
+            var response = await fetch(url,
+                {
+                    method: 'post',
+                    headers: { 'Content-type': 'application/json' },
+                    body: myData
+                });
+
+            var data = await response.json();
+
+            console.log(data);
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
 </script>
 
 </html>

@@ -2,7 +2,7 @@
   "name": "onemillionyearsbc",
   "version": "1.0.0",
   "description": "Hub+ demo",
-  "main": "fontawesome-all.js",
+  "main": "src/index.js",
   "scripts": {
     "watch:sass": "node-sass sass/main.scss css/style.css -w",
     "devserver": "live-server",
@@ -19,9 +19,11 @@
     "concat": "^1.0.3",
     "node-sass": "^4.9.2",
     "npm-run-all": "^4.1.1",
-    "postcss-cli": "^4.1.1"
+    "postcss-cli": "^4.1.1",
+    "webpack": "^4.28.0"
   },
   "dependencies": {
+    "jquery": "^3.3.1",
     "sass": "^1.13.0"
   }
 }
