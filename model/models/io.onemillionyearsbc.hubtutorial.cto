@@ -28,8 +28,7 @@ namespace io.onemillionyearsbc.hubtutorial
 
 abstract participant HubUser identified by email {
   o String      email 
-  o String      password
-  o Double      hubTokenBalance default=0.0
+  o Double      hubTokenBalance default=0.0 optional
 }
 
 participant HubRecruiter extends HubUser {
@@ -66,31 +65,37 @@ concept Address {
   o String country
 }
 
-asset HubAccount identified by accountId {
-  o String      accountId
+asset HubAccount identified by email {
+  o String      email 
+  o String      password
   --> HubUser   owner
   o AccountType accountType default="JOBSEEKER"
   o DateTime    dateCreated
 }
-
-transaction CreateHubUser {
+// Testing only; should only be called via CreateAccount
+transaction CreateHubUserRecruiter {
   o String email 
-  o String password
   o String company
+  o Double hubTokenBalance default=0.0 
+}
+
+// Testing only; should only be called via CreateAccount
+transaction CreateHubUserJobSeeker {
+  o String email 
+  o HubJobSeekerParameters parameters optional
   o Double hubTokenBalance default=0.0 optional
 }
 
 abstract transaction CreateAccount {
-  o String accountId
-  o String email /* eg email */
-  o String password
-  o Long hubTokenBalance optional
+  o String      email 
+  o String      password
+  o Double      hubTokenBalance optional
 }
 
 // TODO UpdateAccount and RemoveAccount
 
 transaction CreateRecruiterAccount extends CreateAccount {
-  o String company
+  o String company //TODO replace with HubRecruiterParameters once we decide what these are
   o AccountType accountType default="RECRUITER"
 }
 
@@ -99,12 +104,35 @@ transaction CreateJobSeekerAccount extends CreateAccount {
   o AccountType accountType default="JOBSEEKER"
 }
 
-transaction CreateHubJobSeekerDemoData extends CreateAccount {
-  --> HubJobSeeker jobSeeker
-}
-
-
 enum AccountType {
   o   JOBSEEKER
   o   RECRUITER
 }
+
+/* test calling of named query. The idea here  is to have a named query return the account then to use
+the email to then get hold of the embedded HubUser field, so a two-part transaction to see if we can return
+the correct HubUser for a given email/password combination)
+*/
+@commit(false)
+@returns(HubRecruiter)
+transaction GetHubRecruiter {
+  o String email
+  o String password
+}
+
+@commit(false)
+@returns(HubJobSeeker)
+transaction GetHubJobSeeker {
+  o String email
+  o String password
+}
+  
+@commit(false)
+@returns(HubAccount)
+transaction GetHubAccount {
+  o String email
+  o String password
+}
+
+ 
+  

@@ -1,0 +1,30 @@
+/**
+ * New query file
+ */
+query selectHubAccountByUserAndPassword {
+    description: "Select HubAccount object where username and password match"
+    statement:
+        SELECT io.onemillionyearsbc.hubtutorial.HubAccount
+            WHERE ((email == _$email) AND (password == _$password))
+}
+
+query selectHubRecruiterByEmail {
+ description: "Select HubRecruiter object where username (email) matches"
+    statement:
+        SELECT io.onemillionyearsbc.hubtutorial.HubRecruiter
+            WHERE (email == _$email) 
+}
+
+query selectHubJobSeekerByEmail {
+ description: "Select HubJobSeeker object where username (email) matches"
+    statement:
+        SELECT io.onemillionyearsbc.hubtutorial.HubJobSeeker
+            WHERE (email == _$email) 
+}
+            
+query selectAllAccounts {
+  	description: "Returns all accounts in the registry"
+  	statement:
+    	SELECT io.onemillionyearsbc.hubtutorial.HubAccount
+}
+
