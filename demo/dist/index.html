@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link href="https://fonts.googleapis.com/css?family=Josefin+Sans:300,400,400i|Nunito:300,300i" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="shortcut icon" type="image/png" href="img/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <script src="scripts/fontawesome-all.js"></script>
+    <title>Hub++ Back to the Future of Recruiting</title>
+</head>
+
+<body>
+    <div class="container">
+        <header class="header animated slideInLeft delay-2s">
+            <div class="header__topbar">
+                <div class="topleft">
+                    <img src="img/logo-small.png" alt="1MYBC">
+                </div>
+                <div class="topright">
+                    <span class="topright__banner">Are you recruiting?</span>
+                    <button type="submit" class="topright__btn btn">Advertise Now</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="content">
+            <nav class="navbar animated slideInRight delay-2s">
+                <ul class="navbar__left">
+                    <li class="item-1"><a href="#jobs">IT Jobs</a></li>
+                    <li><a href="#companies">Companies Hiring</a></li>
+                    <li><a href="#tools">Blockchain tools</a></li>
+                </ul>
+                <ul class="navbar__right">
+
+                    <!-- <svg class="star"></svg>
+                    <use xlink:href="img/sprite.svg#star-full"></use> -->
+                    <li><a href="#saved" class="link-icon star"><i class="icon fas fa-star"></i>Saved Jobs<div class="circle">10</div></a></li>
+
+                    <li><a href="register.html" class="link-icon"><i class="icon far fa-user"></i>Sign In</a></li>
+                </ul>
+            </nav>
+
+            <div class="searchpanel">
+                <p class="searchpanel__bollocks animated zoomIn delay-2s">Blockchain Hub++</p>
+                <p class="searchpanel__slogan animated zoomIn delay-2s">Back to the Future of Recruitment</p>
+                <div class="searchpanel__grid animated slideInLeft delay-2s">
+                    <div class="searchpanel__grid--item-1">
+                        <p>What</p>
+                    </div>
+                    <div class="searchpanel__grid--item-2">
+                        <p>Where</p>
+                    </div>
+                    <div class="form-container">
+                        <form class="form" role="search" action="#"  autocomplete="off">
+                            <div class="form__group">
+                                <input type="text" class="form__textfield" placeholder="Job title, skill or company" id="job"
+                                    required>
+                                <label for="job" class="form__label">Job title, skill or company</label>
+                            </div>
+                            <div class="form_group">
+                                <input type="text" class="form__textfield" placeholder="Town, city or postcode" id="location"
+                                    required>
+                                <label for="location" class="form__label">Town, city or postcode</label>
+                            </div>
+                            <button type="submit" class="btn btn--orange">SEARCH</button>
+                        </form>
+                    </div>
+
+                </div>
+
+                <div id="blobpanel" class="searchpanel__container" display="off">
+                    <div class="searchpanel__container--blob">
+                        <div class="left">
+                            <p>Salary Type</p>
+                            <div class="left__blob">
+                                <p class="left__blob--box item-1">Any</p>
+                                <p class="left__blob--box">Annual</p>
+                                <p class="left__blob--box">Daily</p>
+                                <p class="left__blob--box">Hourly</p>
+                            </div>
+                        </div>
+                        <div class="mid">
+                            <p>Job Type</p>
+                            <div class="mid__blob">
+                                <p class="mid__blob--box item-1">All</p>
+                                <p class="mid__blob--box">Permanent</p>
+                                <p class="mid__blob--box">Contract</p>
+                            </div>
+                        </div>
+                        <div class="right">
+                            <p>Recruiter Type</p>
+                            <div class="right__blob">
+                                <p class="left__blob--box item-1">Any</p>
+                                <p class="left__blob--box">Employer</p>
+                                <p class="left__blob--box">Agency</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button id="btn2" class="searchpanel--blob-button2">
+                    More Options
+                </button>
+            </div>
+            <!-- <div class="dummy"></div> -->
+        </div>
+<script type="text/javascript" src="js/bundle.js"></script></body>
+<script>
+    var toggleButton = document.getElementById('btn2');
+    var grid = document.querySelector('.searchpanel__grid');
+
+    toggleButton.addEventListener('click', togglePanelIn, false);
+    var panel = document.getElementById('blobpanel');
+    function togglePanelIn() {
+        var displayAttr = panel.getAttribute('display');
+        if (displayAttr == "off") {
+            panel.style.height = "100px";
+            panel.setAttribute('display', 'on');
+            toggleButton.innerHTML = "Fewer Options";
+            toggleButton.style.top = "-76px";
+        } else {
+
+            panel.style.height = "0px";
+            panel.setAttribute('display', 'off');
+            toggleButton.innerHTML = "More Options";
+            toggleButton.style.top = "-100px";
+        }
+        toggleButton.blur();
+    }
+
+</script>
+
+
+</html>

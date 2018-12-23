@@ -25,12 +25,17 @@ $font-display: 'Josefin Sans', sans-serif;
 $site-global-margin: 20rem;
 
 $button-background: rgb(27, 150, 222);
+// $button-background: red;
 $button-hover-background: #040542;
 $button-hover-color: #8fcbfd;
 
 $button-orange-background: rgba(202, 108, 20, 1.0);
 // $tabs-base-color:rgba(219, 215, 213, 1.0);
 $tabs-base-color: white;
+
+$error-field-background: rgb(255, 192, 203);
+$error-field-color: rgb(255, 0, 0);
+// $fa-font-path: "../../../node_modules/@fortawesome/fontawesome-free";
 
 
 

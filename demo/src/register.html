@@ -15,10 +15,9 @@
 </head>
 
 <body>
-    <div class="container">
+    <div id="loginContainer" class="container">
         <header class="header animated slideInLeft delay-2s">
             <div class="header__topbar">
-
                 <div class="topleft">
                     <a href="index.html">
                         <img src="img/logo-small.png" alt="1MYBC">
@@ -27,7 +26,7 @@
                 </div>
                 <div class="topright">
                     <span class="topright__banner">Are you recruiting?</span>
-                    <button class="btn" type="submit" topright__btn btn">Advertise Now</button>
+                    <button class="btn" type="submit" topright__btn btn>Advertise Now</button>
                 </div>
             </div>
         </header>
@@ -45,16 +44,25 @@
                     <use xlink:href="img/sprite.svg#star-full"></use> -->
                     <li><a href="#saved" class="link-icon star"><i class="icon fas fa-star"></i>Saved Jobs<div class="circle">10</div></a></li>
 
-                    <li><a href="#signin" class="link-icon"><i class="icon far fa-user"></i>Sign In</a></li>
+                    <li class="signin"><a href="#" class="link-icon"><i class="icon far fa-user"></i>Sign In</a></li>
                 </ul>
             </nav>
         </div>
 
-        <ul class="tabs" role="tablist">
+        <ul id="tabbedpane" class="tabs" role="tablist">
+
+            <!-- <div class="loader">
+                        <svg>
+                            <use href="img/icons.svg#icon-cw"></use>
+                        </svg>
+                    </div> -->
             <li>
-                <input type="radio" name="tabs" id="tab1" checked />
-                <label class="tablabel" for="tab1" role="tab" aria-selected="true" aria-controls="panel1" tabindex="0">Jobseeker
+
+                <input class="tabInput" type="radio" name="tabs" id="tab1" checked />
+                <label id="1" class="tablabel" for="tab1" role="tab" aria-selected="true" aria-controls="panel1"
+                    tabindex="0">Jobseeker
                     Sign In</label>
+
                 <div id="tab-content1" class="tab-content" role="tabpanel" aria-labelledby="jobseeker" aria-hidden="false">
                     <div class="form-collection  animated fadeInUp delay-2s">
                         <div class="card elevation-3 limit-width log-in-card above ">
@@ -77,13 +85,7 @@
                                 <a href="#" class="box-btn">Forgot Password?</a>
                             </div>
                             <div class="card-footer">
-
-                                <button type="submit" class="login-btn">Sign in</button>
-
-                                <!-- <i class="icon far fa-arrow-right"></i> -->
-                                <!-- <i class="fal fa-arrow-right"></i> -->
-                                <!-- <span><i class="fa fa-right"></i></span> -->
-                                <!-- <a href="#signin" class="link-icon"><i class="icon far fa-user"></i>Sign In</a> -->
+                                <button type="submit" class="submitLogin">Sign in</button>
                             </div>
                         </div>
 
@@ -115,7 +117,7 @@
                                 </div>
                             </div>
                             <div class="card-footer">
-                                <button type="submit" class="signup-btn">Register</button>
+                                <button type="submit" class="submitRegister">Register</button>
                             </div>
                         </div>
                     </div>
@@ -123,66 +125,111 @@
             </li>
 
             <li>
-                <input type="radio" name="tabs" id="tab2" />
+                <input class="tabInput" type="radio" name="tabs" id="tab2" />
                 <label class="tablabel" for="tab2" role="tab" aria-selected="false" aria-controls="panel2" tabindex="1">Recruiter
                     Sign In</label>
                 <div id="tab-content2" class="tab-content" role="tabpanel" aria-labelledby="specification" aria-hidden="true">
                     <div class="form-collection  animated fadeInUp delay-2s">
                         <form id="rl" class="myForm" top="true">
                             <div class="card elevation-3 limit-width log-in-card above" top="true">
-
                                 <div class="card-body loginform">
                                     <div class="title">
                                         <p class="loginform__card-title">Recruiter Sign In <p>
+                                    </div>
+                                    <div id="signin-error" class="loginform__error">
+                                        <p><i class="icon fas fa-exclamation-triangle"></i>
+                                            email/password not found. Please try again.
+                                        </p>
+                                    </div>
+                                    <div id="signin-server-error" class="loginform__error">
+                                        <p><i class="icon fas fa-exclamation-triangle"></i>
+                                            Server unavailable. Please try again later.
+                                        </p>
                                     </div>
                                     <div class="input-group email">
                                         <input id="email" class="loginform__textfield" type="text" placeholder="Email"
                                             autocomplete="off" />
                                         <label for="email" class="loginform__label">Email</label>
+                                        <div id="email-error" class="loginform__error">
+                                            <p><i class="icon fas fa-exclamation-triangle"></i>Please enter your email
+                                                address</p>
+                                        </div>
                                     </div>
                                     <div class="input-group password">
                                         <input id="password" class="loginform__textfield" type="password" placeholder="Password"
                                             autocomplete="off" />
                                         <label for="password" class="loginform__label">Password</label>
+                                        <div id="password-error" class="loginform__error">
+                                            <p><i class="icon fas fa-exclamation-triangle"></i>Please enter a valid
+                                                password (min. 6 characters)</p>
+                                        </div>
                                     </div>
                                     <a href="#" class="box-btn">Forgot Password?</a>
                                 </div>
                                 <div class="card-footer">
-                                    <button type="button" class="submit">Sign in</button>
+                                    <button type="submit" class="submitLogin">Sign in</button>
                                 </div>
                             </div>
                         </form>
                         <form id="rr" class="myForm" top="false">
-                            <div class="card elevation-2 limit-width sign-up-card below turned" top="false">
+                            <div class="card elevation-2 limit-width sign-up-card below turned">
 
                                 <div class="card-body loginform">
                                     <div class="title">
                                         <p class="loginform__card-title">Recruiter Register</p>
                                     </div>
+                                    <div id="login-error" class="loginform__error">
+                                        <p><i class="icon fas fa-exclamation-triangle"></i>
+                                            The user you are trying to create already exists.
+                                            Please use another email address.
+                                        </p>
+                                    </div>
+                                    <div id="server-error" class="loginform__error">
+                                        <p><i class="icon fas fa-exclamation-triangle"></i>
+                                            Server unavailable. Please try again later.
+                                        </p>
+                                    </div>
                                     <div class="input-group fullname">
                                         <input id="name" class="loginform__textfield" type="text" placeholder="Full Name"
                                             autocomplete="off" />
                                         <label for="name" class="loginform__label">Full Name</label>
+                                        <div id="name-error" class="loginform__error">
+                                            <p><i class="icon fas fa-exclamation-triangle"></i>Please enter your full
+                                                name</p>
+                                        </div>
+
                                     </div>
                                     <div class="input-group email">
                                         <input id="email" class="loginform__textfield" type="email" placeholder="Email"
                                             autocomplete="off" />
                                         <label for="email" class="loginform__label">Email</label>
+                                        <div id="email-error" class="loginform__error">
+                                            <p><i class="icon fas fa-exclamation-triangle"></i>Please enter your email
+                                                address</p>
+                                        </div>
                                     </div>
                                     <div class="input-group password">
                                         <input id="password" class="loginform__textfield" type="password" placeholder="Password"
                                             autocomplete="off" />
                                         <label for="password" class="loginform__label">Password</label>
+                                        <div id="password-error" class="loginform__error">
+                                            <p><i class="icon fas fa-exclamation-triangle"></i>Please enter a valid
+                                                password (min. 6 characters)</p>
+                                        </div>
                                     </div>
                                     <div class="input-group company">
                                         <input id="company" class="loginform__textfield" type="text" placeholder="Company"
                                             autocomplete="off" />
                                         <label for="company" class="loginform__label">Company</label>
+                                        <div id="company-error" class="loginform__error">
+                                            <p><i class="icon fas fa-exclamation-triangle"></i>Please enter your
+                                                company name</p>
+                                        </div>
                                     </div>
 
                                 </div>
                                 <div id="bum" class="card-footer">
-                                    <button type="button" class="submit">Register</button>
+                                    <button type="button" class="submitRegister">Register</button>
                                 </div>
                             </div>
                         </form>
@@ -209,7 +256,6 @@
 
             var forms = document.getElementsByClassName('myForm'), i;
 
-            console.log("bollocks, form length=" + forms.length);
             for (i = 0; i < forms.length; i++) {
                 forms[i].reset();
                 var top = forms[i].getAttribute("top");
@@ -231,87 +277,6 @@
         }, 300);
     });
 </script>
-<script type="text/javascript">
 
-    var forms = document.getElementsByClassName('submit'), i;
-
-    for (i = 0; i < forms.length; i++) {
-        forms[i].addEventListener('click', formHandler);
-    };
-
-    function formHandler(e) {
-
-        var btn = e.target;
-        form = btn.parentElement.parentElement.parentElement;
-        var onTop = form.getAttribute("top");
-
-        // don't fire the submit form data stuff unless the screen is on top
-        // otherwise it fires when we bring the screen to the front as well
-        if (onTop == "false") {
-            return;
-        }
-
-        // document.getElementById("uniqueID").value;
-        e.preventDefault();
-
-        var el = form.querySelectorAll('input');
-        var myData = {};
-       
-        for (var x = 0; x < el.length; x++) {
-            var id = el[x].id;
-            var value = el[x].value;
-            myData[id] = value;
-            console.log(id + "--" + value);
-            // myData += name + '=' + value + '&'
-        }
-        console.log(myData["email"]);
-        var formData = {
-            $class: "io.onemillionyearsbc.hubtutorial.CreateRecruiterAccount",
-            company: myData["company"],
-            accountType: "RECRUITER",
-            email: myData["email"],
-            password: myData["password"]
-        };
-
-        var data = JSON.stringify(formData);
-        console.log(data);
-
-
-        loadJSON(data);
-    };
-
-    // function formData(form) {
-    //     var el = form.querySelectorAll('input');
-    //     var myData = {};
-    //     console.log(el.length);
-    //     for (var x = 0; x < el.length; x++) {
-    //         var id = el[x].id;
-    //         var value = el[x].value;
-    //         myData[id] = value;
-    //         // myData += name + '=' + value + '&'
-    //     }
-    //     // return myData.slice(0, -1);
-    //     return myData;
-    // }
-    async function loadJSON(data) {
-        try {
-            const url = 'http://84.117.182.193:3000/api/io.onemillionyearsbc.hubtutorial.CreateRecruiterAccount';
-            const myData = data;
-            var response = await fetch(url,
-                {
-                    method: 'post',
-                    headers: { 'Content-type': 'application/json' },
-                    body: myData
-                });
-
-            var data = await response.json();
-
-            console.log(data);
-
-        } catch (error) {
-            console.log(error);
-        }
-    }
-</script>
 
 </html>
