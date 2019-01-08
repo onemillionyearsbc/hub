@@ -226,6 +226,7 @@ async function GetHubRecruiter(credentials) {
             "email": credentials.email,
         });
         if (user.length == 1) {
+          	await SetLoggedIn(credentials.email, true);
             return user[0];
         }
     };
@@ -252,6 +253,7 @@ async function GetHubJobSeeker(credentials) {
             "email": `${credentials.email}`,
         });
         if (user.length == 1) {
+            await SetLoggedIn(credentials.email, true);
             return user[0];
         }
     };
@@ -276,13 +278,6 @@ async function loggedInHelper(email, loggedIn) {
  * @param {io.onemillionyearsbc.hubtutorial.SetLoggedIn} credentials id of the account, and true/false for logged in
  * @transaction
  */
-async function SetLoggedIn(credentials) {
-    await loggedInHelper(credentials.email, credentials.loggedIn);
+async function SetLoggedIn(email, loggedIn) {
+    await loggedInHelper(email, loggedIn);
 }
-
-
-
-
-
-
-

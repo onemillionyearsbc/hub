@@ -125,20 +125,16 @@ transaction SetLoggedIn {
 the email to then get hold of the embedded HubUser field, so a two-part transaction to see if we can return
 the correct HubUser for a given email/password combination)
 */
-@commit(false)
 @returns(HubRecruiter)
 transaction GetHubRecruiter {
   o String email
-  o String password
-  o Boolean loggedIn 
+  o String password 
 }
 
-@commit(false)
 @returns(HubJobSeeker)
 transaction GetHubJobSeeker {
   o String email
-  o String password
-  o Boolean loggedIn 
+  o String password 
 }
   
   
