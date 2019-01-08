@@ -1,4 +1,4 @@
-import { elements } from './base';
+import { elements, strings } from './base';
 
 
 
@@ -15,7 +15,7 @@ export const getFormData = (form) => {
     // TODO get the right formData object for recruiter or jobseeker
     // TODO possibly this should be moved into the model
     var formData = {
-        $class: "io.onemillionyearsbc.hubtutorial.GetHubAccount",
+        $class: strings.recruiterLoginNamespace,
         email: myData["email"],
         password: myData["password"]
     };
@@ -23,6 +23,36 @@ export const getFormData = (form) => {
     return formData;
 }
 
+export const getSignOutData = (mail) => {
+    var signOutData = {
+        $class: "io.onemillionyearsbc.hubtutorial.SetLoggedIn",
+        email: mail,
+        loggedIn: false
+    };
+    return signOutData;
+}
+
+export const clearValidationErrorMessages = () => {
+    var x = document.getElementById("email-error");
+    clearError(x);
+    var x = document.getElementById("password-error");
+    clearError(x);
+}
+
+function clearError(x) {
+    if (x.style.display != "none") {
+        x.style.display = "none";
+    }
+}
+
+export const clearServerErrorMessage = () => {
+    elements.loginError.style = "none";
+    elements.serverError.style = "none";
+}
+
+export const displayErrorFromServerMessage = () =>{
+
+}
 
 export const validateData = (data) => {
     var error = false;
@@ -45,7 +75,7 @@ export const displayServerErrorMessage = (error) => {
     var y = document.getElementById(`signin-server-error`);
   
     if (error != null) {
-        x = document.getElementById(`signinserver-error`);
+        x = document.getElementById(`signin-server-error`);
         y = document.getElementById(`signin-error`);
     } 
    

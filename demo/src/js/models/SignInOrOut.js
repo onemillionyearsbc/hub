@@ -1,20 +1,17 @@
 
 import { strings } from '../views/base';
 
-export default class SignIn {
+export default class SignInOrOut {
     constructor(data, url) {
         this.email = data.email;
         this.data = JSON.stringify(data);
         this.url = url;
     }
 
-    async userSignIn() {
+    async userSignInOut() {                                                                    
         try {
-            // TODO call correct Hub transaction for either recruiter or jobseeker
-            // TODO move URL into constants file
-        
             const myData = this.data;
-            console.log("REGISTERING DATA:");
+            console.log("LOGGING IN...with following data");
             console.log(myData);
             var response = await fetch(this.url,
                 {
