@@ -1,8 +1,6 @@
-import { elements, strings } from './base';
+import { elements, elementConsts, strings } from './base';
 
-
-
-export const getFormData = (form) => {
+export const getFormData = (form, transaction) => {
     var el = form.querySelectorAll('input');
     var myData = {};
 
@@ -15,7 +13,7 @@ export const getFormData = (form) => {
     // TODO get the right formData object for recruiter or jobseeker
     // TODO possibly this should be moved into the model
     var formData = {
-        $class: strings.recruiterLoginNamespace,
+        $class: transaction,
         email: myData["email"],
         password: myData["password"]
     };
@@ -25,18 +23,33 @@ export const getFormData = (form) => {
 
 export const getSignOutData = (mail) => {
     var signOutData = {
-        $class: "io.onemillionyearsbc.hubtutorial.SetLoggedIn",
+        $class: strings.setLoggedInTransaction,
         email: mail,
         loggedIn: false
     };
     return signOutData;
 }
 
-export const clearValidationErrorMessages = () => {
-    var x = document.getElementById("email-error");
-    clearError(x);
-    var x = document.getElementById("password-error");
-    clearError(x);
+export const clearValidationErrorMessages = (tab) => {
+    if (tab == elementConsts.RECRUITER) {
+        var x = document.getElementById("email-error");
+        clearError(x);
+        x = document.getElementById("password-error");
+        clearError(x);
+        x = document.getElementById(`signin-error`);
+        clearError(x);
+        x = document.getElementById(`signin-server-error`);
+        clearError(x);
+    } else {
+        var x = document.getElementById("email-error-js");
+        clearError(x);
+        var x = document.getElementById("password-error-js");
+        clearError(x);
+        x = document.getElementById(`signin-error-js`);
+        clearError(x);
+        x = document.getElementById(`signin-server-error-js`);
+        clearError(x);
+    }
 }
 
 function clearError(x) {
@@ -50,43 +63,71 @@ export const clearServerErrorMessage = () => {
     elements.serverError.style = "none";
 }
 
-export const displayErrorFromServerMessage = () =>{
+export const displayErrorFromServerMessage = () => {
 
 }
 
-export const validateData = (data) => {
+export const validateData = (data, tab) => {
     var error = false;
 
     if (data.email.length === 0) {
         error = true;
-        var x = document.getElementById("email-error");
+        var x;
+        if (tab == elementConsts.RECRUITER) {
+            x = document.getElementById("email-error");
+        } else {
+            x = document.getElementById("email-error-js");
+        }
         checkStyle(x);
     }
     if (data.password.length < 6) {
         error = true;
-        var x = document.getElementById("password-error");
+        var x;
+        if (tab == elementConsts.RECRUITER) {
+            x = document.getElementById("password-error");
+        } else {
+            x = document.getElementById("password-error-js");
+        }
         checkStyle(x);
     }
     return error;
 }
 
-export const displayServerErrorMessage = (error) => {
-    var x = document.getElementById(`signin-error`);
-    var y = document.getElementById(`signin-server-error`);
-  
-    if (error != null) {
-        x = document.getElementById(`signin-server-error`);
-        y = document.getElementById(`signin-error`);
-    } 
-   
+export const displayServerErrorMessage = (error, tab) => {
+    var x, y;
+    if (tab == elementConsts.RECRUITER) {
+        console.log("WARBLING ERRRRRRRRRRRRRRRRRRR RECRUITER");
+        x = document.getElementById(`signin-error`);
+        y = document.getElementById(`signin-server-error`);
+
+        if (error != null) {
+            x = document.getElementById(`signin-server-error`);
+            y = document.getElementById(`signin-error`);
+        }
+    } else {
+        console.log("WARBLING ERRRRRRRRRRRRRRRRRRR SEEKER");
+        x = document.getElementById(`signin-error-js`);
+        y = document.getElementById(`signin-server-error-js`);
+
+        if (error != null) {
+            x = document.getElementById(`signin-server-error-js`);
+            y = document.getElementById(`signin-error-js`);
+        }
+    }
+
     x.style.display = "block";
     y.style.display = "none";
 }
 
-export const validateField = (element) => {    
-    var x = document.getElementById(`${element.id}-error`);
+export const validateField = (element, tab) => {
+    var x;
+    if (tab == elementConsts.RECRUITER) {
+        x = document.getElementById(`${element.id}-error`);
+    } else {
+        x = document.getElementById(`${element.id}-error-js`);
+    }
     console.log("value for element = " + element.value);
-   
+
     if (element.value.length === 0) {
         checkStyle(x);
         return;
@@ -95,26 +136,15 @@ export const validateField = (element) => {
             checkStyle(x);
             return;
         }
-    } 
+    }
 
-    x.style.display = "none"; 
+    x.style.display = "none";
 }
 
 function checkStyle(x) {
+    console.log("3. TRYING...x.id = " + x.id);
     if (x.style.display != "block") {
         x.style.display = "block";
-    } 
-}
-
-export const setLoggedIn = (loggedIn) => {
-    var signins = elements.signins;
-    console.log("QUACK>>>>> SETTING Signin to " + loggedIn + "; len = " + signins.length);
-    for (var i = 0; i < signins.length; i++) {
-        if (loggedIn) {
-            signins[i].innerHTML = `<a href="register.html" class="link-icon"><i class="icon far fa-user"></i>Log Out</a>`;
-        } else {
-            signins[i].innerHTML = `<a href="register.html" class="link-icon"><i class="icon far fa-user"></i>Sign In</a>`;
-        }
-        
     }
 }
+

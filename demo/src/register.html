@@ -65,61 +65,110 @@
 
                 <div id="tab-content1" class="tab-content" role="tabpanel" aria-labelledby="jobseeker" aria-hidden="false">
                     <div class="form-collection  animated fadeInUp delay-2s">
-                        <div class="card elevation-3 limit-width log-in-card above ">
+                        <form id="jl" class="myForm" top="true">
+                            <div class="card elevation-3 limit-width log-in-card above ">
 
-                            <div class="card-body loginform">
-                                <div class="title">
-                                    <p class="loginform__card-title">Jobseeker Sign In <p>
+                                <div class="card-body loginform">
+                                    <div class="title">
+                                        <p class="loginform__card-title">Jobseeker Sign In <p>
+                                    </div>
+                                    <p class="instruct">New to Hub++? Click on the register tab</p>
+                                    <div id="signin-error-js" class="loginform__error">
+                                        <p><i class="icon fas fa-exclamation-triangle"></i>
+                                            email/password not found. Please try again.
+                                        </p>
+                                    </div>
+                                    <div id="signin-server-error-js" class="loginform__error">
+                                        <p><i class="icon fas fa-exclamation-triangle"></i>
+                                            Server unavailable. Please try again later.
+                                        </p>
+                                    </div>
+                                    <div class="input-group email">
+                                        <input id="email" class="loginform__textfield" type="text" placeholder="Email"
+                                            autocomplete="off" />
+                                        <label for="email" class="loginform__label">Email</label>
+                                    </div>
+                                    <div id="email-error-js" class="loginform__error">
+                                        <p><i class="icon fas fa-exclamation-triangle"></i>Please enter your email
+                                            address</p>
+                                    </div>
+                                    <div class="input-group password">
+                                        <input id="password" class="loginform__textfield" type="password" placeholder="Password"
+                                            autocomplete="off" />
+                                        <label for="password" class="loginform__label">Password</label>
+                                    </div>
+                                    <div id="password-error-js" class="loginform__error">
+                                        <p><i class="icon fas fa-exclamation-triangle"></i>Please enter a valid
+                                            password (min. 6 characters)</p>
+                                    </div>
+                                    
+                                    <a href="#" class="box-btn">Forgot Password?</a>
                                 </div>
-                                <p class="instruct">New to Hub++? Click on the register tab</p>
-                                <div class="input-group email">
-                                    <input id="email" class="loginform__textfield" type="text" placeholder="Email"
-                                        autocomplete="off" />
-                                    <label for="email" class="loginform__label">Email</label>
+                                <div class="card-footer">
+                                    <button id="submitLoginJobSeeker" type="submit" class="submitLogin">Sign in</button>
                                 </div>
-                                <div class="input-group password">
-                                    <input id="password" class="loginform__textfield" type="password" placeholder="Password"
-                                        autocomplete="off" />
-                                    <label for="password" class="loginform__label">Password</label>
-                                </div>
-                                <a href="#" class="box-btn">Forgot Password?</a>
                             </div>
-                            <div class="card-footer">
-                                <button type="submit" class="submitLogin">Sign in</button>
-                            </div>
-                        </div>
+                        </form>
+                        <form id="jr" class="myForm" top="false">
+                            <div class="card elevation-2 limit-width sign-up-card below turned">
 
-                        <div class="card elevation-2 limit-width sign-up-card below turned">
-
-                            <div class="card-body loginform">
-                                <div class="title">
-                                    <p class="loginform__card-title">JobSeeker Register</p>
+                                <div class="card-body loginform">
+                                    <div class="title">
+                                        <p class="loginform__card-title">JobSeeker Register</p>
+                                    </div>
+                                    <div id="login-error-js" class="loginform__error">
+                                        <p><i class="icon fas fa-exclamation-triangle"></i>
+                                            The user you are trying to create already exists.
+                                            Please use another email address.
+                                        </p>
+                                    </div>
+                                    <div id="server-error-js" class="loginform__error">
+                                        <p><i class="icon fas fa-exclamation-triangle"></i>
+                                            Server unavailable. Please try again later.
+                                        </p>
+                                    </div>
+                                    <div class="input-group fullname">
+                                        <input id="name" class="loginform__textfield" type="text" placeholder="Full Name"
+                                            autocomplete="off" />
+                                        <label for="name" class="loginform__label">Full Name</label>
+                                    </div>
+                                    <div id="name-error-r-js" class="loginform__error">
+                                        <p><i class="icon fas fa-exclamation-triangle"></i>Please enter your full
+                                            name</p>
+                                    </div>
+                                    <div class="input-group email">
+                                        <input id="email" class="loginform__textfield" type="email" placeholder="Email"
+                                            autocomplete="off" />
+                                        <label for="email" class="loginform__label">Email</label>
+                                    </div>
+                                    <div id="email-error-r-js" class="loginform__error">
+                                        <p><i class="icon fas fa-exclamation-triangle"></i>Please enter your email
+                                            address</p>
+                                    </div>
+                                    <div class="input-group password">
+                                        <input id="password" class="loginform__textfield" type="password" placeholder="Password"
+                                            autocomplete="off" />
+                                        <label for="password" class="loginform__label">Password</label>
+                                    </div>
+                                    <div id="password-error-r-js" class="loginform__error">
+                                        <p><i class="icon fas fa-exclamation-triangle"></i>Please enter a valid
+                                            password (min. 6 characters)</p>
+                                    </div>
+                                    <div class="input-group location">
+                                        <input id="location" class="loginform__textfield" type="text" placeholder="Location"
+                                            autocomplete="off" />
+                                        <label for="location" class="loginform__label">Country</label>
+                                    </div>
+                                    <div id="location-error-r-js" class="loginform__error">
+                                        <p><i class="icon fas fa-exclamation-triangle"></i>Please enter your
+                                            location (country)</p>
+                                    </div>
                                 </div>
-                                <div class="input-group fullname">
-                                    <input id="name" class="loginform__textfield" type="text" placeholder="Full Name"
-                                        autocomplete="off" />
-                                    <label for="name" class="loginform__label">Full Name</label>
-                                </div>
-                                <div class="input-group email">
-                                    <input id="email" class="loginform__textfield" type="email" placeholder="Email"
-                                        autocomplete="off" />
-                                    <label for="email" class="loginform__label">Email</label>
-                                </div>
-                                <div class="input-group password">
-                                    <input id="password" class="loginform__textfield" type="password" placeholder="Password"
-                                        autocomplete="off" />
-                                    <label for="password" class="loginform__label">Password</label>
-                                </div>
-                                <div class="input-group location">
-                                    <input id="location" class="loginform__textfield" type="text" placeholder="Location"
-                                        autocomplete="off" />
-                                    <label for="location" class="loginform__label">Location</label>
+                                <div class="card-footer">
+                                    <button id="submitRegisterJobSeeker" type="submit" class="submitRegister">Register</button>
                                 </div>
                             </div>
-                            <div class="card-footer">
-                                <button type="submit" class="submitRegister">Register</button>
-                            </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
             </li>
@@ -197,7 +246,6 @@
                                             <p><i class="icon fas fa-exclamation-triangle"></i>Please enter your full
                                                 name</p>
                                         </div>
-
                                     </div>
                                     <div class="input-group email">
                                         <input id="email" class="loginform__textfield" type="email" placeholder="Email"

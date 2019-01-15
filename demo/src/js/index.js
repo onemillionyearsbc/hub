@@ -1,27 +1,26 @@
 const css = require('../sass/main.scss');
 require('./scripts/fontawesome-all');
+const Swal = require('sweetalert2');
 
-import SignIn from './models/SignInOrOut';
+import SignInOrOut from './models/SignInOrOut';
 import * as registerView from './views/registerView';
+import * as registerJobSeekerView from './views/registerJobSeekerView';
 import * as loginView from './views/loginView';
-import { getFormFor, elements, elementConsts, inputType, renderLoader, clearLoader, strings } from './views/base';
+import { getFormFor, elements, elementConsts, inputType, renderLoader, clearLoader, navBarSetLoggedIn, strings } from './views/base';
 
 const state = {};
 var loggedIn = sessionStorage.getItem('loggedIn');
 state.loggedIn = loggedIn === "true" ? true : false;
-console.log("logged in = " + state.loggedIn);
-
 
 // SIGNIN CONTROLLER
-const signInHandler = async (e, view, url) => {
+const signInHandler = async (e, view, url, transaction) => {
     var btn = e.target;
     const form = getFormFor(btn);
     state.form = form;
 
     if (form) {
-        const data = view.getFormData(form);
-
-        const error = view.validateData(data);
+        const data = view.getFormData(form, transaction);
+        const error = view.validateData(data, state.tabIndex);
 
         if (error) {
             return error;
@@ -40,93 +39,144 @@ const signInHandler = async (e, view, url) => {
         // console.log("%%%%%%%%%%%%%%%%%%%%%%%%%  DATA END  %%%%%%%%%%%%%%%%%%%%%%%")
 
 
-        // 3) start spinner(rename this
         // TODO make sure we use the correct tabbedPane
-        renderLoader(elements.tabbedPane2);
+        renderLoader(state.tabbedPane);
 
         try {
             view.clearServerErrorMessage();
-            //         // 4) register a new account
+            //register a new account
             var err = await state.login.userSignInOut();
             clearLoader();
-            console.log("BARK: userSignIn, err = " + err);
             if (err != null) {
                 console.log(">>>> err message = " + err.message);
                 console.log(">>>> err code = " + err.statusCode);
 
                 if (err.message === strings.fetchFail) {
-                    view.displayServerErrorMessage(err.message);
+                    view.displayServerErrorMessage(err.message, state.tabIndex);
                 } else {
                     if (err.message.includes(strings.alreadyExists)) {
                         view.displayServerErrorMessage(null);
-                    } else {
+                    } else if (err.message.includes(strings.signInFail)) {
+                        view.displayServerErrorMessage(null, state.tabIndex);
+                    } else
+                    {
+                        
                         view.displayErrorFromServerMessage(err.message);
                     }
                 }
             } else {
-                console.log("Setting logged in to true");
                 setLoggedIn(view, true);
                 if (state.tabIndex == elementConsts.JOBSEEKER) {
                     window.location = "jobseeker-dashboard.html";
                 } else {
                     window.location = "recruiter-dashboard.html";
                 }
-
             }
-
         } catch (error) {
             return error;
         }
-
     }
 }
 
 const signOutHandler = async (e) => {
     if (state.loggedIn === true) {
-        console.log("Logging out: email " + sessionStorage.getItem('email'));
-        var btn = e.target;
-        const data = view.getSignOutData(state.login.getEmail());    
-        state.login = new SignInOrOut(data, elements.strings.setLoggedInTransaction);
+        renderLoader(state.tabbedPane);
+        var email = sessionStorage.getItem('email');
+        const data = loginView.getSignOutData(email);   
+        state.login = new SignInOrOut(data, strings.setLoggedInUrl);
         var err = await state.login.userSignInOut();
-        setLoggedIn(false);
+        clearLoader();
+        if (err==null) {
+            setLoggedIn(loginView, false);
+            Swal({
+                title: 'Success!',
+                text: 'You have signed out',
+                type: 'success',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#cc6d14',
+              });
+        } else {
+            console.log("logout, err = " + err);
+            Swal({
+                title: 'Server Error!',
+                text: 'SignOut failed',
+                type: 'error',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#cc6d14',
+              });
+            // if (err.message === strings.fetchFail) {
+            //     loginView.displayServerErrorMessage(err.message);
+            // } 
+        }
     }
 }
 
 const tabClickHandler = async (e) => {
-    state.tabIndex = e.target.id.substr(-1);
+    state.tabIndex = parseInt(e.target.id.substr(-1));
+    state.tabbedPane = state.tabIndex == 1 ? elements.tabbedPane1 : elements.tabbedPane2; 
+    sessionStorage.setItem('tabbedPane', state.tabbedPane.id);
 }
 
-console.log("document url = " + document.URL);
 if (document.URL.includes("register")) {
+    
+    var radiobtn = elements.jobSeekerTabId;
+    radiobtn.checked = true;
+    state.tabbedPane = elements.tabbedPane1;
+    state.tabIndex = elementConsts.JOBSEEKER;;
+    
+    // REGISTER RECRUITER
     var recRegBtn = elements.registerRecruiterButton;
 
     recRegBtn.addEventListener('click', e => {
         e.preventDefault();
-        loginView.clearValidationErrorMessages();
+        loginView.clearValidationErrorMessages(state.tabIndex);
         state.inputType = inputType.REGISTER;
         signInHandler(e, registerView, strings.registerRecruiterUrl);
     });
 
+    // REGISTER JOBSEEKER
+    var seekRegBtn = elements.registerJobSeekerButton;
 
+    seekRegBtn.addEventListener('click', e => {
+        e.preventDefault();
+        loginView.clearValidationErrorMessages(state.tabIndex); // clear the one not selected ie login 
+        state.inputType = inputType.REGISTER;
+        signInHandler(e, registerJobSeekerView, strings.registerJobSeekerUrl);
+    });
+
+    // LOGIN RECRUITER
     var recLoginBtn = elements.loginRecruiterButton;
 
     recLoginBtn.addEventListener('click', e => {
         e.preventDefault();
-        registerView.clearValidationErrorMessages();
+        registerView.clearValidationErrorMessages(state.tabIndex);
         state.inputType = inputType.LOGIN;
-        signInHandler(e, loginView, strings.loginUrl);
+        signInHandler(e, loginView, strings.loginRecruiterUrl, strings.recruiterLoginTransaction);
     });
 
+     // LOGIN JOBSEEKER
+     var seekLoginBtn = elements.loginJobSeekerButton;
+
+     seekLoginBtn.addEventListener('click', e => {
+         e.preventDefault();
+         registerJobSeekerView.clearValidationErrorMessages(state.tabIndex); // clear the one not selected ie login 
+         state.inputType = inputType.LOGIN;
+         signInHandler(e, loginView, strings.loginJobSeekerUrl, strings.jobSeekerLoginTransaction);
+     });
+ 
     var fields = elements.inputFields;
     var i;
     for (i = 0; i < fields.length; i++) {
         fields[i].addEventListener("blur", (e) => {
             if (state.inputType == inputType.REGISTER) {
-                registerView.validateField(e.target);
+                if (state.tabIndex == elementConsts.JOBSEEKER) {
+                    registerJobSeekerView.validateField(e.target, state.tabIndex);
+                } else {
+                    registerView.validateField(e.target, state.tabIndex);
+                }
             } else {
-                loginView.validateField(e.target);
+                loginView.validateField(e.target, state.tabIndex);
             }
-
         });
     }
 
@@ -146,22 +196,17 @@ if (document.URL.includes("register")) {
             });
         }
     }
-    // else {
-    //     window.location = "register.html";
-    // }
+  
 
     window.onload = () => {
-        registerView.setLoggedIn(state.loggedIn);
+        navBarSetLoggedIn(state.loggedIn);
     }
 }
 function setLoggedIn(view, loggedIn) {
     state.loggedIn = loggedIn;
     sessionStorage.setItem('loggedIn', loggedIn === true ? "true" : "false");
-    console.log("1. >>SETTING login email to " + state.login.getEmail());
-    console.log("loggedIn =" + loggedIn);
     if (loggedIn === true) {
-        console.log("2. >>SETTING login email to " + state.login.getEmail());
         sessionStorage.setItem('email', state.login.getEmail());
     }
-    view.setLoggedIn(loggedIn);
+    navBarSetLoggedIn(loggedIn);
 }

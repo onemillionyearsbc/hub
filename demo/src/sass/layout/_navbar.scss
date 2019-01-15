@@ -11,20 +11,22 @@
         align-items: center;
         margin-left: $site-global-margin;
         li {
-            
             a { 
                 color: $text-primary;
                 text-decoration: none;
-                // display: inline-block;
                 padding: 1rem;
                 font-size: 1.5rem;
                 .icon {
                     margin-right: 2rem;
                     font-size: 2rem;  
                 }
+                padding-left: 1.5rem;
+              
             }
             a:hover {
-                background: rgb(192, 191, 190);
+                background: $color-grey-light-2;
+                padding-top: 2rem;
+                padding-bottom: 2rem;
             }
 
             .star {

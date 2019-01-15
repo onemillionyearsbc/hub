@@ -11,7 +11,7 @@ export default class SignInOrOut {
     async userSignInOut() {                                                                    
         try {
             const myData = this.data;
-            console.log("LOGGING IN...with following data");
+            console.log("LOGGING IN OR OUT...with following data");
             console.log(myData);
             var response = await fetch(this.url,
                 {

@@ -5,12 +5,18 @@ export const elements = {
     loginForms: document.getElementsByClassName('submitLogin'),
     registerRecruiterButton: document.getElementById('submitRegisterRecruiter'),
     loginRecruiterButton: document.getElementById('submitLoginRecruiter'),
+    registerJobSeekerButton: document.getElementById('submitRegisterJobSeeker'),
+    loginJobSeekerButton: document.getElementById('submitLoginJobSeeker'),
     inputFields: document.getElementsByClassName('loginform__textfield'),
     tabs: document.getElementsByClassName('tabInput'),
     tabbedPane1: document.getElementById('tab-content1'),
     tabbedPane2: document.getElementById('tab-content2'),
+    tabbedPane: document.getElementById('tabbedpane'),
     loginError: document.getElementById('login-error'),
-    serverError: document.getElementById('server-error')
+    serverError: document.getElementById('server-error'),
+    loginErrorJS: document.getElementById('login-error-js'),
+    serverErrorJS: document.getElementById('server-error-js'),
+    jobSeekerTabId: document.getElementById("tab1")
 };
 
 // UK Sky Hub
@@ -19,19 +25,25 @@ var ipAddress = '90.200.134.28';
 // Romania Hub
 // var ipAddress = '84.117.182.193';
 var recruiterLoginTransaction = 'io.onemillionyearsbc.hubtutorial.GetHubRecruiter';
+var jobSeekerLoginTransaction = 'io.onemillionyearsbc.hubtutorial.GetHubJobSeeker';
 var recruiterRegisterTransaction = 'io.onemillionyearsbc.hubtutorial.CreateRecruiterAccount';
+var jobSeekerRegisterTransaction = 'io.onemillionyearsbc.hubtutorial.CreateJobSeekerAccount';
 var setLoggedInTransaction = "io.onemillionyearsbc.hubtutorial.SetLoggedIn";
 
 export const strings = {
     loader: 'loader',
     fetchFail: 'Failed to fetch',
     alreadyExists: 'object already exists',
+    signInFail: 'nothing was returned',
     recruiterLoginTransaction: `${recruiterLoginTransaction}`,
+    jobSeekerLoginTransaction: `${jobSeekerLoginTransaction}`,
     recruiterRegisterTransaction: `${recruiterRegisterTransaction}`,
+    jobSeekerRegisterTransaction: `${jobSeekerRegisterTransaction}`,
     setLoggedInTransaction: `${setLoggedInTransaction}`,
-
-    loginUrl: `http://${ipAddress}:3000/api/${recruiterLoginTransaction}`,
+    loginRecruiterUrl: `http://${ipAddress}:3000/api/${recruiterLoginTransaction}`,
+    loginJobSeekerUrl: `http://${ipAddress}:3000/api/${jobSeekerLoginTransaction}`,
     registerRecruiterUrl: `http://${ipAddress}:3000/api/${recruiterRegisterTransaction}`,
+    registerJobSeekerUrl: `http://${ipAddress}:3000/api/${jobSeekerRegisterTransaction}`,
     setLoggedInUrl: `http://${ipAddress}:3000/api/${setLoggedInTransaction}`
 };
 
@@ -68,5 +80,17 @@ export const getFormFor = (btn) => {
         return null;
     }
     return form;
+}
+
+export const navBarSetLoggedIn = (loggedIn) => {
+    var signins = elements.signins;
+    for (var i = 0; i < signins.length; i++) {
+        if (loggedIn) {
+            signins[i].innerHTML = `<a href="register.html" class="link-icon"><i class="icon far fa-user"></i>Log Out</a>`;
+        } else {
+            signins[i].innerHTML = `<a href="register.html" class="link-icon"><i class="icon far fa-user"></i>Sign In</a>`;
+        }
+        
+    }
 }
 
