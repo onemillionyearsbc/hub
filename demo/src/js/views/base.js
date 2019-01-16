@@ -16,7 +16,11 @@ export const elements = {
     serverError: document.getElementById('server-error'),
     loginErrorJS: document.getElementById('login-error-js'),
     serverErrorJS: document.getElementById('server-error-js'),
-    jobSeekerTabId: document.getElementById("tab1")
+    jobSeekerTabId: document.getElementById("tab1"),
+    companyName: document.getElementById("companyName"),
+    company: document.getElementById("company"),
+    contact: document.getElementById("contact"),
+    dashboard: document.getElementById("dash")
 };
 
 // UK Sky Hub
@@ -86,11 +90,19 @@ export const navBarSetLoggedIn = (loggedIn) => {
     var signins = elements.signins;
     for (var i = 0; i < signins.length; i++) {
         if (loggedIn) {
-            signins[i].innerHTML = `<a href="register.html" class="link-icon"><i class="icon far fa-user"></i>Log Out</a>`;
+            signins[i].innerHTML = `<a href="#" class="link-icon"><i class="icon far fa-user"></i>Log Out</a>`;
         } else {
             signins[i].innerHTML = `<a href="register.html" class="link-icon"><i class="icon far fa-user"></i>Sign In</a>`;
-        }
-        
+        }   
     }
+}
+
+export const setLoggedIn = (state, loggedIn) => {
+    state.loggedIn = loggedIn;
+    sessionStorage.setItem('loggedIn', loggedIn === true ? "true" : "false");
+    if (loggedIn === true) {
+        sessionStorage.setItem('email', state.login.getEmail());
+    }
+    navBarSetLoggedIn(loggedIn);
 }
 

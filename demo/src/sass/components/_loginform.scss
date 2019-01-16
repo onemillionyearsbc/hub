@@ -58,7 +58,7 @@
     &__textfield:placeholder-shown + &__label {
         opacity: 1;
         visibility: hidden;
-        transform: translateY(-4rem);
+        transform: translateY(-2rem);
         overflow: hidden;
     }
 }

@@ -3,6 +3,8 @@
     display: flex;/*!important*/
     flex: 1 0 auto;
     flex-wrap: wrap;
+    height: 5.0rem;
+    
     ul {
         list-style-type: none;
         display: flex;/*!important*/
@@ -25,8 +27,8 @@
             }
             a:hover {
                 background: $color-grey-light-2;
-                padding-top: 2rem;
-                padding-bottom: 2rem;
+                padding-top: 1.5rem;
+                padding-bottom: 1.5rem;
             }
 
             .star {
@@ -55,5 +57,14 @@
         margin-right: $site-global-margin;
         align-items: center;
         justify-content: flex-end;
+    }
+    &__not-active {
+        pointer-events: none;
+        cursor: default;
+        color: $text-primary;
+        text-decoration: none;
+        padding: 1rem;
+        font-size: 1.5rem;
+        padding-left: 1.5rem;
     }
 }    

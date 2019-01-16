@@ -8,7 +8,7 @@ export default class SignInOrOut {
         this.url = url;
     }
 
-    async userSignInOut() {                                                                    
+    async userSignInOut() {
         try {
             const myData = this.data;
             console.log("LOGGING IN OR OUT...with following data");
@@ -19,20 +19,23 @@ export default class SignInOrOut {
                     headers: { 'Content-type': 'application/json' },
                     body: myData
                 });
-
+            console.log("response = " + response);
             var resp = await response.json();
             var payload = resp.error;
 
             if (resp.error !== undefined) {
-                return payload;
+                console.log(resp.error);
             }
             else {
-                return null;
+                // return null;
             }
-
+            return resp;
 
         } catch (error) {
-            return error;
+            var response = {};
+            response.error = error;
+            console.log(">>>>>>>> err = " + response.error);
+            return response;
         }
     }
 

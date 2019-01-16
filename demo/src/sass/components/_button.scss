@@ -19,6 +19,13 @@
             color: $button-orange-background;
         }
     }
+
+    &:disabled {
+        border: 1px solid #999999;
+        background-color: #cccccc;
+        color: $button-disabled-text-color;
+        // color: #666666;
+    }
 }
 
 

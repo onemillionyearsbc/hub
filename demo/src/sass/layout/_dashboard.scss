@@ -1,0 +1,86 @@
+.dashboard {
+    &__topbar {
+        margin-left: $site-global-margin;
+        margin-right: $site-global-margin;
+    }
+    &__parent {
+        overflow:hidden;
+        &--mainpanel {
+            margin-left: $site-global-margin;
+            margin-right: $site-global-margin;
+            margin-top: 5rem;
+            padding-bottom: 10rem;
+            background: white;
+            h1 {
+                padding-top: 2rem;
+                margin-left: 2rem;
+                margin-right: 2rem;
+                padding-bottom: 2rem;
+                border-bottom: 2px solid $dashboard-border;
+            }
+        }
+        .banner {
+            // background: red;
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+            margin-left: 2rem;
+            font-size: 1.6rem;
+        }
+        
+        .jobspanel {
+            margin-left: 2rem;
+            margin-top: 2rem;
+            margin-right: 50rem;
+            padding-top: 2rem;
+           
+            border-radius: 5px;
+            border: 1px solid $dashboard-panel-border;
+            // padding-right: 10rem;
+            &__adslabel {
+                font-size: 1.6rem;
+                font-weight: 900;
+                margin-bottom: 2rem;
+                margin-left: 2rem;
+            }
+            &__countpanel {
+                display: flex;/*!important*/
+                flex: 1 0 auto;
+                flex-wrap: wrap;
+                .count {
+                    padding-right: 2rem;
+                    border-right: 1px solid $dashboard-panel-border;
+                }
+            }
+            .texty {
+                margin-left: 5rem;
+                margin-bottom: 2rem;
+            }
+            .jobicon {
+                margin-left: 5rem;
+            }
+            .counter {
+                margin-left: 7rem;
+                font-size: 3rem;
+                font-weight: 600;
+            }
+            .btn {
+                margin-left: 2rem;
+                margin-top: 2rem;
+                margin-bottom: 2rem;
+                &:hover {
+                    cursor: pointer;
+                }
+            }
+        }
+    }
+    .navbar {   
+        a:hover {
+            padding-top: 1.6rem;
+            padding-bottom: 1.7rem;
+        }
+    }
+}
+
+
+
+
