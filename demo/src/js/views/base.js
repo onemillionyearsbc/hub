@@ -20,7 +20,15 @@ export const elements = {
     companyName: document.getElementById("companyName"),
     company: document.getElementById("company"),
     contact: document.getElementById("contact"),
-    dashboard: document.getElementById("dash")
+    dashboard: document.getElementById("dash"),
+    mainWindow: document.getElementById("main"),
+    jobadsnum: document.getElementById("jobadsnum"),
+    slider:document.getElementById('rangeinput'),
+    leftsliderbutton:document.getElementById('leftsliderbutton'),
+    rightsliderbutton:document.getElementById('rightsliderbutton'),
+    savingLabel:document.getElementById('saving'),
+    jobPrice: document.getElementById('jobprice')
+    
 };
 
 // UK Sky Hub
@@ -33,6 +41,7 @@ var jobSeekerLoginTransaction = 'io.onemillionyearsbc.hubtutorial.GetHubJobSeeke
 var recruiterRegisterTransaction = 'io.onemillionyearsbc.hubtutorial.CreateRecruiterAccount';
 var jobSeekerRegisterTransaction = 'io.onemillionyearsbc.hubtutorial.CreateJobSeekerAccount';
 var setLoggedInTransaction = "io.onemillionyearsbc.hubtutorial.SetLoggedIn";
+
 
 export const strings = {
     loader: 'loader',
@@ -53,7 +62,14 @@ export const strings = {
 
 export const elementConsts = {
     JOBSEEKER: 1,
-    RECRUITER: 2
+    RECRUITER: 2,
+    MAINPAGE: 1,
+    REGISTERPAGE: 2,
+    DASHBOARDPAGE: 3,
+    JOBADPRICE: 99,
+    JOBDISCOUNT: 10,
+    JOBMINPRICE: 49,
+    MAXJOBS: 10
 }
 
 export const inputType = {

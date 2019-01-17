@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css?family=Josefin+Sans:300,400,400i|Nunito:300,300i" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="shortcut icon" type="image/png" href="img/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <script src="scripts/fontawesome-all.js"></script>
+    <title>Recruiter Dashboard</title>
+</head>
+
+<body>
+    <div id="credits" class="jobcredits">
+        <div>
+            <div class="animated slideInTop delay-2s jobcredits__topbar">
+                <div class="topleft">
+                    <a href="index.html">
+                        <img src="img/logo-small.png" alt="1MYBC">
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div>
+            <nav class="navbar animated slideInRight delay-2s">
+                <ul class="navbar__left">
+                    <li class="item-1"><a href="#jobs">Advertise Jobs</a></li>
+                    <li><a href="#companies">Search CVs</a></li>
+                    <li class="signin"><a href="#" class="link-icon">Log Out</a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <div class="container jobcredits__parent">
+            <h1 class="animated slideInLeft delay-2s title">
+                Job Ad
+            </h1>
+            <p class="animated slideInLeft delay-2s subtitle">
+                Find the tech talent you want to hire
+            </p>
+            <div class="animated slideInLeft delay-2s jobcredits__parent--mainpanel">
+                <div class="toprow">
+                    <div class="toprow__leftpanel">
+                        <ul class="textlist">
+                            <li class="item-1">One month to post your ad</li>
+                            <li class="item-2">Your job ad live for 28 days</li>
+                            <li class="item-3">Applicant management system to <br>manage all candidates</li>
+                            <li class="item-4">Job ad sent directly to relevant <br>candidates</li>
+                        </ul>
+                    </div>
+                    <div class="toprow__midpanel">
+                        <p class="title1">
+                            How many job adds do you need?
+                        </p>
+                        <div class="jobspanel">
+                            <p id="jobadsnum" class="jobs">
+                                1
+                            </p>
+                        </div>
+                        <div class="slider">
+                            <div class="sliderthings">
+                                <div id="leftsliderbutton" class="leftbutton">
+                                    <p class="lefttext sliderbuttontext">
+                                        -
+                                    </p>
+                                </div>
+                                <div class="range">
+                                    <input id="rangeinput" type="range" min="1" max="7" steps="1" value="1" 22>
+                                </div>
+                                <div id="rightsliderbutton" class="rightbutton">
+                                        <p class="righttext sliderbuttontext">
+                                            +
+                                        </p>
+                                    </div>
+                            </div>
+
+                            <!-- <ul class="range-labels">
+                                <li class="active selected">1 job</li>
+                                <li>2 jobs</li>
+                                <li>3 jobs</li>
+                                <li>4 jobs</li>
+                                <li>5 jobs</li>
+                                <li>6 jobs</li>
+                                <li>7 jobs</li>
+                            </ul> -->
+                        </div>
+                    </div>
+                    <span class="toprow__rightpanel">
+                        <p class="title2">
+                            Total Price
+                        </p>
+                        <div class="price">
+                            <span id="jobprice" class="bluebig">£99</span>
+                            <span class="bluesmall">+VAT</span>
+                        </div>
+                        <div id="saving" class="saving">
+                            (saving £0 per ad)
+                        </div>
+                        <div class="bouton">
+                            <button class="btn">BUY NOW</button>
+                        </div>
+                    </span>
+                </div>
+                <div class="midrow">
+                    <p class="banner">
+                    </p>
+                    <div class="bottomrow">
+                        <p class="banner">
+                            <span class="blue">NEW CUSTOMER?</span>
+                            <span class="white">Post your first job for £49 with promotion code</span>
+                            <span class="blue">HUB49</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script>
+    var sheet = document.createElement('style'),
+        $rangeInput = $('.range input'),
+        prefs = ['webkit-slider-runnable-track', 'moz-range-track', 'ms-track'];
+
+    document.body.appendChild(sheet);
+
+    var getTrackStyle = function (el) {
+        var curVal = el.value,
+            val = (curVal - 1) * 16.666666667,
+            style = '';
+
+        // Set active label
+        $('.range-labels li').removeClass('active selected');
+
+        var curLabel = $('.range-labels').find('li:nth-child(' + curVal + ')');
+
+        curLabel.addClass('active selected');
+        curLabel.prevAll().addClass('selected');
+
+        // Change background gradient
+        for (var i = 0; i < prefs.length; i++) {
+            style += '.range {background: linear-gradient(to right, #37adbf 0%, #37adbf ' + val + '%, #fff ' + val + '%, #fff 100%)}';
+            style += '.range input::-' + prefs[i] + '{background: linear-gradient(to right, #37adbf 0%, #37adbf ' + val + '%, #b2b2b2 ' + val + '%, #b2b2b2 100%)}';
+        }
+
+        return style;
+    }
+
+    $rangeInput.on('input', function () {
+        sheet.textContent = getTrackStyle(this);
+    });
+
+    // Change input value on label click
+    $('.range-labels li').on('click', function () {
+        var index = $(this).index();
+        console.log("WOOOOOHOOOOO index = " + index);
+        $rangeInput.val(index + 1).trigger('input');
+
+    });
+</script>
+
+</html>

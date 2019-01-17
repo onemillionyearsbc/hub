@@ -5,6 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css?family=Josefin+Sans:300,400,400i|Nunito:300,300i" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="shortcut icon" type="image/png" href="img/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
     <title>Recruiter Dashboard</title>
 </head>
 
@@ -35,8 +39,8 @@
                 </ul>
             </nav>
             <div class="container dashboard__parent">
-                <div class="dashboard__parent--mainpanel">
-                    <h1 id="company" class="title">
+                <div class="animated slideInRight delay-2s dashboard__parent--mainpanel">
+                    <h1 id="company" class=" title">
                         Company Name
                     </h1>
                     <div id="contact" class="banner">
@@ -83,8 +87,11 @@
                             </div>
                            
                         </div>
-                        <button class="btn">Create job ad</button>
-                        <button class="btn" disabled>Buy job credits</button>
+                        <button class="btn" disabled>Create job ad</button>
+                        <a href="jobcredits.html">
+                            <button class="btn">Buy job credits</button>
+                        </a>
+                        <!-- <button class="btn">Buy job credits</button> -->
                         <button class="btn">Manage ads</button>
                     </div>
                 </div>

@@ -8,6 +8,7 @@ import * as registerJobSeekerView from './views/registerJobSeekerView';
 import * as loginView from './views/loginView';
 import { getFormFor, elements, elementConsts, inputType, renderLoader, clearLoader, navBarSetLoggedIn, setLoggedIn, strings } from './views/base';
 import { setCompanyName, setContactName } from './views/recruiterDashboardView';
+import { setJobAdsNumber, setTotalJobPrice } from './views/jobCreditsView';
 
 const state = {};
 var loggedIn = sessionStorage.getItem('loggedIn');
@@ -50,9 +51,7 @@ const signInHandler = async (e, view, url, transaction) => {
 
             clearLoader();
             var err = null;
-            console.log("QUACK 2 resp.error = " + resp.error);
             if (resp.error !== undefined) {
-                console.log("QUACK 3 err = " + err);
                 err = resp.error;
             }
             if (err != null) {
@@ -92,8 +91,14 @@ const signOutHandler = async (e) => {
 
 
     if (state.loggedIn === true) {
-        // renderLoader(state.tabbedPane);
-        renderLoader(elements.dashboard);
+        if (state.page === elementConsts.MAINPAGE) {
+            renderLoader(elements.mainWindow);
+        } else if (state.page === elementConsts.DASHBOARDPAGE) {
+            renderLoader(elements.dashboard);
+        } if (state.page === elementConsts.REGISTERPAGE) {
+            renderLoader(state.tabbedPane);
+        }
+
         var email = sessionStorage.getItem('email');
         const data = loginView.getSignOutData(email);
         state.login = new SignInOrOut(data, strings.setLoggedInUrl);
@@ -105,6 +110,8 @@ const signOutHandler = async (e) => {
         clearLoader();
         if (err == null) {
             setLoggedIn(loginView, false);
+
+            // display POP UP
             await Swal({
                 title: 'Success!',
                 text: 'You have signed out',
@@ -137,14 +144,53 @@ const tabClickHandler = async (e) => {
     sessionStorage.setItem('tabbedPane', state.tabbedPane.id);
 }
 
+state.page = elementConsts.MAINPAGE; //default
+
+
+if (document.URL.includes("jobcredits")) {
+    var input = elements.slider;
+    setTotalJobPrice(1);
+    document.querySelector('input[type=range]').value = 1;
+    setJobAdsNumber(1);
+    input.onchange = function () {
+        setJobAdsNumber(input.value);
+        setTotalJobPrice(input.value);
+    };
+    var leftSlider = elements.leftsliderbutton;
+    leftSlider.addEventListener('click', e => {
+        e.preventDefault();
+        adjustSlider(-1);
+    });
+    var rightSlider = elements.rightsliderbutton;
+    rightSlider.addEventListener('click', e => {
+        e.preventDefault();
+        adjustSlider(1);
+    });
+
+}
+
+function adjustSlider(delta) {
+    var input = elements.slider;
+    var oldValue = parseInt(input.value);
+    var newValue;
+    if (delta === -1) {
+        newValue = oldValue == 1 ? 1 : oldValue - 1;
+    } else {
+        newValue = oldValue == elementConsts.MAXJOBS ? elementConsts.MAXJOBS : oldValue + 1;
+    }
+    document.querySelector('input[type=range]').value = newValue;
+    setJobAdsNumber(input.value);
+    setTotalJobPrice(input.value);
+}
+
 if (document.URL.includes("recruiter-dashboard")) {
-    console.log("++++++++++ COMPANY = " + sessionStorage.getItem('company'));
-    console.log("++++++++++ NAME = " + sessionStorage.getItem('name'));
+    state.page = elementConsts.DASHBOARDPAGE;
     setCompanyName(sessionStorage.getItem('company'));
     setContactName(sessionStorage.getItem('name'))
 }
 
 if (document.URL.includes("register")) {
+    state.page = elementConsts.REGISTERPAGE;
     var radiobtn = elements.jobSeekerTabId;
     radiobtn.checked = true;
     state.tabbedPane = elements.tabbedPane1;
@@ -216,7 +262,7 @@ if (document.URL.includes("register")) {
 
 
 
-    
+
 }
 window.onload = () => {
     navBarSetLoggedIn(state.loggedIn);

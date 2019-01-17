@@ -64,6 +64,10 @@ module.exports = {
             filename: 'recruiter-dashboard.html',
             template: './src/recruiter-dashboard.html'
         }),
+        new HtmlWebpackPlugin({
+            filename: 'jobcredits.html',
+            template: './src/jobcredits.html'
+        }),
         new CopyWebpackPlugin([{
             from: 'src/img',
             to: 'img',
