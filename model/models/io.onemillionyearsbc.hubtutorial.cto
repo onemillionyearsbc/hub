@@ -4,6 +4,7 @@
 namespace io.onemillionyearsbc.hubtutorial
 
 import io.onemillionyearsbc.hubtutorial.jobs.JobAds
+import io.onemillionyearsbc.hubtutorial.jobs.JobPosting
 
 /**
   Six types of resource definitions
