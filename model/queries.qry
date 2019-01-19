@@ -28,3 +28,9 @@ query selectAllAccounts {
     	SELECT io.onemillionyearsbc.hubtutorial.HubAccount
 }
 
+query selectJobAds {
+  	description: "Returns JobAds object for the given email in the registry"
+  	statement:
+    	  SELECT io.onemillionyearsbc.hubtutorial.jobs.JobAds
+            WHERE (email == _$email) 
+}

@@ -3,6 +3,8 @@
 
 namespace io.onemillionyearsbc.hubtutorial
 
+import io.onemillionyearsbc.hubtutorial.jobs.JobAds
+
 /**
   Six types of resource definitions
   1. Assets = objects of value
@@ -34,6 +36,8 @@ abstract participant HubUser identified by email {
 participant HubRecruiter extends HubUser {
   o String name
   o String company
+  --> JobAds jobAds
+  --> JobPosting[] jobPostings optional
 }
 
 participant HubJobSeeker extends HubUser {
@@ -78,19 +82,19 @@ asset HubAccount identified by email {
 
 
 // Testing only; should only be called via CreateAccount
-transaction CreateHubUserRecruiter {
-  o String email 
-  o String name
-  o String company
-  o Double hubTokenBalance default=0.0 
-}
+// transaction CreateHubUserRecruiter {
+//   o String email 
+//   o String name
+//   o String company
+//   o Double hubTokenBalance default=0.0 
+// }
 
 // Testing only; should only be called via CreateAccount
-transaction CreateHubUserJobSeeker {
-  o String email 
-  o HubJobSeekerParameters parameters optional
-  o Double hubTokenBalance default=0.0 optional
-}
+// transaction CreateHubUserJobSeeker {
+//   o String email 
+//   o HubJobSeekerParameters parameters optional
+//   o Double hubTokenBalance default=0.0 optional
+// }
 
 abstract transaction CreateAccount {
   o String      email 
@@ -103,6 +107,7 @@ abstract transaction CreateAccount {
 transaction CreateRecruiterAccount extends CreateAccount {
   o String name
   o String company //TODO replace with HubRecruiterParameters once we decide what these are
+  o String image optional
   o AccountType accountType default="RECRUITER"
 }
 
@@ -134,7 +139,7 @@ transaction GetHubRecruiter {
 @returns(HubJobSeeker)
 transaction GetHubJobSeeker {
   o String email
-  o String password 
+  o String password
 }
   
   
@@ -145,5 +150,10 @@ transaction GetHubAccount {
   o String password
 }
 
- 
-  
+
+/* TODO model the JobPosting asset */
+/* TODO model:
+  1. transaction to update profiles (user participant)
+  2. apply for job transaction plus event */
+
+

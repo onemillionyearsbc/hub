@@ -1,0 +1,49 @@
+namespace io.onemillionyearsbc.hubtutorial.jobs
+
+//import org.acme.airline.aircraft.Aircraft
+
+asset JobAds identified by email{
+  o String      email 
+  o Integer     live default=0
+  o Integer     posted default=0
+  o Integer     remaining default=0
+}
+
+asset JobPosting identified by jobReference {
+  o String      jobReference 
+  o String      email // poster
+  /*
+  o String      jobTitle
+  o DateTime    datePosted
+  o DateTime    expiryDate
+  o Integer     views
+  o Integer     applications
+  o String      location
+  o String      salary
+  o JobType     JobType
+  o Boolean     remote
+  o String      description
+  */
+}
+
+enum JobType {
+  o PERMANENT
+  o CONTRACT
+}
+
+
+transaction BuyJobCredits {
+  o String      email 
+  o Integer		  credits
+}
+
+transaction CreateJobPosting {
+  o String    jobReference
+  o String    email
+}
+
+@commit(false)
+@returns(JobAds)
+transaction GetJobAds {
+  o String email
+}
