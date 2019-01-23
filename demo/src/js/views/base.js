@@ -21,27 +21,40 @@ export const elements = {
     company: document.getElementById("company"),
     contact: document.getElementById("contact"),
     dashboard: document.getElementById("dash"),
+    createBtn: document.getElementById("createBtn"),
     mainWindow: document.getElementById("main"),
     jobadsnum: document.getElementById("jobadsnum"),
     slider:document.getElementById('rangeinput'),
     leftsliderbutton:document.getElementById('leftsliderbutton'),
     rightsliderbutton:document.getElementById('rightsliderbutton'),
     savingLabel:document.getElementById('saving'),
-    jobPrice: document.getElementById('jobprice')
-    
+    jobPrice: document.getElementById('jobprice'),
+    buyjobadsbtn: document.getElementById('buyjobadsbtn'),
+    jobadsWindow: document.getElementById("jobadspage"),
+    livecounter: document.getElementById("livecounter"),
+    postedcounter: document.getElementById("postedcounter"),
+    remainingcounter: document.getElementById("remainingcounter"),
+    createjobbutton: document.getElementById("createjobbutton"),
+    createJobPage: document.getElementById("jobad"),
+    adForm: document.getElementById("adform")
 };
 
+//------------------------------------------------------------------
 // UK Sky Hub
 var ipAddress = '90.200.134.28';
 
 // Romania Hub
 // var ipAddress = '84.117.182.193';
+//-------------------------------------------------------------------
+
 var recruiterLoginTransaction = 'io.onemillionyearsbc.hubtutorial.GetHubRecruiter';
 var jobSeekerLoginTransaction = 'io.onemillionyearsbc.hubtutorial.GetHubJobSeeker';
 var recruiterRegisterTransaction = 'io.onemillionyearsbc.hubtutorial.CreateRecruiterAccount';
 var jobSeekerRegisterTransaction = 'io.onemillionyearsbc.hubtutorial.CreateJobSeekerAccount';
 var setLoggedInTransaction = "io.onemillionyearsbc.hubtutorial.SetLoggedIn";
-
+var buyJobAdsTransaction = "io.onemillionyearsbc.hubtutorial.jobs.BuyJobCredits";
+var getJobAdsTransaction = "io.onemillionyearsbc.hubtutorial.jobs.GetJobAds";
+var createJobAdTransaction = "io.onemillionyearsbc.hubtutorial.jobs.CreateJobPosting";
 
 export const strings = {
     loader: 'loader',
@@ -53,11 +66,17 @@ export const strings = {
     recruiterRegisterTransaction: `${recruiterRegisterTransaction}`,
     jobSeekerRegisterTransaction: `${jobSeekerRegisterTransaction}`,
     setLoggedInTransaction: `${setLoggedInTransaction}`,
+    buyJobAdsTransaction: `${buyJobAdsTransaction}`,
+    getJobAdsTransaction: `${getJobAdsTransaction}`,
+    createJobAdTransaction: `${createJobAdTransaction}`,
     loginRecruiterUrl: `http://${ipAddress}:3000/api/${recruiterLoginTransaction}`,
     loginJobSeekerUrl: `http://${ipAddress}:3000/api/${jobSeekerLoginTransaction}`,
     registerRecruiterUrl: `http://${ipAddress}:3000/api/${recruiterRegisterTransaction}`,
     registerJobSeekerUrl: `http://${ipAddress}:3000/api/${jobSeekerRegisterTransaction}`,
-    setLoggedInUrl: `http://${ipAddress}:3000/api/${setLoggedInTransaction}`
+    setLoggedInUrl: `http://${ipAddress}:3000/api/${setLoggedInTransaction}`,
+    buyJobAdsUrl: `http://${ipAddress}:3000/api/${buyJobAdsTransaction}`,
+    getJobAdsurl: `http://${ipAddress}:3000/api/${getJobAdsTransaction}`,
+    createJobAdUrl: `http://${ipAddress}:3000/api/${createJobAdTransaction}`
 };
 
 export const elementConsts = {
@@ -66,6 +85,8 @@ export const elementConsts = {
     MAINPAGE: 1,
     REGISTERPAGE: 2,
     DASHBOARDPAGE: 3,
+    BUYCREDITSPAGE: 4,
+    CREATEJOBADPAGE: 5,
     JOBADPRICE: 99,
     JOBDISCOUNT: 10,
     JOBMINPRICE: 49,
@@ -122,3 +143,15 @@ export const setLoggedIn = (state, loggedIn) => {
     navBarSetLoggedIn(loggedIn);
 }
 
+
+export function checkStyle(x) {
+    if (x.style.display != "block") {
+        x.style.display = "block";
+    }
+}
+
+export function clearError(x) {
+    if (x.style.display != "none") {
+        x.style.display = "none";
+    }
+}

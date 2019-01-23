@@ -7,7 +7,7 @@
     box-shadow: 0;
     padding: 1rem 3rem;
     cursor: pointer;
-    transition: color 1s ease, background 0.5s ease;
+    transition: color 1s ease, background 1s ease;
     &:hover {
         background: $button-hover-background;
         color: $button-hover-color;
@@ -25,7 +25,6 @@
         border: 1px solid #999999;
         background-color: #cccccc;
         color: $button-disabled-text-color;
-        // color: #666666;
     }
 }
 

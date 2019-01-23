@@ -2,13 +2,17 @@ const css = require('../sass/main.scss');
 require('./scripts/fontawesome-all');
 const Swal = require('sweetalert2');
 
-import SignInOrOut from './models/SignInOrOut';
+import TransactionProcessor from './models/TransactionProcessor';
 import * as registerView from './views/registerView';
 import * as registerJobSeekerView from './views/registerJobSeekerView';
 import * as loginView from './views/loginView';
+import * as jobCreditsView from './views/jobCreditsView';
+import * as createJobAdView from './views/createJobAdView';
+
 import { getFormFor, elements, elementConsts, inputType, renderLoader, clearLoader, navBarSetLoggedIn, setLoggedIn, strings } from './views/base';
-import { setCompanyName, setContactName } from './views/recruiterDashboardView';
-import { setJobAdsNumber, setTotalJobPrice } from './views/jobCreditsView';
+import { setCompanyName, setContactName, getJobAdsData, setJobAdsData } from './views/recruiterDashboardView';
+import { setJobAdsNumber, setTotalJobPrice, restyle, adjustSlider, getBuyJobCreditsData } from './views/jobCreditsView';
+
 
 const state = {};
 var loggedIn = sessionStorage.getItem('loggedIn');
@@ -27,27 +31,14 @@ const signInHandler = async (e, view, url, transaction) => {
         if (error) {
             return error;
         }
-        state.login = new SignInOrOut(formData, url);
-        // console.log("%%%%%%%%%%%%%%%%%%%%%%%%%  DATA START  %%%%%%%%%%%%%%%%%%%%%%%");
+        state.login = new TransactionProcessor(formData, url);
 
-
-        // var propValue;
-        // for (var propName in state.login) {
-        //     propValue = state.login[propName]
-
-        //     console.log(propName + "->" + propValue);
-        // }
-        // console.log("email = " + state.login.getEmail());
-        // console.log("%%%%%%%%%%%%%%%%%%%%%%%%%  DATA END  %%%%%%%%%%%%%%%%%%%%%%%")
-
-
-        // TODO make sure we use the correct tabbedPane
         renderLoader(state.tabbedPane);
 
         try {
             view.clearServerErrorMessage();
             //register a new account
-            var resp = await state.login.userSignInOut();
+            var resp = await state.login.transaction();
 
             clearLoader();
             var err = null;
@@ -85,7 +76,7 @@ const signInHandler = async (e, view, url, transaction) => {
         }
     }
 }
-
+// SIGNOUT CONTROLLER
 const signOutHandler = async (e) => {
     console.log("state.loggedIn= " + state.loggedIn);
 
@@ -97,12 +88,16 @@ const signOutHandler = async (e) => {
             renderLoader(elements.dashboard);
         } if (state.page === elementConsts.REGISTERPAGE) {
             renderLoader(state.tabbedPane);
+        } else if (state.page === elementConsts.BUYCREDITSPAGE) {
+            renderLoader(elements.jobadsWindow);
+        } else if (state.page === elementConsts.CREATEJOBADPAGE) {
+            renderLoader(elements.adForm);
         }
 
         var email = sessionStorage.getItem('email');
         const data = loginView.getSignOutData(email);
-        state.login = new SignInOrOut(data, strings.setLoggedInUrl);
-        var resp = await state.login.userSignInOut();
+        state.login = new TransactionProcessor(data, strings.setLoggedInUrl);
+        var resp = await state.login.transaction();
         var err = null;
         if (resp.error !== undefined) {
             err = resp.err;
@@ -110,8 +105,7 @@ const signOutHandler = async (e) => {
         clearLoader();
         if (err == null) {
             setLoggedIn(loginView, false);
-
-            // display POP UP
+            // displaySuccessPopup();
             await Swal({
                 title: 'Success!',
                 text: 'You have signed out',
@@ -124,18 +118,94 @@ const signOutHandler = async (e) => {
             window.location = "register.html";
         } else {
             console.log("logout, err = " + err);
-            Swal({
-                title: 'Server Error!',
-                text: 'SignOut failed',
-                type: 'error',
-                confirmButtonText: 'OK',
-                confirmButtonColor: '#cc6d14',
-            });
-            // if (err.message === strings.fetchFail) {
-            //     loginView.displayServerErrorMessage(err.message);
-            // } 
+            displayErrorPopup();
         }
     }
+}
+
+// JOB ADS CONTROLLER
+const buyJobCreditsHandler = async (e, view, url) => {
+    renderLoader(elements.jobadsWindow);
+    var email = sessionStorage.getItem('email');
+    var data = getBuyJobCreditsData(email);
+    state.login = new TransactionProcessor(data, strings.buyJobAdsUrl);
+    var resp = await state.login.transaction();
+    var err = null;
+    if (resp.error !== undefined) {
+        err = resp.error;
+    }
+    if (err != null) {
+
+    }
+    window.location = "recruiter-dashboard.html";
+    clearLoader();
+}
+
+const getJobAdsHandler = async () => {
+    var email = sessionStorage.getItem('email');
+    var data = getJobAdsData(email);
+    state.login = new TransactionProcessor(data, strings.getJobAdsurl);
+
+    var resp = await state.login.transaction();
+
+    var err = null;
+    if (resp.error !== undefined) {
+        err = resp.error;
+    }
+    if (err != null) {
+
+    } else {
+        setJobAdsData(resp.live, resp.posted, resp.remaining);
+        if (resp.remaining > 0) {
+            elements.createBtn.disabled = false;
+        } else {
+            elements.createBtn.disabled = true;
+        }
+    }
+}
+
+const createJobAdHandler = async () => {
+    var email = sessionStorage.getItem('email');
+    const formData = createJobAdView.getFormData(email);
+    console.log("-----------------");
+    console.log(formData);
+    const error = createJobAdView.validateData(formData);
+
+    if (error) {
+        return error;
+    }
+    //---------------------------------------------------
+    renderLoader(elements.createJobPage);
+    
+    // var data = getJobPostingData(email);
+
+    state.login = new TransactionProcessor(formData, strings.createJobAdUrl);
+
+    var resp = await state.login.transaction();
+
+    var err = null;
+    if (resp.error !== undefined) {
+        err = resp.error;
+    }
+    if (err != null) {
+        // TODO error message: place on form!
+    } else {
+        // recalculate the job ads data totals
+        // in the smart contract: add one to live, posted, deduct one from remaining
+
+        // TODO: ADD THIS
+        // setJobAdsData(resp.live, resp.posted, resp.remaining);
+
+        // need to check if any credit remaining: if not gray out create job ad button
+
+        // if (resp.remaining > 0) {
+        //     elements.createBtn.disabled = false;
+        // } else {
+        //     elements.createBtn.disabled = true;
+        // }
+        // window.location = "recruiter-dashboard.html";
+    }
+    clearLoader();
 }
 
 const tabClickHandler = async (e) => {
@@ -146,15 +216,36 @@ const tabClickHandler = async (e) => {
 
 state.page = elementConsts.MAINPAGE; //default
 
+// CREATEJOBADPAGE
+if (document.URL.includes("createjobad")) {
+    state.page = elementConsts.CREATEJOBADPAGE;
+    var submitJobBtn = elements.createjobbutton;
+    createJobAdView.setEmail(sessionStorage.getItem('email'));
 
+    submitJobBtn.addEventListener('click', e => {
+        e.preventDefault();
+        createJobAdHandler();
+    });
+
+    var fields = elements.inputFields;
+    var i;
+    for (i = 0; i < fields.length; i++) {
+        fields[i].addEventListener("blur", (e) => {
+            createJobAdView.validateField(e.target);
+        });
+    }
+}
+// BUY CREDITS PAGE
 if (document.URL.includes("jobcredits")) {
+    state.page = elementConsts.BUYCREDITSPAGE;
     var input = elements.slider;
     setTotalJobPrice(1);
     document.querySelector('input[type=range]').value = 1;
     setJobAdsNumber(1);
-    input.onchange = function () {
+    input.oninput = function () {
         setJobAdsNumber(input.value);
         setTotalJobPrice(input.value);
+        restyle(input.value);
     };
     var leftSlider = elements.leftsliderbutton;
     leftSlider.addEventListener('click', e => {
@@ -167,26 +258,22 @@ if (document.URL.includes("jobcredits")) {
         adjustSlider(1);
     });
 
-}
-
-function adjustSlider(delta) {
-    var input = elements.slider;
-    var oldValue = parseInt(input.value);
-    var newValue;
-    if (delta === -1) {
-        newValue = oldValue == 1 ? 1 : oldValue - 1;
-    } else {
-        newValue = oldValue == elementConsts.MAXJOBS ? elementConsts.MAXJOBS : oldValue + 1;
-    }
-    document.querySelector('input[type=range]').value = newValue;
-    setJobAdsNumber(input.value);
-    setTotalJobPrice(input.value);
+    var buyButton = elements.buyjobadsbtn;
+    buyButton.addEventListener("click", (e) => {
+        e.preventDefault();
+        buyJobCreditsHandler(e, jobCreditsView, strings.buyJobAdsUrl);
+    });
 }
 
 if (document.URL.includes("recruiter-dashboard")) {
     state.page = elementConsts.DASHBOARDPAGE;
     setCompanyName(sessionStorage.getItem('company'));
-    setContactName(sessionStorage.getItem('name'))
+    setContactName(sessionStorage.getItem('name'));
+    getJobAdsHandler();
+    var createButton = elements.createBtn;
+    createButton.addEventListener("click", (e) => {
+        window.location = "createjobad.html";
+    });
 }
 
 if (document.URL.includes("register")) {
@@ -213,7 +300,7 @@ if (document.URL.includes("register")) {
         e.preventDefault();
         loginView.clearValidationErrorMessages(state.tabIndex); // clear the one not selected ie login 
         state.inputType = inputType.REGISTER;
-        signInHandler(e, registerJobSeekerView, strings.registerJobSeekerUrl);
+        signInHandler(e, registerJobSeekerView, strings.jobSeekerRegisterTransaction);
     });
 
     // LOGIN RECRUITER
@@ -258,11 +345,6 @@ if (document.URL.includes("register")) {
             tabClickHandler(e);
         });
     }
-
-
-
-
-
 }
 window.onload = () => {
     navBarSetLoggedIn(state.loggedIn);
@@ -288,7 +370,6 @@ async function getImage() {
 
 }
 
-console.log("++++ SIGN OUT TEST...")
 var signins = elements.signins;
 if (state.loggedIn === true) {
     console.log("GOSH...SIGN OUT!!!")
@@ -299,5 +380,24 @@ if (state.loggedIn === true) {
             signOutHandler(e);
         });
     }
-}
+};
 // getImage();
+const displaySuccessPopup = async () => {
+    await Swal({
+        title: 'Success!',
+        text: 'You have signed out',
+        type: 'success',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#cc6d14',
+    });
+}
+
+const displayErrorPopup = async () => {
+    await Swal({
+        title: 'Server Error!',
+        text: 'SignOut failed',
+        type: 'error',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#cc6d14',
+    });
+}

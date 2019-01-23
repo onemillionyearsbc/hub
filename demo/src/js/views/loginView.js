@@ -1,4 +1,4 @@
-import { elements, elementConsts, strings } from './base';
+import { elements, elementConsts, strings, checkStyle } from './base';
 
 export const getFormData = (form, transaction) => {
     var el = form.querySelectorAll('input');
@@ -96,7 +96,7 @@ export const validateData = (data, tab) => {
 export const displayServerErrorMessage = (error, tab) => {
     var x, y;
     if (tab == elementConsts.RECRUITER) {
-        console.log("WARBLING ERRRRRRRRRRRRRRRRRRR RECRUITER");
+      
         x = document.getElementById(`signin-error`);
         y = document.getElementById(`signin-server-error`);
 
@@ -105,7 +105,7 @@ export const displayServerErrorMessage = (error, tab) => {
             y = document.getElementById(`signin-error`);
         }
     } else {
-        console.log("WARBLING ERRRRRRRRRRRRRRRRRRR SEEKER");
+     
         x = document.getElementById(`signin-error-js`);
         y = document.getElementById(`signin-server-error-js`);
 
@@ -141,10 +141,5 @@ export const validateField = (element, tab) => {
     x.style.display = "none";
 }
 
-function checkStyle(x) {
-    console.log("3. TRYING...x.id = " + x.id);
-    if (x.style.display != "block") {
-        x.style.display = "block";
-    }
-}
+
 

@@ -68,6 +68,10 @@ module.exports = {
             filename: 'jobcredits.html',
             template: './src/jobcredits.html'
         }),
+        new HtmlWebpackPlugin({
+            filename: 'createjobad.html',
+            template: './src/createjobad.html'
+        }),
         new CopyWebpackPlugin([{
             from: 'src/img',
             to: 'img',

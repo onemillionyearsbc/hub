@@ -1,18 +1,20 @@
 
 import { strings } from '../views/base';
 
-export default class SignInOrOut {
+export default class TransactionProcessor {
     constructor(data, url) {
         this.email = data.email;
         this.data = JSON.stringify(data);
+        console.log(data);       
         this.url = url;
     }
 
-    async userSignInOut() {
+    async transaction() {
         try {
             const myData = this.data;
-            console.log("LOGGING IN OR OUT...with following data");
+            console.log("FIRING TRANSACTION...with following data");
             console.log(myData);
+           
             var response = await fetch(this.url,
                 {
                     method: 'post',
@@ -34,7 +36,7 @@ export default class SignInOrOut {
         } catch (error) {
             var response = {};
             response.error = error;
-            console.log(">>>>>>>> err = " + response.error);
+            console.log("^^^^^^^^^^^CAUGHT ERROR, err = " + response.error);
             return response;
         }
     }

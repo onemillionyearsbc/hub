@@ -27,7 +27,6 @@
     }
 
     &__error {
-        // margin-top: -0.5rem;
         margin-bottom: 1rem;
         height: 3rem;
         background: $error-field-background;
@@ -68,12 +67,12 @@
     position: relative;
     background: #eee;
     margin: 0px 0;
-  }
+}
 
-  .instruct {
-      background: transparent;
-      text-align: right;
-      font-size: 1.2rem;
-      margin-right: 5px;
-      margin-bottom: 1rem;
-  }
+.instruct {
+    background: transparent;
+    text-align: right;
+    font-size: 1.2rem;
+    margin-right: 5px;
+    margin-bottom: 1rem;
+}

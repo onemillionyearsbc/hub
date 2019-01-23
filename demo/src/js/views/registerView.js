@@ -1,4 +1,4 @@
-import { elements, strings } from './base';
+import { elements, strings, checkStyle, clearError } from './base';
 
 export const getFormFor = (btn) => {
 
@@ -129,15 +129,4 @@ export const validateField = (element) => {
     x.style.display = "none";
 }
 
-function checkStyle(x) {
-    if (x.style.display != "block") {
-        x.style.display = "block";
-    }
-}
-
-function clearError(x) {
-    if (x.style.display != "none") {
-        x.style.display = "none";
-    }
-}
 

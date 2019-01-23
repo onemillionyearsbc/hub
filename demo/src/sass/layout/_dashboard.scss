@@ -50,17 +50,25 @@
                 .count {
                     padding-right: 2rem;
                     border-right: 1px solid $dashboard-panel-border;
+                    text-align: center
                 }
+
             }
             .texty {
                 margin-left: 5rem;
                 margin-bottom: 2rem;
+                margin-right: 5rem;
+                text-align: center;
             }
             .jobicon {
                 margin-left: 5rem;
+                margin-right: 5rem;
+                text-align: center;
             }
             .counter {
-                margin-left: 7rem;
+                margin-left: 5rem;
+                margin-right: 5rem;
+                text-align: center;
                 font-size: 3rem;
                 font-weight: 600;
             }
@@ -76,8 +84,8 @@
     }
     .navbar {   
         a:hover {
-            padding-top: 1.6rem;
-            padding-bottom: 1.7rem;
+            padding-top: 1.5rem;
+            padding-bottom: 1.5rem;
         }
     }
 }
