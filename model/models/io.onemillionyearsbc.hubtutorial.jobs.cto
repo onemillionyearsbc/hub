@@ -1,7 +1,5 @@
 namespace io.onemillionyearsbc.hubtutorial.jobs
 
-//import org.acme.airline.aircraft.Aircraft
-
 asset JobAds identified by email{
   o String      email 
   o Integer     live default=0
