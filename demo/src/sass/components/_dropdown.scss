@@ -1,0 +1,52 @@
+// DROP DOWN
+.search_categories{
+    height: 4.5rem;
+    align-items: center;
+    justify-content: left;
+    text-indent: -0.6rem;
+    font-size: 2rem;   
+    padding: 6px 0px 10px 14px;
+    margin-left: 5rem;
+    margin-right: 4.6rem;
+    margin-top: 2rem;
+    background: #fff;
+    border: 1px solid $color-grey-light-2;
+    border-radius: 5px; 
+    overflow: hidden;
+    position: relative;
+  }
+  
+.search_categories .select{
+    width: 92%;
+    background:url('../img/arrow.png') no-repeat;
+    background-position:100% center;
+}
+  
+.search_categories .select select{
+    background: transparent;
+    outline: none;
+    border: 0;
+    padding: -1rem;
+    border-radius: 0;
+    width: 120%;
+    z-index: 10;
+    font-size: 1.9rem;
+    color:$color-grey-dark-1;   
+    line-height: 5rem;
+    // background: red; 
+}
+
+select.sizeable-opt option
+{
+font-size: 95%;
+}
+
+// placeholder
+.mybollocks {
+    position: relative; 
+    left: 65px; 
+    top: -15px; 
+    color: $color-grey-light-2;
+    display: none;
+    max-height: 0.2rem;
+}

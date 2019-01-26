@@ -1,22 +1,36 @@
 .createjobad {
-    // margin-left: $site-global-margin;
-    // margin-right: 50rem;
+    font-family: inherit;
     padding-top: 3rem;
     padding-right: 40rem;
     padding-left: 40rem;
+
+    margin-right: 50rem;
+    padding-top: 2rem;
+
     .title {
-        margin-top: 3rem;
-        margin-bottom: 2rem;
+        margin-top: 0.5rem;
+        margin-bottom: 1rem;
+        color: black;
+
+        font-size: 2rem;
+        font-weight: 900;
+
+        padding-top: 2rem;
+        margin-left: 5rem;
+        margin-right: 5rem;
+        padding-bottom: 2rem;
+        border-bottom: 2px solid $dashboard-border;
     }
     &__parent {
         border: 1px solid $dashboard-border;
         border-radius: 5px;
         background: $color-white;
+        color: $color-grey-light-2;
         &--form-item {
             background: $color-white;
+            color: $color-grey-light-2;
             padding-left: 5rem;
             padding-right: 5rem;
-            // height: 8rem;
             border: 1px solid $dashboard-border;
             margin-top: 2rem;
             border-top-left-radius: 0px;
@@ -25,10 +39,30 @@
             border-left: 0;
             border-right: 0;
             border-bottom: 0;
+            .upload {
+                padding-top: 0.8rem;
+                padding-left: 1rem;
+            }
         }
-
-       
+        .logo {
+            margin-bottom: 2rem;
+        }
       
+        &--textarea {
+            background: $color-white;
+            color: $color-grey-light-2;
+            margin-left: 5rem;
+            padding-right: 5.3rem;
+            border: 1px solid $color-grey-light-2;
+            border-radius: 5px; 
+            line-height: 2rem;
+            margin-top: 2rem;
+            color: black;
+        }
+        &--textarea:focus{
+            outline: 0;
+            color: black;
+        }
         &--buttonpanel {
             text-align: center;  
             margin-top: 2rem;   
@@ -44,53 +78,95 @@
             }
         }
     }
-}
-/*the container must be positioned relative:*/
-.autocomplete {
-    position: relative;
-    display: inline-block;
   }
-  
 
-  
-.adfield {
+.autofield {
     width: 61.8rem;
-}
-  
+}  
 
-  
-.autocomplete-items {
-// position: absolute;
-    border: 1px solid $drop-down-border;
-    border-bottom: none;
-    border-top: none;
-    margin-top: 2rem;
-    z-index: 99;
-    font-size: 2rem;
-    font-weight: 400;
-    max-height: 40rem;
-    overflow:scroll;
-    // line-height: 3rem;
-/*position the autocomplete items to be the same width as the container:*/
-// top: 100%;
-// left: 0;
-// right: 0;
+.box {
+    background-color: white;
+    margin-left: 5rem;
+    margin-right: 5rem;
+    padding-top: 0.7rem;
+    padding-left: 0;
+    border: 1px solid $color-grey-light-2;
+    border-radius: 7px;
+    .text {
+        color: rgb(145, 144, 144);
+        font-size: 2rem;
+        font-weight: 900;
+        display: inline-block;
+        vertical-align:top;
+        margin-left: 1rem;
+    }
+    &__logotext {
+        padding-left: 0;
+       justify-items: left;
+    }
+    &__clipart {
+        width: 4.2rem;
+        height: 3.0rem;
+        position: absolute; 
+        right: 7rem;
+    }
+}
+.parentbox {
+    padding-left: 4.8rem;
 }
 
-.autocomplete-items div {
-    padding: 10px;
+.js .inputfile {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+button, input {
+    line-height: normal;
+}
+button, input, select, textarea {
+    margin: 0;
+}
+
+inputfile-1 + label {
+    color: #f1e5e6;
+    background-color: white;
+}
+.inputfile + label {
+    max-width: 80%;
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     cursor: pointer;
-    background-color: #fff; 
-    border-bottom: 1px solid $drop-down-border; 
+    display: inline-block;
+    overflow: hidden;
+    padding: 0.625rem 1.25rem;
+    border-radius: 7px;
+    height: 3.5rem;
 }
 
-/*when hovering an item:*/
-.autocomplete-items div:hover {
-    background-color: #e9e9e9; 
+svg:not(:root) {
+    overflow: hidden;
 }
 
-/*when navigating through the items using the arrow keys:*/
-.autocomplete-active {
-    background-color: DodgerBlue !important; 
-    color: #ffffff; 
+.inputfile-1 + label {
+    color: #f1e5e6;
+    background-color: $teal2;
+    margin-left: -4rem;
 }
+
+// .inputfile + label {
+//     max-width: 80%;
+//     font-size: 1.25rem;
+//     font-weight: 700;
+//     text-overflow: ellipsis;
+//     white-space: nowrap;
+//     cursor: pointer;
+//     display: inline-block;
+//     overflow: hidden;
+//     padding: 0.625rem 1.25rem;
+// }
+

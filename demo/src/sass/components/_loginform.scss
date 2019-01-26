@@ -13,7 +13,8 @@
         border-radius: 5px; 
         display: flex;
         width: 45rem;
-        color: $color-grey-dark-2;
+        // color: $color-grey-dark-2;
+        color: black;
         align-items: center;
         justify-content: left;
         text-indent: 1rem;
@@ -48,7 +49,7 @@
   
     &__label {
         font-size: 1.2rem;
-        color: $color-grey-dark-2;
+        color: $color-grey-light-2;
         margin-left: 1.3rem;
         display: block;
         transition: all .3s;
@@ -75,4 +76,8 @@
     font-size: 1.2rem;
     margin-right: 5px;
     margin-bottom: 1rem;
+}
+
+input[readonly="readonly"] {
+      border:0px;
 }

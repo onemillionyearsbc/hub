@@ -7,12 +7,15 @@
 @import "base/typography";
 @import "base/utilities";
 
+@import "components/autocomplete";
 @import "components/button";
 @import "components/card";
+@import "components/dropdown";
 @import "components/form";
 @import "components/glowing-border";
 @import "components/loader";
 @import "components/loginform";
+@import "components/radiobuttons";
 @import "components/slider";
 @import "components/tabs";
 
@@ -27,9 +30,6 @@
 
 @import "pages/home";
 
-// @import "../../node_modules/@fortawesome/fontawesome-free/scss/fontawesome";
-
-// @import "../../node_modules/@fortawesome/fontawesome-free/scss/solid";
 
 
 

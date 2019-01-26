@@ -12,12 +12,20 @@
         background: $button-hover-background;
         color: $button-hover-color;
     }
+    &:focus {
+        outline: none;
+        border: none;
+    }
     &--orange {
         
         background-color: $button-orange-background;
         &:hover {
             background-color: $color-white;
             color: $button-orange-background;
+        }
+        &:focus {
+            outline: none;
+            border: none;
         }
     }
 

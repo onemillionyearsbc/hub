@@ -36,7 +36,11 @@ export const elements = {
     remainingcounter: document.getElementById("remainingcounter"),
     createjobbutton: document.getElementById("createjobbutton"),
     createJobPage: document.getElementById("jobad"),
-    adForm: document.getElementById("adform")
+    adForm: document.getElementById("adform"),
+    remote: document.querySelector('input[name="remote"]:checked'),
+    jobtype: document.getElementById("jobtype"),
+    blockchain: document.getElementById("blockchain"),
+    description: document.getElementById("description")
 };
 
 //------------------------------------------------------------------
@@ -93,6 +97,23 @@ export const elementConsts = {
     MAXJOBS: 10
 }
 
+export const jobTypeConsts = {
+    FULLTIME: 1,
+    CONTRACT: 2,
+    PARTTIME: 3,
+    INTERNSHIP: 4,
+    OTHER: 5
+}
+
+export const blockchainTypeConsts = {
+    ETHEREUM: 1,
+    HYPERLEDGER: 2,
+    NEO: 3,
+    QUOROM: 4,
+    RIPPLE: 5,
+    OTHER: 6
+}
+
 export const inputType = {
     LOGIN: 1,
     REGISTER: 2
@@ -103,6 +124,13 @@ export const renderLoader = parent => {
         <div class="${strings.loader}"></div>
     `;
     parent.insertAdjacentHTML('afterbegin', loader); // afterbegin means insert after the beginning of the parent element
+};
+
+export const renderLoaderEnd = parent => {
+    const loader = `
+        <div class="${strings.loader}"></div>
+    `;
+    parent.insertAdjacentHTML('beforeend', loader); // beforeend means insert before the end of the parent element
 };
 
 export const clearLoader = () => {

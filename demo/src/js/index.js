@@ -9,7 +9,7 @@ import * as loginView from './views/loginView';
 import * as jobCreditsView from './views/jobCreditsView';
 import * as createJobAdView from './views/createJobAdView';
 
-import { getFormFor, elements, elementConsts, inputType, renderLoader, clearLoader, navBarSetLoggedIn, setLoggedIn, strings } from './views/base';
+import { getFormFor, clearError, elements, elementConsts, inputType, renderLoader, renderLoaderEnd, clearLoader, navBarSetLoggedIn, setLoggedIn, strings } from './views/base';
 import { setCompanyName, setContactName, getJobAdsData, setJobAdsData } from './views/recruiterDashboardView';
 import { setJobAdsNumber, setTotalJobPrice, restyle, adjustSlider, getBuyJobCreditsData } from './views/jobCreditsView';
 
@@ -61,7 +61,6 @@ const signInHandler = async (e, view, url, transaction) => {
                     }
                 }
             } else {
-                console.log("err = " + err);
                 setLoggedIn(state, true);
                 if (state.tabIndex == elementConsts.JOBSEEKER) {
                     window.location = "jobseeker-dashboard.html";
@@ -105,20 +104,13 @@ const signOutHandler = async (e) => {
         clearLoader();
         if (err == null) {
             setLoggedIn(loginView, false);
-            // displaySuccessPopup();
-            await Swal({
-                title: 'Success!',
-                text: 'You have signed out',
-                type: 'success',
-                confirmButtonText: 'OK',
-                confirmButtonColor: '#cc6d14',
-            });
+            await displaySuccessPopup('You have signed out');
             state.loggedIn = false;
             sessionStorage.setItem('loggedIn', false);
             window.location = "register.html";
         } else {
             console.log("logout, err = " + err);
-            displayErrorPopup();
+            await displayErrorPopup();
         }
     }
 }
@@ -167,7 +159,7 @@ const getJobAdsHandler = async () => {
 const createJobAdHandler = async () => {
     var email = sessionStorage.getItem('email');
     const formData = createJobAdView.getFormData(email);
-    console.log("-----------------");
+    console.log("----------------- JOB POSTING DATA --------------------");
     console.log(formData);
     const error = createJobAdView.validateData(formData);
 
@@ -175,9 +167,7 @@ const createJobAdHandler = async () => {
         return error;
     }
     //---------------------------------------------------
-    renderLoader(elements.createJobPage);
-    
-    // var data = getJobPostingData(email);
+    renderLoaderEnd(elements.createJobPage);
 
     state.login = new TransactionProcessor(formData, strings.createJobAdUrl);
 
@@ -188,6 +178,7 @@ const createJobAdHandler = async () => {
         err = resp.error;
     }
     if (err != null) {
+        clearLoader();
         // TODO error message: place on form!
     } else {
         // recalculate the job ads data totals
@@ -203,9 +194,11 @@ const createJobAdHandler = async () => {
         // } else {
         //     elements.createBtn.disabled = true;
         // }
-        // window.location = "recruiter-dashboard.html";
+        clearLoader();
+        await displaySuccessPopup('Job Ad Successfully Posted!');
+        window.location = "recruiter-dashboard.html";
     }
-    clearLoader();
+
 }
 
 const tabClickHandler = async (e) => {
@@ -221,7 +214,7 @@ if (document.URL.includes("createjobad")) {
     state.page = elementConsts.CREATEJOBADPAGE;
     var submitJobBtn = elements.createjobbutton;
     createJobAdView.setEmail(sessionStorage.getItem('email'));
-
+    createJobAdView.setCompany(sessionStorage.getItem('company'));
     submitJobBtn.addEventListener('click', e => {
         e.preventDefault();
         createJobAdHandler();
@@ -234,6 +227,53 @@ if (document.URL.includes("createjobad")) {
             createJobAdView.validateField(e.target);
         });
     }
+    var jobType = elements.jobtype;
+    jobType.addEventListener("change", (e) => {
+        clearError(document.getElementById("jobtype-error"));
+    });
+    var bchain = elements.blockchain;
+    bchain.addEventListener("change", (e) => {
+        clearError(document.getElementById("blockchain-error"));
+    });
+    var description = elements.description;
+    description.addEventListener("change", (e) => {
+        clearError(document.getElementById("description-error"));
+    });
+    document.getElementById('file-1').onchange = function () {
+        var path = this.value;
+        path = path.substring(path.lastIndexOf('\\') + 1);
+        createJobAdView.setLogoFile(path);
+    };
+
+    document.querySelector("#file-1").addEventListener('change', function() {
+
+        // TODO move this into view and replace hard coded values with consts 
+        // user selected file
+        var file = this.files[0];
+    
+        // allowed MIME types
+        var mime_types = [ 'image/jpeg', 'image/png' ];
+        
+        // validate MIME
+        if(mime_types.indexOf(file.type) == -1) {
+            alert('Error : Incorrect file type');
+            return;
+        }
+    
+        // validate file size
+        if(file.size > 2*1024*1024) {
+            alert('Error : Exceeded size 2MB');
+            return;
+        }
+        // validation is successful
+        var _PREVIEW_URL = URL.createObjectURL(file);
+    
+        console.log("_PREVIEW_URL = " + _PREVIEW_URL);
+        // set src of image and show
+        document.querySelector("#imgs").setAttribute('src', _PREVIEW_URL);
+        document.getElementById('pbox1').style.display = 'none';
+        document.getElementById('pbox2').style.display = 'block';
+    });
 }
 // BUY CREDITS PAGE
 if (document.URL.includes("jobcredits")) {
@@ -382,10 +422,10 @@ if (state.loggedIn === true) {
     }
 };
 // getImage();
-const displaySuccessPopup = async () => {
+const displaySuccessPopup = async (theText) => {
     await Swal({
         title: 'Success!',
-        text: 'You have signed out',
+        text: theText,
         type: 'success',
         confirmButtonText: 'OK',
         confirmButtonColor: '#cc6d14',
