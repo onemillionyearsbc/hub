@@ -167,7 +167,7 @@ const createJobAdHandler = async () => {
         return error;
     }
     //---------------------------------------------------
-    renderLoaderEnd(elements.createJobPage);
+    renderLoaderEnd(elements.adForm);
 
     state.login = new TransactionProcessor(formData, strings.createJobAdUrl);
 
@@ -227,6 +227,10 @@ if (document.URL.includes("createjobad")) {
             createJobAdView.validateField(e.target);
         });
     }
+    elements.description.addEventListener("blur", (e) => {
+        createJobAdView.validateField(e.target);
+    });
+
     var jobType = elements.jobtype;
     jobType.addEventListener("change", (e) => {
         clearError(document.getElementById("jobtype-error"));

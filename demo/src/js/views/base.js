@@ -121,14 +121,14 @@ export const inputType = {
 
 export const renderLoader = parent => {
     const loader = `
-        <div class="${strings.loader}"></div>
+        <div style="top:25%" class="${strings.loader}"></div>
     `;
     parent.insertAdjacentHTML('afterbegin', loader); // afterbegin means insert after the beginning of the parent element
 };
 
 export const renderLoaderEnd = parent => {
     const loader = `
-        <div class="${strings.loader}"></div>
+        <div style="top:65%"class="${strings.loader}"></div>
     `;
     parent.insertAdjacentHTML('beforeend', loader); // beforeend means insert before the end of the parent element
 };

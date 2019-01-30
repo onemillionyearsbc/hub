@@ -1,12 +1,14 @@
 .autocomplete {
+    margin-bottom: 5px;
     position: relative;
     // display: inline-block;
+    margin-bottom: 5px;
     
   }
 
 .autofield {
     width: 61.8rem;
-    
+    margin-bottom: 5px;
 }
 
 .autocomplete-items {
@@ -22,6 +24,7 @@
     max-height: 37.2rem;
     overflow:scroll;
     overflow-x: hidden;
+    margin-bottom: 5px;
     }
     
 .autocomplete-items div {

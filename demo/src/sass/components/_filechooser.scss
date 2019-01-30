@@ -1,0 +1,44 @@
+.js .inputfile {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+button, input {
+    line-height: normal;
+}
+button, input, select, textarea {
+    margin: 0;
+}
+
+inputfile-1 + label {
+    color: #f1e5e6;
+    background-color: white;
+}
+.inputfile + label {
+    max-width: 80%;
+    font-size: 1.4rem;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    display: inline-block;
+    overflow: hidden;
+    padding: 0.625rem 1.25rem;
+    border-radius: 7px;
+    height: 3.5rem;
+}
+
+svg:not(:root) {
+    overflow: hidden;
+}
+
+.inputfile-1 + label {
+    color: white;
+    background-color: $teal2;
+    margin-left: -4rem;
+}
+
+
