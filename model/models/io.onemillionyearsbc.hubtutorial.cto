@@ -154,7 +154,7 @@ transaction GetHubAccount {
 
 /* TODO model the JobPosting asset */
 /* TODO model:
-  1. transaction to update profiles (user participant)
+  1. transactions to update data (user participant, job posting)
   2. apply for job transaction plus event */
 
 
