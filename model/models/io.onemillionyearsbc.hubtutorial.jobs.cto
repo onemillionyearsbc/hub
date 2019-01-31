@@ -1,5 +1,6 @@
 namespace io.onemillionyearsbc.hubtutorial.jobs
 
+
 asset JobAds identified by email{
   o String      email 
   o Integer     live default=0
@@ -9,35 +10,72 @@ asset JobAds identified by email{
 
 asset JobPosting identified by jobReference {
   o String      jobReference 
-  o String      email // poster
-  /*
+  o String      email 
+  o String      company
+  o JobType     jobType
+  o Boolean     remote
+
   o String      jobTitle
+  o BlockchainType      blockchainName
+  o String      description
+
+  o String      contact
+  o String      internalRef
+  o Boolean     employer
+  o String      salary optional
+  o String      location optional
+  o String[]    skills
+
+  // these are auto calculated in the smart contract
   o DateTime    datePosted
   o DateTime    expiryDate
   o Integer     views
   o Integer     applications
+/*
   o String      location
   o String      salary
-  o JobType     JobType
-  o Boolean     remote
-  o String      description
   */
 }
 
 enum JobType {
-  o PERMANENT
+  o FULLTIME
   o CONTRACT
+  o PARTTIME
+  o INTERNSHIP
+  o OTHER
 }
-
+  
+enum BlockchainType {
+  o ETHEREUM
+  o HYPERLEDGER
+  o NEO
+  o QUOROM
+  o RIPPLE
+  o OTHER
+}
 
 transaction BuyJobCredits {
   o String      email 
-  o Integer		  credits
+  o Integer		credits
 }
 
 transaction CreateJobPosting {
   o String    jobReference
   o String    email
+  o String    company
+  o JobType   jobType default = "FULLTIME"
+  o Boolean   remote
+
+  o String    jobTitle
+  o String    blockchainName default = "ETHEREUM"
+  o String    description
+
+  o String      contact
+  o String      internalRef
+  o Boolean     employer
+  o String      salary optional
+  o String      location optional
+  o String[]    skills
 }
 
 @commit(false)

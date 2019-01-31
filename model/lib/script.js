@@ -1,61 +1,3 @@
-/**
- * Create Recruiter Transaction. Create new participants and assets automtically.
- * @param {io.onemillionyearsbc.hubtutorial.CreateHubUserRecruiter} userData
- * @transaction
- */
-
-// async function CreateHubUserRecruiter(userData) {
-//     var factory = getFactory();
-//     var NS = 'io.onemillionyearsbc.hubtutorial';
-
-//     // 1. create the HubRecruiter
-//     // var recruiter = factory.newResource(NS, 'HubRecruiter', 'johndoe@ibm.com');
-//     // recruiter.password = 'ChangeMe';
-//     // recruiter.company = 'IBM';
-  
-//    // 1. create the HubRecruiter
-//     var recruiter = factory.newResource(NS, 'HubRecruiter', userData.email);
-//     recruiter.company = userData.company;
-//     recruiter.name = userData.name;
-//     recruiter.hubTokenBalance = userData.hubTokenBalance;
-
-
-//     // usually it will be ...get registry, add new object
-//     // 2. Add the new participant resource to the registry
-//     const participantRegistry = await getParticipantRegistry(NS + '.HubRecruiter');
-
-//     await participantRegistry.addAll([recruiter]);
-// };
-
-/**
- * Create Recruiter Transaction. Create new participants and assets automtically.
- * @param {io.onemillionyearsbc.hubtutorial.CreateHubUserJobSeeker} userData
- * @transaction
- */
-
-// async function CreateHubUserJobSeeker(userData) {
-//     var factory = getFactory();
-//     var NS = 'io.onemillionyearsbc.hubtutorial';
-
-  
-//    // 1. create the HubJobSeeker
-//     var seeker = factory.newResource(NS, 'HubJobSeeker', userData.email);
-
-//     var seekerParams = factory.newConcept(NS, 'HubJobSeekerParameters');
-//     seekerParams.title = userData.seekerParams.title;
-//     seekerParams.firstName = userData.seekerParams.firstName;
-//     seekerParams.lastName = userData.seekerParams.lastName;
-
-//     seeker.hubTokenBalance = userData.hubTokenBalance;
-
-
-//     // usually it will be ...get registry, add new object
-//     // 2. Add the new participant resource to the registry
-//     const participantRegistry = await getParticipantRegistry(NS + '.HubJobSeeker');
-
-//     await participantRegistry.addAll([seeker]);
-// };
-
 
 /**
  * Create Recruiter Account Transaction. Create new participants and assets automtically.
@@ -75,16 +17,6 @@ async function CreateRecruiterAccount(accountData) {
 
    // Create a JobAds object to attach the the (HubRecruiter) user object
     var jobAds = factory.newResource(NSJOBS, 'JobAds',accountData.email);
-  
-    // Create an array of JobPosting objects
-    //var jobPostings = factory.newResource(NSJOBS, 'JobAds', "123456");
-
-  //let idsArray = new Array(); // alternative, or use implicit below.
-   // var jpArray = [] ;
-//   let shareAssetRelationship = factory.newRelationship(NS, 'Share', share.getIdentifier());
-//   idsArray.push(shareAssetRelationship); // only one element anyway
-
-//   sharedAcc.shares = idsArray;
 
     // Create the HubRecruiter
     var recruiter = factory.newResource(NS, 'HubRecruiter', accountData.email);
@@ -92,7 +24,6 @@ async function CreateRecruiterAccount(accountData) {
     recruiter.name = accountData.name;
   	recruiter.hubTokenBalance = accountData.hubTokenBalance;
     recruiter.jobAds = factory.newRelationship(NSJOBS, 'JobAds', accountData.email);
-    //recruiter.jobPostings = factory.newRelationship(NSJOBS, 'JobPostings', accountData.id);
   
     // Create a Hub Account for the recruiter
     var recruiterAccount = factory.newResource(NS, 'HubAccount', accountData.email);
@@ -345,10 +276,19 @@ async function CreateJobPosting(credentials) {
     var NS = 'io.onemillionyearsbc.hubtutorial';
     var NSJOBS = 'io.onemillionyearsbc.hubtutorial.jobs';
     var factory = getFactory();
+ 	var jobAdsRegistry = await getAssetRegistry(NSJOBS + '.JobAds');
 
-    var posting = factory.newResource(NSJOBS, 'JobPosting', credentials.jobReference);
-    posting.email = credentials.email;
-   
+    var user = await jobAdsRegistry.get(credentials.email);
+  
+  	// check this user has remaining job credits 
+    if (user.remaining == 0) {
+      throw new Error("No job credits remaining");
+    }
+
+    var posting = fillPosting(NSJOBS, factory,credentials);
+  	
+  	// TODO set JobAds data
+
     const assetRegistry = await getAssetRegistry(NSJOBS + '.JobPosting');
 
     await assetRegistry.addAll([posting]);
@@ -363,6 +303,51 @@ async function CreateJobPosting(credentials) {
     } else {
         recruiter.jobPostings.push(posting);
     }
+    participantRegistry.update(recruiter);
+  
+    // Update JobAds stats object
+   
 
-    participantRegistry.update(recruiter)
+    user.live += 1;
+  	user.posted += 1;
+    user.remaining -= 1;
+
+    // Update the asset in the asset registry.
+    await jobAdsRegistry.update(user);
+}
+
+function fillPosting(NSJOBS, factory,credentials) {
+    var posting = factory.newResource(NSJOBS, 'JobPosting', credentials.jobReference);
+    posting.email = credentials.email;
+    posting.jobReference = credentials.jobReference;
+    posting.company = credentials.company;
+    posting.jobType = credentials.jobType;
+    posting.remote = credentials.remote;
+    posting.jobTitle = credentials.jobTitle;
+    posting.blockchainName = credentials.blockchainName;
+    posting.description = credentials.description;  
+
+    posting.contact = credentials.contact;
+    posting.internalRef = credentials.internalRef;
+    posting.employer = credentials.employer;
+    posting.salary = credentials.salary,
+    posting.location = credentials.location;
+
+    posting.skills = new Array();
+    var i;
+    for (i = 0; i < credentials.skills.length; i++) {
+        posting.skills.push(credentials.skills[i]);
+    }
+    
+  	// The calculated stuff...
+  	var d = new Date()
+  	posting.datePosted = d;
+  
+  	var dplus1 = new Date(d.getFullYear(), d.getMonth() +1, d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds(),d.getMilliseconds());
+  	posting.expiryDate = dplus1;
+  
+  	posting.views = 0;
+    posting.applications = 0;
+      
+    return posting;
 }
