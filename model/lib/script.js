@@ -338,7 +338,9 @@ function fillPosting(NSJOBS, factory,credentials) {
     for (i = 0; i < credentials.skills.length; i++) {
         posting.skills.push(credentials.skills[i]);
     }
-    
+
+  	posting.logohash = credentials.logohash;
+  
   	// The calculated stuff...
   	var d = new Date()
   	posting.datePosted = d;

@@ -25,16 +25,15 @@ asset JobPosting identified by jobReference {
   o String      salary optional
   o String      location optional
   o String[]    skills
+  
+  o String      logohash
 
   // these are auto calculated in the smart contract
   o DateTime    datePosted
   o DateTime    expiryDate
   o Integer     views
   o Integer     applications
-/*
-  o String      location
-  o String      salary
-  */
+
 }
 
 enum JobType {
@@ -76,6 +75,8 @@ transaction CreateJobPosting {
   o String      salary optional
   o String      location optional
   o String[]    skills
+  
+  o String      logohash
 }
 
 @commit(false)
