@@ -1,5 +1,6 @@
 const css = require('../sass/main.scss');
 require('./scripts/fontawesome-all');
+const crypto = require('crypto');
 const Swal = require('sweetalert2');
 
 import TransactionProcessor from './models/TransactionProcessor';
@@ -9,14 +10,17 @@ import * as loginView from './views/loginView';
 import * as jobCreditsView from './views/jobCreditsView';
 import * as createJobAdView from './views/createJobAdView';
 
-import { getFormFor, clearError, elements, elementConsts, inputType, renderLoader, renderLoaderEnd, clearLoader, navBarSetLoggedIn, setLoggedIn, strings } from './views/base';
+
+import { getFormFor, clearError, elements, dbelements, elementConsts, inputType, renderLoader, renderLoaderEnd, clearLoader, navBarSetLoggedIn, setLoggedIn, strings } from './views/base';
 import { setCompanyName, setContactName, getJobAdsData, setJobAdsData } from './views/recruiterDashboardView';
 import { setJobAdsNumber, setTotalJobPrice, restyle, adjustSlider, getBuyJobCreditsData } from './views/jobCreditsView';
-
+import DatabaseProcessor from './models/DatabaseProcessor';
+import ImageLoader from './models/ImageLoader';
 
 const state = {};
 var loggedIn = sessionStorage.getItem('loggedIn');
 state.loggedIn = loggedIn === "true" ? true : false;
+var imageLoader = new ImageLoader();
 
 // SIGNIN CONTROLLER
 const signInHandler = async (e, view, url, transaction) => {
@@ -159,8 +163,6 @@ const getJobAdsHandler = async () => {
 const createJobAdHandler = async () => {
     var email = sessionStorage.getItem('email');
     const formData = createJobAdView.getFormData(email);
-    console.log("----------------- JOB POSTING DATA --------------------");
-    console.log(formData);
     const error = createJobAdView.validateData(formData);
 
     if (error) {
@@ -169,6 +171,21 @@ const createJobAdHandler = async () => {
     //---------------------------------------------------
     renderLoaderEnd(elements.adForm);
 
+    // add the hash to the formData here
+
+    // 1. Get the blob
+    var blob = await imageLoader.getBlob();
+
+    // 2. calculate the hash of the blob
+
+    // TODO this needs to go into the blockchain as well
+    const myhash = crypto.createHash('sha256') // enables digest
+        .update(blob) // create the hash
+        .digest('hex'); // convert to string
+
+    formData.logohash = myhash;
+
+    // 3. store formdata on blockchain including hash of the blob
     state.login = new TransactionProcessor(formData, strings.createJobAdUrl);
 
     var resp = await state.login.transaction();
@@ -179,21 +196,25 @@ const createJobAdHandler = async () => {
     }
     if (err != null) {
         clearLoader();
-        // TODO error message: place on form!
     } else {
-        // recalculate the job ads data totals
-        // in the smart contract: add one to live, posted, deduct one from remaining
+        // The job ad was written to the blockchain
 
-        // TODO: ADD THIS
-        // setJobAdsData(resp.live, resp.posted, resp.remaining);
+        // Q: if the database write fails how do we rollback the blockchain write transaction?
 
-        // need to check if any credit remaining: if not gray out create job ad button
+        // 4. write the job id, hash and blob to the database with the image
+        var body = JSON.stringify({
+            database: dbelements.databaseName,
+            table: dbelements.databaseTable,
+            id: formData.jobReference,
+            hash: myhash,
+            image: blob
+        });
+        const dp = new DatabaseProcessor(dbelements.databaseUri);
 
-        // if (resp.remaining > 0) {
-        //     elements.createBtn.disabled = false;
-        // } else {
-        //     elements.createBtn.disabled = true;
-        // }
+        dp.transactionPut(body);
+
+        // TODO error checking here
+
         clearLoader();
         await displaySuccessPopup('Job Ad Successfully Posted!');
         window.location = "recruiter-dashboard.html";
@@ -243,42 +264,25 @@ if (document.URL.includes("createjobad")) {
     description.addEventListener("change", (e) => {
         clearError(document.getElementById("description-error"));
     });
-    document.getElementById('file-1').onchange = function () {
+
+    document.querySelector("#file-1").addEventListener('change', function () {
+
+        // set the file name in the view text field
         var path = this.value;
         path = path.substring(path.lastIndexOf('\\') + 1);
-        createJobAdView.setLogoFile(path);
-    };
 
-    document.querySelector("#file-1").addEventListener('change', function() {
+        try {
+            var img = imageLoader.loadImage(this.files[0]);
 
-        // TODO move this into view and replace hard coded values with consts 
-        // user selected file
-        var file = this.files[0];
-    
-        // allowed MIME types
-        var mime_types = [ 'image/jpeg', 'image/png' ];
-        
-        // validate MIME
-        if(mime_types.indexOf(file.type) == -1) {
-            alert('Error : Incorrect file type');
-            return;
+            createJobAdView.setLogoFileAndImage(path, img);
+        } catch (error) {
+            console.log("Error loading image: " + error);
+            // TODO display popup? 
         }
-    
-        // validate file size
-        if(file.size > 2*1024*1024) {
-            alert('Error : Exceeded size 2MB');
-            return;
-        }
-        // validation is successful
-        var _PREVIEW_URL = URL.createObjectURL(file);
-    
-        console.log("_PREVIEW_URL = " + _PREVIEW_URL);
-        // set src of image and show
-        document.querySelector("#imgs").setAttribute('src', _PREVIEW_URL);
-        document.getElementById('pbox1').style.display = 'none';
-        document.getElementById('pbox2').style.display = 'block';
     });
 }
+
+
 // BUY CREDITS PAGE
 if (document.URL.includes("jobcredits")) {
     state.page = elementConsts.BUYCREDITSPAGE;
@@ -393,26 +397,7 @@ if (document.URL.includes("register")) {
 window.onload = () => {
     navBarSetLoggedIn(state.loggedIn);
 }
-async function getImage() {
-    var xhr = new XMLHttpRequest();
-    var imageURL = 'http://localhost:8080/img/bubbles.jpg';
-    var response = await fetch(imageURL);
-    console.log(">>>>>>>>>>>>>>>>>>>>>>>BEGIN>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-    console.log(response)
-    console.log(">>>>>>>>>>>>>>>>>>>>>>>END>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 
-    var blob = await response.blob();
-    console.log(blob);
-    console.log(">>>>>>>>>>>>>>>>>>>>>>>END 2 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-    var reader = new FileReader();
-    reader.readAsDataURL(blob);
-    reader.onloadend = function () {
-        console.log(reader.result);
-        console.log(">>>>>>>>>>>>>>>>>>>>>>>END 3 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-        console.log("STRING LEN = " + reader.result.length);
-    };
-
-}
 
 var signins = elements.signins;
 if (state.loggedIn === true) {
@@ -444,4 +429,12 @@ const displayErrorPopup = async () => {
         confirmButtonText: 'OK',
         confirmButtonColor: '#cc6d14',
     });
-}
+};
+
+// getElementById("wankbutton").addEventListener('click', e => {
+// console.log("begin>>>>>>>>>>>>");
+// // e.preventDefault();
+// var dp = new DatabaseProcessor("");
+// var resp = dp.transactionPut();
+// console.log("end>>>>>>>>>>>> resp = " + resp);
+// });

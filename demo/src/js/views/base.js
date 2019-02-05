@@ -43,6 +43,12 @@ export const elements = {
     description: document.getElementById("description")
 };
 
+export const dbelements = {
+    databaseUri: "http://localhost:8083/apiput.php",
+    databaseTable: "company_logo",
+    databaseName: "hubdb"
+};
+
 //------------------------------------------------------------------
 // UK Sky Hub
 var ipAddress = '90.200.134.28';

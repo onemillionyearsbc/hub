@@ -71,22 +71,6 @@ function getSkills(skills) {
 function getDescription() {
     return elements.description.value;
 }
-/*
-{"$class":"io.onemillionyearsbc.hubtutorial.jobs.CreateJobPosting",
-"jobReference":"62030886",
-"email":"geominat@gmail.com",
-"company":"AT Kearney Middle East",
-"jobTitle":"Hyperledger Fabric Analyst",
-"remote":"true",
-"jobType":"CONTRACT",
-"blockchainName":"HYPERLEDGER",
-"description":"Dictator needed for work in bunker",
-"contact":"Mike",
-"internalRef":"Mike001","employer":"true",
-"salary":"",
-"location":"",
-"skills":["C++","Java"]}
-*/
 
 function getBlockchainType(type) {
     if (type === undefined) {
@@ -173,27 +157,12 @@ export const validateData = (data) => {
     return error;
 }
 
-    /*
-{
-  "$class": "io.onemillionyearsbc.hubtutorial.jobs.CreateJobPosting",
-  "jobReference": "22334",
-  "email": "a.hitler@nazis.com",
-  "company": "NAZI PARTY",
-  "jobType": "FULLTIME",
-  "remote": false,
-  "jobTitle": "Lunatic",
-  "blockchainName": "ETHEREUM",
-  "description": "Dictator required to start wars",
-  "contact": "Goebbels",
-  "internalRef": "Goebbels01",
-  "employer": false,
-  "salary": "100dm",
-  "location": "Berlin",
-  "skills": ["Java","Python"]
-}
-    */
-export const setLogoFile = (fileName) => {
+export const setLogoFileAndImage = (fileName, image) => {
     var logoText = document.getElementById('logotext2');
     logoText.innerHTML = fileName;
+
+    document.querySelector("#imgs").setAttribute('src', image);
+    document.getElementById('pbox1').style.display = 'none';
+    document.getElementById('pbox2').style.display = 'block';
 }
 

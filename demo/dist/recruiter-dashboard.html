@@ -5,60 +5,95 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css?family=Josefin+Sans:300,400,400i|Nunito:300,300i" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="shortcut icon" type="image/png" href="img/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
     <title>Recruiter Dashboard</title>
 </head>
 
 <body>
-    <header class="dashboardheader animated slideInLeft delay-2s">
-        <div class="dashboardheader__company">
-            COMPANY NAME LTD
-        </div>
-        <div class="dashboardheader__topbar">
-            <div class="topleft">
-                <img src="img/logo-small.png" width="100" height="80" alt="1MYBC">
+    <div id="dash" class="dashboard">
+        <div>
+            <div class="navbar animated slideInRight delay-2s">
+                <ul class="navbar__not-active">
+                    <li class="item-1">
+                        <p id="companyName">Dashboard</p>
+                    </li>
+                </ul>
             </div>
-
+            <div class="dashboard__topbar">
+                <div class="topleft">
+                    <a href="index.html">
+                        <img src="img/logo-small.png" alt="1MYBC">
+                    </a>
+                </div>
+            </div>
         </div>
-    </header>
-    <div class="content">
-        <nav class="navbar animated slideInRight delay-2s">
-            <ul class="navbar__left">
-                <li class="item-1"><a href="#jobs">IT Jobs</a></li>
-                <li><a href="#companies">Companies Hiring</a></li>
-                <li><a href="#tools">Blockchain tools</a></li>
-                <li class="signin"><a href="register.html" class="link-icon"><i class="icon far fa-user"></i>Sign In</a></li>
-            </ul>
-        </nav>
-        <div class="container">
-            <div class="mainpanel">
-                <h1 class="title">
-                    Company Name
-                </h1>
-                <div class="banner">
-                    Welcome Mike Richardson
-                </div>
-                <div class="jobspanel">
-                    Job Ads
-                </div>
-                <div class="live">
-                    Live
-                    <div class="jobicon">
-                        <img src="img/live.png" alt="live">
+        <div>
+            <nav class="navbar animated slideInRight delay-2s">
+                <ul class="navbar__left">
+                    <li class="item-1"><a href="#jobs">Dashboard</a></li>
+                    <li><a href="#companies">Job Ads</a></li>
+                    <li class="signin"><a href="#" class="link-icon">Log Out</a></li>
+                </ul>
+            </nav>
+            <div class="container dashboard__parent">
+                <div class="animated slideInRight delay-2s dashboard__parent--mainpanel">
+                    <h1 id="company" class=" title">
+                        Company Name
+                    </h1>
+                    <div id="contact" class="banner">
+                        Welcome Mike Richardson
                     </div>
-                </div>
-                <div class="posted">
-                    Posted
-                    <div class="jobicon">
-                        <img src="img/approval.png" alt="posted">
-                    </div>
-                </div>
-                <div class="remaining">
-                    Remaining
-                    <div class="jobicon">
-                        <img src="img/pie.jpg" alt="remaining">
-                    </div>
-                </div>
 
+                    <div class="jobspanel">
+                        <div class="jobspanel__adslabel">
+                            Job Ads
+                        </div>
+                        <div class="jobspanel__countpanel">
+                            <div class="count jobspanel__countpanel--live">
+                                <div class="texty">
+                                    Live
+                                </div>
+                                <div class="jobicon">
+                                    <img src="img/live.png" alt="live">
+                                </div>
+                                <div id="livecounter" class="counter">
+                                    0
+                                </div>
+                            </div>
+                            <div class="count jobspanel__countpanel--posted">
+                                <div class="texty">
+                                    Posted
+                                </div>
+                                <div class="jobicon">
+                                    <img src="img/approval.png" alt="posted">
+                                </div>
+                                <div id="postedcounter" class="counter">
+                                    0
+                                </div>
+                            </div>
+                            <div class="count jobspanel__countpanel--remaining">
+                                <div class="texty">
+                                    Remaining
+                                </div>
+                                <div class="jobicon">
+                                    <img src="img/piechart.png" alt="remaining">
+                                </div>
+                                <div id="remainingcounter" class="counter">
+                                    0
+                                </div>
+                            </div>
+
+                        </div>
+                        <button id="createBtn" class="btn" disabled>Create job ad</button>
+                        <a href="jobcredits.html">
+                            <button class="btn">Buy job credits</button>
+                        </a>
+                        <button class="btn">Manage ads</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
