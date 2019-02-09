@@ -34,3 +34,10 @@ query selectJobAds {
     	  SELECT io.onemillionyearsbc.hubtutorial.jobs.JobAds
             WHERE (email == _$email) 
 }
+
+query filterJobAdsForRecruiter {
+  description: "Returns JobAds object for the given email in the registry and the filter criteria"
+  	statement:
+    	  SELECT io.onemillionyearsbc.hubtutorial.jobs.JobPosting
+            WHERE (email == _$email AND (internalRef == _$filterBy OR jobTitle == _$filterBy OR jobReference == _$filterBy))
+}

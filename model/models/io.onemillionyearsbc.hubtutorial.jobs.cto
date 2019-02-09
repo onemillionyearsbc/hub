@@ -84,3 +84,19 @@ transaction CreateJobPosting {
 transaction GetJobAds {
   o String email
 }
+
+@commit(false)
+@returns(JobPosting[])
+transaction GetJobPostings {
+  o String email
+  o String filterBy
+}
+
+@commit(false)
+@returns(JobPosting[])
+transaction GetJobPostingsDynamic {
+  o String email
+  o String filterBy optional
+  o DateTime dateFrom optional
+  o DateTime dateTo optional
+}

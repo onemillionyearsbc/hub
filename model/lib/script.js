@@ -5,11 +5,6 @@
  * @transaction
  */ 
 async function CreateRecruiterAccount(accountData) {
-    var tokens = accountData.email.split(".");
-    var suffix = tokens[tokens.length - 1];
-    if (suffix == "de") {
-        throw "no germans allowed";
-    }
 
     var factory = getFactory();
     var NS = 'io.onemillionyearsbc.hubtutorial';
@@ -265,6 +260,73 @@ async function GetJobAds(credentials) {
     }
       
     return undefined;
+}
+
+/**
+ * Return JobPosting array of records according to email and filter critereia 
+ * @param {io.onemillionyearsbc.hubtutorial.jobs.GetJobPostings} filterCriteria
+ * @returns {io.onemillionyearsbc.hubtutorial.jobs.JobPosting[]} The JobPosting records for these user and criteria
+ * @transaction
+ */
+async function GetJobPostings(filterCriteria) {
+    let results = await query('filterJobAdsForRecruiter', {
+        "email": filterCriteria.email,
+        "filterBy": filterCriteria.filterBy
+    });
+      
+    return results;
+}
+
+/**
+ * Return JobPosting array of records according to email and filter critereia 
+ * @param {io.onemillionyearsbc.hubtutorial.jobs.GetJobPostingsDynamic} filterCriteria
+ * @returns {io.onemillionyearsbc.hubtutorial.jobs.JobPosting[]} The JobPosting records for these user and criteria
+ * @transaction
+ */
+async function GetJobPostingsDynamic(filterCriteria) {
+    /*
+    let results = await query('filterJobAdsForRecruiter', {
+        "email": filterCriteria.email,
+        "filterBy": filterCriteria.filterBy
+    });
+  
+    const statement = "SELECT io.onemillionyearsbc.hubtutorial.jobs.JobPosting";
+    const query = await buildQuery(statement);
+    const results = await query(query, {});
+      
+    return results;
+      */
+    
+      
+    var and="";
+    var filter = {};
+    filter.email = filterCriteria.email;
+
+  	if (filterCriteria.filterBy != "") {
+        and += " AND (internalRef == _$filterBy OR jobTitle == _$filterBy OR jobReference == _$filterBy)";
+        filter.filterBy = filterCriteria.filterBy;
+    } 
+    
+    if (filterCriteria.dateFrom != "") {
+        and += " AND (datePosted < _$dateFrom)";
+        filter.dateFrom = filterCriteria.dateFrom;
+    } 
+    if (filterCriteria.dateTo != "") {
+        and += " AND (datePosted > _$dateTo)";
+        filter.dateTo = filterCriteria.dateTo;
+    } 
+    
+    var statement = `SELECT io.onemillionyearsbc.hubtutorial.jobs.JobPosting WHERE (email == _$email${and})`;
+    
+  	
+  	// Build a query.
+	let qry = buildQuery(statement);
+    // Execute the query
+  
+	let results = await query(qry, filter);
+  
+  	return results;
+  		
 }
 
 /**

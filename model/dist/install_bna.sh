@@ -1,1 +1,1 @@
-composer network install -a hubtutorial@0.0.12.bna -c PeerAdmin@hlfv1
+composer network install -a hubtutorial@0.0.14.bna -c PeerAdmin@hlfv1
