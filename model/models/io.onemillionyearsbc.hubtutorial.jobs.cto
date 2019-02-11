@@ -45,6 +45,7 @@ enum JobType {
 }
   
 enum BlockchainType {
+  o CORDA
   o ETHEREUM
   o HYPERLEDGER
   o NEO
@@ -54,7 +55,7 @@ enum BlockchainType {
 }
 
 transaction BuyJobCredits {
-  o String      email 
+  o String    email 
   o Integer		credits
 }
 
@@ -77,6 +78,15 @@ transaction CreateJobPosting {
   o String[]    skills
   
   o String      logohash
+
+  o Boolean     testData default=false // if set to true will generate random datePosted in the past (for testing)
+}
+
+enum JobFilterType {
+  o ALL
+  o LIVE
+  o EXPIRING
+  o EXPIRED
 }
 
 @commit(false)
@@ -97,6 +107,9 @@ transaction GetJobPostings {
 transaction GetJobPostingsDynamic {
   o String email
   o String filterBy optional
+  o JobFilterType filterType optional
   o DateTime dateFrom optional
   o DateTime dateTo optional
+  o String user optional
+  o Integer expiringDays default=5
 }

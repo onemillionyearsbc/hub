@@ -277,6 +277,9 @@ async function GetJobPostings(filterCriteria) {
     return results;
 }
 
+function addDays(date, days) {
+    return new Date(date.getTime() + days*24*60*60*1000);
+}
 /**
  * Return JobPosting array of records according to email and filter critereia 
  * @param {io.onemillionyearsbc.hubtutorial.jobs.GetJobPostingsDynamic} filterCriteria
@@ -284,18 +287,6 @@ async function GetJobPostings(filterCriteria) {
  * @transaction
  */
 async function GetJobPostingsDynamic(filterCriteria) {
-    /*
-    let results = await query('filterJobAdsForRecruiter', {
-        "email": filterCriteria.email,
-        "filterBy": filterCriteria.filterBy
-    });
-  
-    const statement = "SELECT io.onemillionyearsbc.hubtutorial.jobs.JobPosting";
-    const query = await buildQuery(statement);
-    const results = await query(query, {});
-      
-    return results;
-      */
     
       
     var and="";
@@ -306,7 +297,6 @@ async function GetJobPostingsDynamic(filterCriteria) {
         and += " AND (internalRef == _$filterBy OR jobTitle == _$filterBy OR jobReference == _$filterBy)";
         filter.filterBy = filterCriteria.filterBy;
     } 
-    
     if (filterCriteria.dateFrom != "") {
         and += " AND (datePosted < _$dateFrom)";
         filter.dateFrom = filterCriteria.dateFrom;
@@ -315,6 +305,30 @@ async function GetJobPostingsDynamic(filterCriteria) {
         and += " AND (datePosted > _$dateTo)";
         filter.dateTo = filterCriteria.dateTo;
     } 
+    if (filterCriteria.user != "") {
+        and += " AND (user == _$user)";
+        filter.user = filterCriteria.user;
+    } 
+    if (filterCriteria.filterType != "" && filterCriteria.filterType != "ALL") {
+        const today = new Date();
+        // 1. if LIVE get all jobs where expiryDate > now
+        if (filterCriteria.filterType === "LIVE") {
+            and += " AND (expiryDate > _$today)";
+            filter.today = today;
+        }
+        // 2. if EXPIRING get all jobs where expiryDate > now and expiryDate < now + 5 days
+        else if (filterCriteria.filterType === "EXPIRING") {
+            const liveDate = addDays(today, filterCriteria.expiringDays);
+            and += " AND (expiryDate > _$today) AND (expiryDate < _$liveDate)";
+            filter.today = today;
+            filter.liveDate = liveDate;
+        }
+        // 3. if EXPIRED get all jobs where expiryDate < now
+        else if (filterCriteria.filterType === "EXPIRED") {
+            and += " AND (expiryDate < _$today)";
+            filter.today = today;
+        }
+    }
     
     var statement = `SELECT io.onemillionyearsbc.hubtutorial.jobs.JobPosting WHERE (email == _$email${and})`;
     
@@ -404,11 +418,20 @@ function fillPosting(NSJOBS, factory,credentials) {
   	posting.logohash = credentials.logohash;
   
   	// The calculated stuff...
-  	var d = new Date()
+    var d = new Date();
+      
+    if (credentials.testData === true) {
+        var min = 1;
+
+        var max = 60;
+        // set date to random number of days in the past between 1 and 60
+        var days = Math.round(Math.random() * (max - min)) + min;
+        d = new Date(d.getTime() - days*24*60*60*1000);
+    }
   	posting.datePosted = d;
   
-  	var dplus1 = new Date(d.getFullYear(), d.getMonth() +1, d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds(),d.getMilliseconds());
-  	posting.expiryDate = dplus1;
+  	var dplus1Month = new Date(d.getFullYear(), d.getMonth() +1, d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds(),d.getMilliseconds());
+  	posting.expiryDate = dplus1Month;
   
   	posting.views = 0;
     posting.applications = 0;
