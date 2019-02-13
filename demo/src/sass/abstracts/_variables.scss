@@ -6,8 +6,10 @@ $color-primary-dark: rgb(4, 5, 90);
 
 $color-grey-light-1: #dbd7d5;
 $color-grey-light-2: #aaa;
-$color-grey-light-3: rgb(112, 108, 108);
+$color-grey-light-3: rgb(122, 108, 108);
 
+$color-yellow: rgb(236, 227, 187);
+$color-yellow-border: rgb(206, 116, 43);
 
 $color-grey-dark-1: rgb(67, 70, 70);
 $color-grey-dark-2: #44444b;
@@ -27,6 +29,8 @@ $font-display: 'Josefin Sans', sans-serif;
 $site-global-margin: 20rem;
 
 $button-background: rgb(27, 150, 222);
+$button-background-darker : rgb(32, 99, 185);
+
 // $button-background: red;
 $button-hover-background: #040542;
 $button-hover-color: #8fcbfd;

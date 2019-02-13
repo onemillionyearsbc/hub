@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css?family=Josefin+Sans:300,400,400i|Nunito:300,300i" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="shortcut icon" type="image/png" href="img/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <title>Receruiter Manage Job Ads</title>
+    <script src="js/scripts/sorttable.js"></script>
+</head>
+
+<body>
+    <div id="jobadpage">
+        <div>
+            <div class="dashboard__topbar">
+                <div class="topleft">
+                    <a href="index.html">
+                        <img src="img/logo-small.png" alt="1MYBC">
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div>
+            <nav class="navbar animated slideInRight delay-2s">
+                <ul class="navbar__left">
+                    <li class="item-1"><a href="recruiter-dashboard.html">Dashboard</a></li>
+                    <li><a href="jobcredits.html">Job Credits</a></li>
+                    <li class="signin"><a href="#" class="link-icon">Log Out</a></li>
+                </ul>
+            </nav>
+            <div class="container managejobads">
+                <div id="jobad" class="animated slideInUp delay-2s managejobads__parent">
+                    <div class="bollocksform">
+
+                        <div class="title">
+                            <!-- <p class="loginform__card-title">Post a Job</p> -->
+                            <p>Manage Job Ads</p>
+                            <a href="createjobad.html">
+                                <button id="createBtn" class="btn" disabled>Create Job ad</button>
+                            </a>
+                        </div>
+
+
+                        <!-- TODO
+                        1. Set the contactsin the postedBy drop down DONE
+                        2. Pull in JobAds data (can we store this somewhere?)  DONE
+                        3. Enable/disable create ad button 
+                        4. set stats on stats panel
+                        5. set the "posted by" dropdown to contain list of contacts within this organisation DONE
+                        -->
+                        <div class="managejobads__parent--panel">
+                            <!-- <p class="loginform__card-title">Post a Job</p> -->
+                            <form id="madform" class="adsform">
+                                <div class="adsform__form-item">
+                                    <label for="filterby" class="adsform__form-item--label">Filter by:</label>
+                                    <input id="filterby" class="adsform__form-item--textfield glowing-border" type="text"
+                                        placeholder=" e.g. job title, job ref or job id" autocomplete="off" />
+                                </div>
+                                <div class="adsform__form-item">
+                                    <label for="showme" class="adsform__form-item--label">Show me:</label>
+                                    <!-- <input id="showme" class="adsform__form-item--textfield glowing-border" type="select"
+                                        autocomplete="off" /> -->
+                                    <select class="glowing-border" name="jobtypes" form="adsform" id="jobDateType">
+                                        <option value="ALL">All jobs</option>
+                                        <option value="LIVE">Live jobs</option>
+                                        <option value="EXPIRING">Expiring jobs</option>
+                                        <option value="EXPIRED">Expired jobs</option>
+                                    </select>
+                                </div>
+                                <div class="adsform__form-item datepicker">
+                                    <label for="from">Posted From:</label>
+                                    <input class="datey" type="date" name="from" id="datefrom">
+                                </div>
+                                <div class="adsform__form-item datepicker">
+                                    <label for="to">Posted To:</label>
+                                    <input class="datey" type="date" name="to" id="dateto">
+                                </div>
+                                <div class="adsform__form-item">
+                                    <label for="postedby" class="adsform__form-item--label">Posted by:</label>
+                                    <!-- <input id="postedby" class="adsform__form-item--textfield glowing-border" type="text"
+                                        autocomplete="off" /> -->
+                                    <select id="userselect" class="glowing-border" name="users" form="adsform">
+                                        <option value="">All users</option>
+                                    </select>
+                                </div>
+                                <div class=" adsform__form-item filter">
+                                    <button id="filterBtn" class="btn">Filter job ads</button>
+                                    <a href="managejobads.html">Reset filters</a>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="managejobads__parent--panel yellow">
+                            <div class="panel">
+                                <p class="panel__title">Posted job ads</p>
+                                <p id="postedjobads" class="panel__number">0</p>
+                            </div>
+                            <div class="panel panel2">
+                                <p class="panel__title">Remote</p>
+                                <p id="remotejobads" class="panel__number">0</p>
+                            </div>
+                            <div class="panel">
+                                <p class="panel__title">Non Remote</p>
+                                <p id="nonremotejobads" class="panel__number">0</p>
+                            </div>
+                            <div class="panel panel2">
+                                <p class="panel__title">Views</p>
+                                <p id="jobadviews" class="panel__number">0</p>
+                            </div>
+                            <div class="panel">
+                                <p class="panel__title">Applications</p>
+                                <p id="jobadapplications" class="panel__number">0</p>
+                            </div>
+                        </div>
+                        <div class="managejobads__parent--panel white">
+                            <!-- <p class="loginform__card-title">Post a Job</p> -->
+                            <form class="adsform bulkform">
+                                <div class="adsform__form-item">
+                                    <label for="showme" class="adsform__form-item--label">Bulk Actions</label>
+                                    <!-- <input id="showme" class="adsform__form-item--textfield glowing-border" type="select"
+                                                autocomplete="off" /> -->
+                                    <div class="bulky">
+                                        <span class="bulky__label">Highlight jobs available to: </span>
+                                        <select class="bulky__select glowing-border" name="bulktypes" form="adsform">
+                                            <option value="select">select</option>
+                                            <option value="bexpire">Bulk expire</option>
+                                            <option value="brepost">Bulk repost</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="adsform__form-item">
+                                    <div class="loggy">
+                                        <i class="loggy__icon far fa-file-alt"></i>
+                                        <a class="loggy__label" href="#">blockchain logs</a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="managejobads__parent--panel tabley">
+                            <table id="jobtable" class="sortable">
+                                <thead>
+                                    <tr>
+                                        <th height="30px" width="300px">Location</th>
+                                        <th class="sorttable_numeric" height="30px" width="300px">Job id</th>
+                                        <th height="30px" width="300px">Job ref</th>
+                                        <th height="30px" width="300px">Posted by</th>
+                                        <th class="sorttable_ddmm" height="30px" width="300px">Posted date</th>
+                                        <th class="sorttable_ddmm" height="30px" width="300px">Expiry Date</th>
+                                        <th class="sorttable_numeric" height="30px" width="300px">Views</th>
+                                        <th class="sorttable_numeric" height="30px" width="300px">Applications</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tablebody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</body>
+
+</html>

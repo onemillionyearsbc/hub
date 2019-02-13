@@ -37,14 +37,19 @@ export const elements = {
     createjobbutton: document.getElementById("createjobbutton"),
     createJobPage: document.getElementById("jobad"),
     adForm: document.getElementById("adform"),
+    madForm: document.getElementById("madform"),
     remote: document.querySelector('input[name="remote"]:checked'),
     jobtype: document.getElementById("jobtype"),
     blockchain: document.getElementById("blockchain"),
-    description: document.getElementById("description")
+    description: document.getElementById("description"),
+    filterType: document.getElementById("jobDateType"),
+    userselect: document.getElementById("userselect"),
+    dateFrom: document.getElementById("datefrom"),
+    dateTo: document.getElementById("dateto"),
 };
 
 export const dbelements = {
-    databaseUri: "http://localhost:8083/apiput.php",
+    databaseUri: "http://localhost:8083/apiput.php", // TODO change to ip of server
     databaseTable: "company_logo",
     databaseName: "hubdb"
 };
@@ -65,6 +70,7 @@ var setLoggedInTransaction = "io.onemillionyearsbc.hubtutorial.SetLoggedIn";
 var buyJobAdsTransaction = "io.onemillionyearsbc.hubtutorial.jobs.BuyJobCredits";
 var getJobAdsTransaction = "io.onemillionyearsbc.hubtutorial.jobs.GetJobAds";
 var createJobAdTransaction = "io.onemillionyearsbc.hubtutorial.jobs.CreateJobPosting";
+var getJobPostingsTransaction = "io.onemillionyearsbc.hubtutorial.jobs.GetJobPostingsDynamic";
 
 export const strings = {
     loader: 'loader',
@@ -79,6 +85,7 @@ export const strings = {
     buyJobAdsTransaction: `${buyJobAdsTransaction}`,
     getJobAdsTransaction: `${getJobAdsTransaction}`,
     createJobAdTransaction: `${createJobAdTransaction}`,
+    getJobPostingsTransaction: `${getJobPostingsTransaction}`,
     loginRecruiterUrl: `http://${ipAddress}:3000/api/${recruiterLoginTransaction}`,
     loginJobSeekerUrl: `http://${ipAddress}:3000/api/${jobSeekerLoginTransaction}`,
     registerRecruiterUrl: `http://${ipAddress}:3000/api/${recruiterRegisterTransaction}`,
@@ -86,7 +93,10 @@ export const strings = {
     setLoggedInUrl: `http://${ipAddress}:3000/api/${setLoggedInTransaction}`,
     buyJobAdsUrl: `http://${ipAddress}:3000/api/${buyJobAdsTransaction}`,
     getJobAdsurl: `http://${ipAddress}:3000/api/${getJobAdsTransaction}`,
-    createJobAdUrl: `http://${ipAddress}:3000/api/${createJobAdTransaction}`
+    createJobAdUrl: `http://${ipAddress}:3000/api/${createJobAdTransaction}`,
+    getJobPostingsUrl: `http://${ipAddress}:3000/api/${getJobPostingsTransaction}`,
+    beginningOfTime: "1970-01-01T15:11:47.728Z",
+    endOfTime: "3070-01-01T15:11:47.728Z",
 };
 
 export const elementConsts = {
@@ -97,6 +107,7 @@ export const elementConsts = {
     DASHBOARDPAGE: 3,
     BUYCREDITSPAGE: 4,
     CREATEJOBADPAGE: 5,
+    MANAGEJOBSPAGE: 6,
     JOBADPRICE: 99,
     JOBDISCOUNT: 10,
     JOBMINPRICE: 49,
@@ -188,4 +199,21 @@ export function clearError(x) {
     if (x.style.display != "none") {
         x.style.display = "none";
     }
+}
+
+export function enableCreateJobButton(remaining) {
+    if (remaining > 0) {
+        elements.createBtn.disabled = false;
+    } else {
+        elements.createBtn.disabled = true;
+    }
+}
+
+export function getSelectedOption(sel) {
+    console.log("+++++++++++ Looking for value of " + sel);
+    if (sel.options[sel.selectedIndex].disabled === false) {
+        console.log("+++++++++++ sel.value = " + sel.value);
+        return sel.value;
+    }
+    return "";
 }

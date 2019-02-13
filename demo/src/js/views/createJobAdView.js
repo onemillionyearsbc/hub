@@ -1,4 +1,4 @@
-import { elements, strings, checkStyle, clearError } from './base';
+import { elements, strings, checkStyle, clearError, getSelectedOption } from './base';
 
 export const setEmail = (email) => {
     var emailElement = document.getElementById("email");
@@ -45,13 +45,6 @@ export const getFormData = (email) => {
     return formData;
 }
 
-function getSelectedOption(sel) {
-    if (sel.options[sel.selectedIndex].disabled === false) {
-        return sel.value;
-    }
-    return "";
-}
-
 function getRemote() {
     return document.querySelector('input[name="remote"]:checked').value;
 }
@@ -64,8 +57,7 @@ function getSkills(skills) {
     if (skills === "") {
         return "";
     }
-    console.log("+++++++++++ skills length = |" + skills.split("' AND '|,|\s") + "|");
-    return skills.split(/[ ,]+/);
+    return skills.split("/[ ,]+/");
 }
 
 function getDescription() {
@@ -120,7 +112,6 @@ export const validateData = (data) => {
         checkStyle(x);
     }
     if (data.jobType.length === 0) {
-        console.log(">>>>>>>>>>>>>>>>>> ERROR");
         error = true;
         var x = document.getElementById("jobtype-error");
         checkStyle(x);
