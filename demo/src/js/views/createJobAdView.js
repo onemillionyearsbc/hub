@@ -14,7 +14,7 @@ export const setCompany = (company) => {
     companyElement.style.color = "#aaa";
 }
 
-export const getFormData = (email) => {
+export const getFormData = (email, html) => {
     var form = elements.adForm;
     var el = form.querySelectorAll('input');
     var myData = {};
@@ -34,7 +34,7 @@ export const getFormData = (email) => {
         remote: getRemote(),
         jobType: getSelectedOption(elements.jobtype),
         blockchainName: getSelectedOption(elements.blockchain),
-        description: getDescription(),
+        description: html,
         contact: myData["contact"],
         internalRef: myData["internalref"],
         employer: getEmployer(),
@@ -58,17 +58,6 @@ function getSkills(skills) {
         return "";
     }
     return skills.split("/[ ,]+/");
-}
-
-function getDescription() {
-    return elements.description.value;
-}
-
-function getBlockchainType(type) {
-    if (type === undefined) {
-        return "";
-    }
-    return type.toUpperCase();
 }
 
 function calculateJobReference() {
@@ -136,7 +125,14 @@ export const validateData = (data) => {
         var x = document.getElementById("internalref-error");
         checkStyle(x);
     }
-    console.log("kills length = "+ data.skills.length);
+    console.log("data.location length = " + data.location.length);
+    console.log("data.remote = " + data.remote);
+    if (data.location.length === 0 && data.remote === "false") {
+        error = true;
+        console.log("YES ERROR");
+        var x = document.getElementById("location-error");
+        checkStyle(x);
+    }
     for (var i = 0; i < data.skills.length; i++) {
         console.log(i + " -> " + data.skills[i]);
     }

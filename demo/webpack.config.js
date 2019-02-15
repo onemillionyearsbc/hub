@@ -76,6 +76,10 @@ module.exports = {
             filename: 'managejobads.html',
             template: './src/managejobads.html'
         }),
+        new HtmlWebpackPlugin({
+            filename: 'displayjob.html',
+            template: './src/displayjob.html'
+        }),
         new CopyWebpackPlugin([{
             from: 'src/img',
             to: 'img',

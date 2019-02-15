@@ -13,10 +13,21 @@ export const setContactName = (name) => {
     nameElement.innerHTML = `Welcome <strong>${name}</strong>`;
 }
 
-export const setJobAdsData = (live, posted, remaining) => {
-    elements.livecounter.innerHTML = live;
-    elements.postedcounter.innerHTML = posted;
+export const setJobAdsData = (remaining) => {
     elements.remainingcounter.innerHTML = remaining;
+}
+
+export const setJobCreditsRemaining = (rows) => {
+    let live=0;
+    const now = new Date();
+    for (var i = 0; i < rows.length; i++) {
+        const expDate = new Date(rows[i].expiryDate);
+        if (expDate.getTime() > now.getTime()) {
+            live++;
+        }
+    }
+    elements.livecounter.innerHTML = live;
+    elements.postedcounter.innerHTML = rows.length;
 }
 
 export const getJobAdsData = (mail) => {
@@ -26,3 +37,4 @@ export const getJobAdsData = (mail) => {
     };
     return getJobAdsData;
 }
+

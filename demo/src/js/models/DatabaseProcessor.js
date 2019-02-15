@@ -11,7 +11,7 @@ export default class DatabaseProcessor {
 
             console.log("FIRING DATABASE TRANSACTION (PUT)...with following data");
             console.log(data);
-
+            console.log("URL for database call = " + this.url);
             var resp = await fetch(this.url, {
                 method: "POST",
                 mode: "same-origin",
@@ -42,7 +42,7 @@ export default class DatabaseProcessor {
 
         } catch (error) {
             console.log("+++++ PUT ERROR, err = " + error);
-            return response;
+            return error;
         }
     }
 

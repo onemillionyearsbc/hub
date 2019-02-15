@@ -1,0 +1,101 @@
+.viewjob {
+    font-family: inherit;
+    padding-top: 3rem;
+    
+    &__parent {
+        margin-left: $site-global-margin;
+        margin-right: $site-global-margin;
+        background: $color-white;
+        // height: 100rem;
+       
+        .title {
+            padding-top: 2rem;
+            padding-left: 16rem;
+            font-size:4rem;
+            font-weight: 800;
+            color: #000;
+        }
+        .body {
+           
+            display: flex;/*!important*/
+            flex: 1 1 auto;
+            .left {
+                width: 100%;
+                font-size: 2.2rem;
+                font-weight: 400;
+                padding-top: 5rem;
+                padding-left: 15rem;
+                line-height: 1.8;
+                
+                color: black;
+                &--item {
+                    padding-left: 5rem;
+                }
+                .loggy p, i{
+                    display: inline-block;
+                    margin-left: 2rem;
+                }
+                a {
+                    margin-left: 2rem;
+                    text-decoration: none;
+                    color: $button-orange-background;
+                }
+                a:hover {
+                    text-decoration: underline;
+                    color: $button-orange-background;
+                }
+                // #jobsalary {
+                //     margin-left: 2.5rem;
+                // }
+            }
+            .right {
+                // display: inline-block;
+                // height: 10rem;
+                align-items: flex-end;
+                width: 20%;
+                padding-right: 15rem;
+            }
+           
+        }
+        .description {
+            margin-top: 3rem;
+            margin-left: 15rem;
+            margin-right: 15rem;
+            font-size: 1.7rem;
+            font-weight: 300;
+            margin-bottom: 5rem;
+        }
+        .lowerpane span {
+            // margin-left: 15rem;
+            font-size: 2rem;
+            font-weight: bold;
+            margin-right: 1rem;
+            // color: red;
+        }
+        .lowerpane p {
+           
+            padding-left: 15rem;
+            font-size: 2rem;
+        }
+        .ql-indent-1 {
+            margin-left: 40px;
+        }
+        .ql-indent-2 {
+            margin-left: 80px;
+        }
+        .ql-indent-3 {
+            margin-left: 120px;
+        }
+        .ql-indent-4 {
+            margin-left: 160px;
+        }
+        .ql-indent-6 {
+            margin-left: 200px;
+        }
+    }
+}
+.container {
+    display: block;
+    height: 100%;
+    // overflow: auto;
+}

@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="shortcut icon" type="image/png" href="img/favicon.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <title>Recruiter Dashboard</title>
 </head>
 
@@ -26,8 +27,8 @@
         <div>
             <nav class="navbar animated slideInRight delay-2s">
                 <ul class="navbar__left">
-                    <li class="item-1"><a href="#jobs">Dashboard</a></li>
-                    <li><a href="#companies">Job Ads</a></li>
+                    <li class="item-1"><a href="recruiter-dashboard.html">Dashboard</a></li>
+                    <li><a href="managejobads.html">Job Ads</a></li>
                     <li class="signin"><a href="#" class="link-icon">Log Out</a></li>
                 </ul>
             </nav>
@@ -63,7 +64,8 @@
                             </div>
                             <div class="search_categories">
                                 <div class="select">
-                                    <select class="dropdown" onchange="document.getElementById('jobtype').style.color = 'black'"
+                                    <select class="dropdown"
+                                        onchange="document.getElementById('jobtype').style.color = 'black'"
                                         name="search_categories1" id="jobtype">
                                         <option selected disabled hidden>Job Type</option>
                                         <option value="FULLTIME" style="color:black">Full Time</option>
@@ -89,12 +91,13 @@
                             </div>
                             <!-- data-multiple-caption="{count} files selected" onchange="imgchange(this)"  -->
                             <div id="pbox1" class="createjobad__parent--form-item box parentbox">
-                                <input type="file" name="file-1[]" id="file-1" class="inputfile inputfile-1"
-                                    multiple
+                                <input type="file" name="file-1[]" id="file-1" class="inputfile inputfile-1" multiple
                                     style="display: none;" />
                                 <label for="file-1"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17"
                                         viewBox="0 0 20 17">
-                                        <path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z" /></svg>
+                                        <path
+                                            d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z" />
+                                    </svg>
                                     <span>Choose File&hellip;</span></label>
                                 <span id="logotext" class=text>Company Logo</span>
                                 </label>
@@ -104,21 +107,25 @@
                                 <input type="file" name="file-1[]" id="file-1" class="inputfile inputfile-1"
                                     data-multiple-caption="{count} files selected" onchange="imgchange(this)" multiple
                                     style="display: none;" />
-                                <label class="updatelogo" for="file-1"><svg xmlns="http://www.w3.org/2000/svg" width="20"
-                                        height="17" viewBox="0 0 20 17">
-                                        <path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z" /></svg>
+                                <label class="updatelogo" for="file-1"><svg xmlns="http://www.w3.org/2000/svg"
+                                        width="20" height="17" viewBox="0 0 20 17">
+                                        <path
+                                            d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z" />
+                                    </svg>
                                     <span>Update Logo&hellip;</span></label>
-                                <span id="logoimg" class="child"><img id="imgs" class="box__clipart" src="img/logo-small.png"></span>
+                                <span id="logoimg" class="child"><img id="imgs" class="box__clipart"
+                                        src="img/logo-small.png"></span>
                             </div>
                             <div class="toggle">
                                 <input type="radio" name="remote" value="true" id="yesremote" checked="checked" />
-                                <label for="yesremote">Remote OK</label>
+                                <label for="yesremote">Remote</label>
                                 <input type="radio" name="remote" value="false" id="noremote" />
-                                <label for="noremote">No Remote</label>
+                                <label for="noremote">Non Remote</label>
                             </div>
                             <div class="search_categories">
                                 <div class="select">
-                                    <select class="dropdown" onchange="document.getElementById('blockchain').style.color = 'black'"
+                                    <select class="dropdown"
+                                        onchange="document.getElementById('blockchain').style.color = 'black'"
                                         name="search_categories2" id="blockchain">
                                         <option selected disabled hidden>Blockchain</option>
                                         <option value="CORDA" style="color:black">Corda</option>
@@ -137,8 +144,8 @@
 
                             <p id="bollocks2" class="mybollocks">Blockchain</p>
                             <div class="createjobad__parent--form-item">
-                                <input id="contact" class="loginform__textfield glowing-border" type="text" placeholder="Contact"
-                                    autocomplete="off" />
+                                <input id="contact" class="loginform__textfield glowing-border" type="text"
+                                    placeholder="Contact" autocomplete="off" />
                                 <label for="contact" class="loginform__label">Contact</label>
                             </div>
                             <div id="contact-error" class="job-error job-error2 loginform__error">
@@ -150,21 +157,23 @@
                                 <label for="internalref" class="loginform__label">Internal Ref.</label>
                             </div>
                             <div id="internalref-error" class="job-error job-error2 loginform__error">
-                                <p><i class="icon fas fa-exclamation-triangle"></i>Please enter the internal reference</p>
+                                <p><i class="icon fas fa-exclamation-triangle"></i>Please enter the internal reference
+                                </p>
                             </div>
                             <div class="createjobad__parent--form-item">
-                                <input id="skills" class="loginform__textfield glowing-border" type="text" placeholder="Skills"
-                                    autocomplete="off" />
+                                <input id="skills" class="loginform__textfield glowing-border" type="text"
+                                    placeholder="Skills" autocomplete="off" />
                                 <label for="skills" class="loginform__label">Skills</label>
                             </div>
                             <div id="skills-error" class="job-error job-error2 loginform__error">
                                 <p><i class="icon fas fa-exclamation-triangle"></i>Please enter at least one skill</p>
                             </div>
                             <div class="toggle">
-                                <input type="radio" name="employer" onclick="handleClick(this);" value="true" id="employer"
-                                    checked="checked" />
+                                <input type="radio" name="employer" onclick="handleClick(this);" value="true"
+                                    id="employer" checked="checked" />
                                 <label for="employer">Employer</label>
-                                <input type="radio" name="employer" onclick="handleClick(this);" value="false" id="agency" />
+                                <input type="radio" name="employer" onclick="handleClick(this);" value="false"
+                                    id="agency" />
                                 <label for="agency">Agency</label>
                             </div>
                             <!--
@@ -181,20 +190,24 @@
                                     placeholder="Location (keep blank if remote)" autocomplete="off" />
                                 <label for="location" class="loginform__label">Location (optional)</label>
                             </div>
-                            <!-- <div id="location1-error" class="job-error job-error2 loginform__error">
-                                <p><i class="icon fas fa-exclamation-triangle"></i>Please enter a location</p>
+                            <div id="location-error" class="job-error job-error2 loginform__error">
+                                <p><i class="icon fas fa-exclamation-triangle"></i>Location must be entered for
+                                    non-remote jobs</p>
                             </div>
+                            <!--
                             <div id="location2-error" class="job-error job-error2 loginform__error">
                                 <p><i class="icon fas fa-exclamation-triangle"></i>Location must be blank</p>
                             </div> -->
 
                             <!-- Fascist dictator required for big job in Berlin. Must like living in a bunker. -->
-                            <textarea id="description" class="createjobad__parent--textarea glowing-border" rows="8"
+                            <!-- <textarea id="description" class="createjobad__parent--textarea glowing-border" rows="8"
                                 cols="77" placeholder="Detail the job description and requirements. Do not add contact information or the job will not be approved."></textarea>
                             <div id="description-error" class="job-error loginform__error">
                                 <p><i class="icon fas fa-exclamation-triangle"></i>Please enter the description</p>
-                            </div>
+                            </div> -->
 
+
+                            <!-- Include the Quill library -->
 
                             <!-- TODO -->
                             <!-- 1. Upload Company Logo DONE -->
@@ -208,18 +221,31 @@
 
                             <!-- generate random job data for upload script -->
                             <!-- GENERAL: add footer with copyright etc. (do we need this?) -->
+                            <div class="createjobad__parent--form-item quill">
+                                <div id="editor-container"></div>
+                            </div>
                             <div class="createjobad__parent--buttonpanel">
                                 <button id="createjobbutton" type="submit" class="btn btn--orange">SUBMIT</button>
                             </div>
 
                         </div>
                     </form>
+
                 </div>
             </div>
         </div>
 
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+
+    <!-- Initialize Quill editor -->
+    <script>
+        
+
+    </script>
+
+
     <script>jQuery(".dropdown").change(function (e) {
             var element = document.getElementById("bollocks1");
             if (e.target.id == "blockchain") {

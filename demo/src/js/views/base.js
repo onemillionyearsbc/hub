@@ -46,6 +46,15 @@ export const elements = {
     userselect: document.getElementById("userselect"),
     dateFrom: document.getElementById("datefrom"),
     dateTo: document.getElementById("dateto"),
+    bulkType: document.getElementById("bulkType"),
+    viewJob: document.getElementById("viewjob"),
+    jobtitle: document.getElementById("jobtitle"),
+    joblocation: document.getElementById("joblocation"),
+    jobsalary: document.getElementById("jobsalary"),
+    jobcompany: document.getElementById("jobcompany"),
+    jobtype: document.getElementById("jobtype"),
+    jobtime: document.getElementById("jobtime"),
+    jobdescription: document.getElementById("jobdescription")
 };
 
 export const dbelements = {
@@ -108,6 +117,7 @@ export const elementConsts = {
     BUYCREDITSPAGE: 4,
     CREATEJOBADPAGE: 5,
     MANAGEJOBSPAGE: 6,
+    DISPLAYJOBPAGE: 7,
     JOBADPRICE: 99,
     JOBDISCOUNT: 10,
     JOBMINPRICE: 49,

@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="shortcut icon" type="image/png" href="img/favicon.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
-    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <title>Recruiter Dashboard</title>
 </head>
 
@@ -205,7 +204,7 @@
                             <div id="description-error" class="job-error loginform__error">
                                 <p><i class="icon fas fa-exclamation-triangle"></i>Please enter the description</p>
                             </div> -->
-
+                         
 
                             <!-- Include the Quill library -->
 
@@ -221,16 +220,16 @@
 
                             <!-- generate random job data for upload script -->
                             <!-- GENERAL: add footer with copyright etc. (do we need this?) -->
-                            <div class="createjobad__parent--form-item quill">
-                                <div id="editor-container"></div>
-                            </div>
                             <div class="createjobad__parent--buttonpanel">
                                 <button id="createjobbutton" type="submit" class="btn btn--orange">SUBMIT</button>
                             </div>
 
                         </div>
                     </form>
-
+                    <div class="quilly" id="editor-container">
+                        <p>A robot who has developed sentience, and is the only robot of his kind shown to be still
+                            functioning on Earth.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -241,8 +240,17 @@
 
     <!-- Initialize Quill editor -->
     <script>
-        
+        var quill = new Quill('#editor-container', {
+            modules: {
+                toolbar: [
+                    ['bold', 'italic'],
+                    ['link', 'blockquote', 'code-block', 'image'],
+                    [{ list: 'ordered' }, { list: 'bullet' }]
+                ]
+            },
 
+            theme: 'snow'
+        });
     </script>
 
 
@@ -642,6 +650,6 @@
     </script>
 
     </script>
-<script type="text/javascript" src="js/bundle.js"></script></body>
+</body>
 
 </html>

@@ -31,13 +31,9 @@
             margin-right: 5rem;
             padding-bottom: 2rem;
             border-bottom: 2px solid $dashboard-border;
-            // button {
-            //     justify-content: flex-end;
-            // }
-           
         }
     }
-
+   
     &__parent {
         font-size: 2.5rem;
         font-weight: 900;
@@ -98,7 +94,6 @@
                         text-decoration: underline;
                     }
                     .bulky {
-                        // display: inline-block;
                         &__label {
                             font-weight: 100;
                             display:inline-block;
@@ -135,9 +130,7 @@
                 font-weight: 400;
                 font-size: 1.7rem;
                 padding-top: 1rem;
-                // padding-left: 2rem;
                 width: 14rem;
-                // display: flex; 
                 text-align: right;
                 &__number {
                     font-weight: 900;
@@ -166,13 +159,17 @@
         .white {
             background: white;
             border: none;
+            height: 3rem;
+            font-size: 1.7rem;
+            color: black;
+            text-align: center;
+            justify-content: center;
         }
         .tabley {
             height: 40rem;
             border:none;
             background-color:rgba(0, 0, 0, 0);
             overflow-y: auto; 
-            // height: 100px;
         }
         .tabley th {
             position: sticky; top: 0;
@@ -194,10 +191,6 @@
             text-align: center;
         }
       
-        table.sortable tfoot {
-            color: red;
-            border:none;
-        }
         tbody{
             tr:nth-child(even) {
                 background-color: #f2f2f2

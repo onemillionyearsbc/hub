@@ -51,7 +51,7 @@ concept HubJobSeekerParameters {
 }
   
 concept Name {
-  o String title optional
+  o Title title optional
   o String firstName
   o String lastName
 }

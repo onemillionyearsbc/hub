@@ -14,13 +14,15 @@ import * as manageJobAdsView from './views/manageJobAdsView';
 
 
 import { getFormFor, clearError, elements, dbelements, elementConsts, inputType, renderLoader, renderLoaderEnd, clearLoader, navBarSetLoggedIn, setLoggedIn, strings, enableCreateJobButton } from './views/base';
-import { setCompanyName, setContactName, getJobAdsData, setJobAdsData } from './views/recruiterDashboardView';
+import { setCompanyName, setContactName, getJobAdsData, setJobAdsData, setJobCreditsRemaining } from './views/recruiterDashboardView';
 import { setJobAdsNumber, setTotalJobPrice, restyle, adjustSlider, getBuyJobCreditsData } from './views/jobCreditsView';
 import DatabaseProcessor from './models/DatabaseProcessor';
 import ImageLoader from './models/ImageLoader';
 import { populateFilterTable, populatePostedBy, setJobStats } from './views/manageJobAdsView';
+import { setJobFields } from './views/displayJobView';
 
 const state = {};
+var quill;
 var loggedIn = sessionStorage.getItem('loggedIn');
 state.loggedIn = loggedIn === "true" ? true : false;
 var imageLoader = new ImageLoader();
@@ -98,32 +100,34 @@ const signOutHandler = async (e) => {
             renderLoader(elements.jobadsWindow);
         } else if (state.page === elementConsts.CREATEJOBADPAGE) {
             renderLoader(elements.adForm);
-        }
-        else if (state.page === elementConsts.MANAGEJOBSPAGE) {
+        } else if (state.page === elementConsts.MANAGEJOBSPAGE) {
             renderLoader(elements.madForm);
-        }
-
-        var email = sessionStorage.getItem('email');
-        const data = loginView.getSignOutData(email);
-        state.login = new TransactionProcessor(data, strings.setLoggedInUrl);
-        var resp = await state.login.transaction();
-        var err = null;
-        if (resp.error !== undefined) {
-            err = resp.err;
-        }
-        clearLoader();
-        if (err == null) {
-            setLoggedIn(loginView, false);
-            await displaySuccessPopup('You have signed out');
-            state.loggedIn = false;
-            sessionStorage.setItem('loggedIn', false);
-            window.location = "register.html";
-        } else {
-            console.log("logout, err = " + err);
-            await displayErrorPopup('SignOut failed');
+        } else if (state.page === elementConsts.DISPLAYJOBPAGE) {
+            renderLoader(elements.viewJob);
         }
     }
+
+    var email = sessionStorage.getItem('email');
+    const data = loginView.getSignOutData(email);
+    state.login = new TransactionProcessor(data, strings.setLoggedInUrl);
+    var resp = await state.login.transaction();
+    var err = null;
+    if (resp.error !== undefined) {
+        err = resp.err;
+    }
+    clearLoader();
+    if (err == null) {
+        setLoggedIn(loginView, false);
+        await displaySuccessPopup('You have signed out');
+        state.loggedIn = false;
+        sessionStorage.setItem('loggedIn', false);
+        window.location = "register.html";
+    } else {
+        console.log("logout, err = " + err);
+        await displayErrorPopup('SignOut failed');
+    }
 }
+
 
 // JOB ADS CONTROLLER
 const buyJobCreditsHandler = async (e, view, url) => {
@@ -157,15 +161,51 @@ const getJobAdsHandler = async () => {
     if (err != null) {
 
     } else {
-        setJobAdsData(resp.live, resp.posted, resp.remaining);
+        setJobAdsData(resp.remaining);
         enableCreateJobButton(resp.remaining);
         sessionStorage.setItem('remaining', resp.remaining);
     }
+
+    // data = `{
+    //     "$class": "io.onemillionyearsbc.hubtutorial.jobs.GetJobPostingsDynamic",
+    //     "email": "${sessionStorage.getItem('email')}",
+    //     "filterBy": "",
+    //     "filterType": "ALL",
+    //     "dateFrom": "1970-02-11T18:05:22.311Z",
+    //     "dateTo": "3019-02-11T18:05:22.311Z",
+    //     "user": "",
+    //     "expiringDays": 5
+    //   }`;
+
+    data = {
+        $class: strings.getJobPostingsTransaction,
+        email: sessionStorage.getItem('email'),
+        filterBy: "",
+        filterType: "ALL",
+        dateFrom: strings.beginningOfTime,
+        dateTo: strings.endOfTime,
+        user: ""
+    };
+
+    const tp = new TransactionProcessor(data, strings.getJobPostingsUrl);
+    let rows = await tp.transaction();
+
+    var err = null;
+    if (rows.error !== undefined) {
+        err = rows.error;
+    }
+    if (err != null) {
+        console.log("++++++++++++++++++ ERRRORRRRRRR = " + err);
+    } else {
+        console.log("=============== ROWS = " + rows);
+        setJobCreditsRemaining(rows);
+    }
+
 }
 
 const createJobAdHandler = async () => {
     var email = sessionStorage.getItem('email');
-    const formData = createJobAdView.getFormData(email);
+    const formData = createJobAdView.getFormData(email, quill.root.innerHTML);
     const error = createJobAdView.validateData(formData);
 
     if (error) {
@@ -180,15 +220,41 @@ const createJobAdHandler = async () => {
     var blob = await imageLoader.getBlob();
 
     // 2. calculate the hash of the blob
-
-    // TODO this needs to go into the blockchain as well
     const myhash = crypto.createHash('sha256') // enables digest
         .update(blob) // create the hash
         .digest('hex'); // convert to string
 
     formData.logohash = myhash;
 
-    // 3. store formdata on blockchain including hash of the blob
+    // 3. write the job id and hash to the database with the image
+    var body = JSON.stringify({
+        database: dbelements.databaseName,
+        table: dbelements.databaseTable,
+        id: formData.jobReference,
+        hash: myhash,
+        image: blob
+    });
+    const dp = new DatabaseProcessor(dbelements.databaseUri);
+
+    var result = await dp.transactionPut(body);
+
+    // var err = null;
+    if (result !== undefined && result != null) {
+        err = result.error;
+        if (result.error === undefined) {
+            clearLoader();
+            displayErrorPopup('Database put failed: ' + result);
+            return;
+        }
+    }
+    if (err != null) {
+        clearLoader();
+        displayErrorPopup('Database put failed: ' + err.message);
+        // TODO error checking here
+        return;
+    }
+
+    // if database succeeds...add to the blockchain
     state.login = new TransactionProcessor(formData, strings.createJobAdUrl);
 
     var resp = await state.login.transaction();
@@ -198,42 +264,27 @@ const createJobAdHandler = async () => {
         err = resp.error;
     }
     if (err != null) {
+        // TODO rollback database transaction: delete row
+        displayErrorPopup('Failed to add Job: ' + err.message);
         clearLoader();
     } else {
-        // The job ad was written to the blockchain
 
-        // Q: if the database write fails how do we rollback the blockchain write transaction?
-
-        // TODO database commit/rollback
-
-        // 4. write the job id, hash and blob to the database with the image
-        var body = JSON.stringify({
-            database: dbelements.databaseName,
-            table: dbelements.databaseTable,
-            id: formData.jobReference,
-            hash: myhash,
-            image: blob
-        });
-        const dp = new DatabaseProcessor(dbelements.databaseUri);
-
-        dp.transactionPut(body);
-
-        // TODO error checking here
-
+        // TODO Commit Database transaction: update committed column to "true"
         clearLoader();
         await displaySuccessPopup('Job Ad Successfully Posted!');
         window.location = "recruiter-dashboard.html";
     }
+
 }
 
 
 const manageJobAdHandler = async (displayData) => {
-    let remaining=sessionStorage.getItem('remaining');
+    let remaining = sessionStorage.getItem('remaining');
     console.log("REMAINING = " + remaining);
     if (remaining > 0) {
         enableCreateJobButton(remaining);
     }
-   
+
     var email = sessionStorage.getItem('email');
     const data = manageJobAdsView.getFormData(email);
 
@@ -241,27 +292,26 @@ const manageJobAdHandler = async (displayData) => {
     const tp = new TransactionProcessor(data, strings.getJobPostingsUrl);
     if (displayData) {
         renderLoader(elements.madForm);
-        var rows = await tp.transaction();
+        state.rows = await tp.transaction();
 
         var err = null;
-        if (rows.error !== undefined) {
-            err = rows.error;
+        if (state.rows.error !== undefined) {
+            err = state.rows.error;
         }
         if (err != null) {
             displayErrorPopup('JobPostings filter failed: ' + err.message);
         } else {
-            console.log("--> POP FORM");
-            populateFilterTable(rows);
+            setJobStats(state.rows);
+            populateFilterTable(state.rows, "");
         }
         clearLoader();
     } else {
-        var rows = await tp.transaction();
-        if (rows.error !== undefined) {
+        state.rows = await tp.transaction();
+        if (state.rows.error !== undefined) {
             err = rows.error;
         }
         if (err == null) {
-            populatePostedBy(rows);
-            setJobStats(rows);
+            populatePostedBy(state.rows);
         }
     }
 }
@@ -283,17 +333,52 @@ if (document.URL.includes("managejobads")) {
         e.preventDefault();
         manageJobAdHandler(true);
     });
+    // const bulkType = document.getElementById("bulkType");
+    // bulkType.addEventListener('change', e => {
+    //     e.preventDefault();
+    //     populateFilterTable(state.rows, e.target.value);
+    // });
+
+}
+
+// VIEW JOB
+if (document.URL.includes("displayjob")) {
+    setJobFields();
 }
 
 // CREATEJOBADPAGE
 if (document.URL.includes("createjobad")) {
+
+    quill = new Quill('#editor-container', {
+        modules: {
+            toolbar: [
+                ['bold', 'italic'],
+                [{ 'header': 1 }, { 'header': 2 }],
+                [{ 'indent': '-1' }, { 'indent': '+1' }],          // outdent/indent
+                [{ list: 'ordered' }, { list: 'bullet' }],
+                [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+                [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+                [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                [{ 'font': [] }],
+                [{ 'align': [] }],
+
+
+            ]
+        },
+        placeholder: 'Detail the job description and requirements. Do not add contact information or the job will not be approved.',
+        theme: 'snow'
+
+    });
     state.page = elementConsts.CREATEJOBADPAGE;
     var submitJobBtn = elements.createjobbutton;
+    console.log(">>>>>>>>>>>>>>>> QUACK email in storage = " + sessionStorage.getItem('email'));
     createJobAdView.setEmail(sessionStorage.getItem('email'));
     createJobAdView.setCompany(sessionStorage.getItem('company'));
     submitJobBtn.addEventListener('click', e => {
         e.preventDefault();
         createJobAdHandler();
+
+        console.log(quill.root.innerHTML);
     });
 
     var fields = elements.inputFields;
@@ -303,9 +388,9 @@ if (document.URL.includes("createjobad")) {
             createJobAdView.validateField(e.target);
         });
     }
-    elements.description.addEventListener("blur", (e) => {
-        createJobAdView.validateField(e.target);
-    });
+    // elements.description.addEventListener("blur", (e) => {
+    //     createJobAdView.validateField(e.target);
+    // });
 
     var jobType = elements.jobtype;
     jobType.addEventListener("change", (e) => {
@@ -315,10 +400,10 @@ if (document.URL.includes("createjobad")) {
     bchain.addEventListener("change", (e) => {
         clearError(document.getElementById("blockchain-error"));
     });
-    var description = elements.description;
-    description.addEventListener("change", (e) => {
-        clearError(document.getElementById("description-error"));
-    });
+    // var description = elements.description;
+    // description.addEventListener("change", (e) => {
+    //     clearError(document.getElementById("description-error"));
+    // });
 
     document.querySelector("#file-1").addEventListener('change', function () {
 
@@ -453,7 +538,6 @@ window.onload = () => {
     navBarSetLoggedIn(state.loggedIn);
 }
 
-
 var signins = elements.signins;
 if (state.loggedIn === true) {
     for (i = 0; i < signins.length; i++) {
@@ -483,4 +567,5 @@ const displayErrorPopup = async (theText) => {
         confirmButtonColor: '#cc6d14',
     });
 };
+
 
