@@ -7,7 +7,7 @@
     box-shadow: 0;
     padding: 1rem 3rem;
     cursor: pointer;
-    transition: color 1s ease, background 1s ease;
+    transition: color 0.3s ease, background 0.3s ease;
     &:hover {
         background: $button-hover-background;
         color: $button-hover-color;

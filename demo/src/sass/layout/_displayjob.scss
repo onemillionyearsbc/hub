@@ -1,12 +1,13 @@
 .viewjob {
     font-family: inherit;
     padding-top: 3rem;
-    
+    height: 100%;
+    padding-bottom: 5rem;
     &__parent {
         margin-left: $site-global-margin;
         margin-right: $site-global-margin;
         background: $color-white;
-        // height: 100rem;
+      
        
         .title {
             padding-top: 2rem;
@@ -16,7 +17,7 @@
             color: #000;
         }
         .body {
-           
+            
             display: flex;/*!important*/
             flex: 1 1 auto;
             .left {
@@ -44,16 +45,19 @@
                     text-decoration: underline;
                     color: $button-orange-background;
                 }
-                // #jobsalary {
-                //     margin-left: 2.5rem;
-                // }
+                
             }
             .right {
-                // display: inline-block;
-                // height: 10rem;
                 align-items: flex-end;
                 width: 20%;
-                padding-right: 15rem;
+                margin-top: 5rem;
+                margin-right: 10rem;
+              
+                img {
+                    max-height: 20rem;
+                    width: auto;
+                    padding-right: 2rem;
+                }
             }
            
         }
@@ -66,36 +70,25 @@
             margin-bottom: 5rem;
         }
         .lowerpane span {
-            // margin-left: 15rem;
             font-size: 2rem;
             font-weight: bold;
             margin-right: 1rem;
-            // color: red;
         }
         .lowerpane p {
-           
             padding-left: 15rem;
             font-size: 2rem;
+       
         }
-        .ql-indent-1 {
-            margin-left: 40px;
+        .lowerpane {
+            padding-bottom: 2rem;
         }
-        .ql-indent-2 {
-            margin-left: 80px;
-        }
-        .ql-indent-3 {
-            margin-left: 120px;
-        }
-        .ql-indent-4 {
-            margin-left: 160px;
-        }
-        .ql-indent-6 {
-            margin-left: 200px;
+        .buttonpanel {
+            text-align: center;
+            padding-bottom: 2rem;
+            button {
+                display: inline-block
+            }
         }
     }
 }
-.container {
-    display: block;
-    height: 100%;
-    // overflow: auto;
-}
+

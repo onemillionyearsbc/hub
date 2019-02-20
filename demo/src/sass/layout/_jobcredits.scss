@@ -8,10 +8,11 @@
        
         .title {
             text-align: center;
-            padding-top: 6rem;
+            // padding-top: 60rem;
             text-transform: uppercase;
             color: #000;
             font-size: 6rem;
+
         }
         .subtitle {
             text-align: center;
@@ -22,7 +23,7 @@
         }
         &--mainpanel {
             height: 2rem;
-            margin-top: 2rem;
+            margin-top: 5rem;
             margin-left: $site-global-margin;
             margin-right: $site-global-margin;
             background: #fff;
@@ -45,6 +46,7 @@
                     background: #fff;
                     .title1 {
                         margin-top: 3rem;
+                        margin-bottom: 2rem;
                         font-size: 1.8rem;
                         font-weight: 600;
                         text-align: center;
@@ -57,9 +59,6 @@
                             font-size: 4rem;
                             font-weight: 400;
                             width: 10rem;
-                            // margin-left: 23rem;
-                            // margin-right: 10rem;
-                           
                             margin-top: 2rem;
                             margin-bottom: 2rem;
                             border-radius: 5px;
@@ -70,6 +69,7 @@
                         margin-left: 2rem;
                         margin-right: 2rem;
                         padding-top: 3rem;
+                        margin-bottom: 3rem;
                         .sliderthings {
                             display: flex;/*!important*/
                             flex: 1 1 auto;

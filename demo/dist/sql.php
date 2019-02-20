@@ -13,7 +13,7 @@
         die(json_encode(array('error' => $msg)));
     }
 
-    function doSQLStatement($conn, $a_sql_string)
+    function doInsertStatement($conn, $a_sql_string)
     {
         $result = mysqli_query($conn, $a_sql_string);
 
@@ -24,5 +24,24 @@
             json_error(mysqli_error($conn)." sql = ".$a_sql_string);
         }
     }
+
+    function doSelectStatement($conn, $a_sql_string)
+    {
+        $sql =  $a_sql_string;
+        $result = $conn->query($sql);
+
+        
+        $arr = array();
+        if ($result->num_rows > 0) {
+            // output data of each row
+            while($row = $result->fetch_assoc()) {
+                $arr[] = $row;
+            }
+            echo json_encode($arr);
+        } else {
+            json_error(mysqli_error($conn)." sql = ".$a_sql_string);
+        }
+    }
+
 
 ?>

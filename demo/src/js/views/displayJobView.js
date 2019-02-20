@@ -1,3 +1,6 @@
+const crypto = require('crypto');
+const Swal = require('sweetalert2');
+
 import { elements, elementConsts, strings } from './base';
 
 export const setJobFields = () => {
@@ -24,43 +27,94 @@ export const setJobFields = () => {
     elements.jobtype.innerHTML = jt;
 
     let expiryDate = sessionStorage.getItem("expiryDate");
-    let postedDate = sessionStorage.getItem("postedDate");
+    let postedDate = sessionStorage.getItem("datePosted");
 
     let jtime = getJobTimeFor(expiryDate, postedDate);
     elements.jobtime.innerHTML = jtime;
+
+    let contact = sessionStorage.getItem("contact");
+    elements.jobcontact.innerHTML = "<span>Contact:</span>" + contact;
+
+    let ref = sessionStorage.getItem("internalRef");
+    elements.jobref.innerHTML = "<span>Reference:</span>" + ref;
+
+    let id = sessionStorage.getItem("jobReference");
+    elements.jobid.innerHTML = "<span>Job Id:</span>" + id;
+
 }
+export const setJobLogo = (image) => {
+    sessionStorage.setItem("logo", image);
+    elements.joblogo.setAttribute('src', image);
+}
+
+export const checkHash = async (image, dbhash) => {
+    // get hash from blockchain
+    // hash the image again...
+    // 1. compare with hash from db
+    // 2. compare with hash from blockchain
+    const myhash = crypto.createHash('sha256') // enables digest
+        .update(image) // create the hash
+        .digest('hex'); // convert to string
+
+    const bchash = sessionStorage.getItem("logohash");
+    if (myhash === bchash && dbhash === bchash) {
+        console.log("HASHES EQUAL!");
+        return true;
+    }
+
+    // TODO move swal stuff into separate file (and hash crypto code)
+    if (myhash !== bchash) {
+        console.log("HASH DISCREPANCY; hash from blockchain = " + bchash + "; hash of image from db = " + myhash);
+        await Swal({
+            title: 'HASH DISCREPANCY...DATA ALERT!',
+            text: "hash from blockchain = " + bchash + "\n hash of image from db = " + myhash,
+            type: 'error',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#cc6d14',
+        });
+        return false;
+    }
+    if (dbhash !== bchash) {
+        console.log("HASH DISCREPANCY; hash from blockchain = " + bchash + "; hash from db = " + dbhash);
+        await Swal({
+            title: 'HASH DISCREPANCY...DATA ALERT!',
+            text: "hash from blockchain = " + bchash + "\n hash from db = " + myhash,
+            type: 'error',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#cc6d14',
+        });
+        return false;
+    }
+}
+
+
+
+
 
 function getJobTimeFor(expiryDate, postedDate) {
     const ed = new Date(expiryDate);
     const pd = new Date(postedDate);
     const now = new Date();
 
+    console.log("ed = " + ed + "; pd = " + pd);
     // if within 5 days of expiring put expires in x days
-    let timeDiff = Math.abs(now.getTime() - ed.getTime());
-    let dayDifference = Math.ceil(timeDiff / (1000 * 3600 * 24));
+    let timeDiff = ed.getTime() - now.getTime();
+    let dayDifference = Math.round(timeDiff / (1000 * 3600 * 24));
+
     if (dayDifference < 0) {
         return "EXPIRED";
     } else if (dayDifference == 0) {
         return "Expires today"
-    } else if (dayDifference <=5) {
+    } else if (dayDifference <= 5) {
         return "Expires in " + dayDifference + " days";
     }
-    
-    timeDiff = Math.abs(pd.getTime - now.getTime());
-    dayDifference = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+    timeDiff = now.getTime() - pd.getTime();
+    dayDifference = Math.round(timeDiff / (1000 * 3600 * 24));
+    if (dayDifference == 0) {
+        return "Posted today";
+    }
     return ("Posted " + dayDifference + " days ago");
-
-
-
-    // const dd = expiryDate.getDate() <= 9 ? "0" + (expiryDate.getDate()) : (expiryDate.getDate());
-    // const mm = expiryDate.getMonth() <= 8 ? "0" + (expiryDate.getMonth() + 1) : (expiryDate.getMonth() + 1);
-
-    // var ed = dd + "/" + (mm) + "/" + expiryDate.getFullYear();
-
-    // const datePosted = new Date(rows[i].datePosted);
-    // const d2 = datePosted.getDate() <= 9 ? "0" + (datePosted.getDate()) : (datePosted.getDate());
-    // const m2 = datePosted.getMonth() <= 8 ? "0" + (datePosted.getMonth() + 1) : (datePosted.getMonth() + 1);
-    // var dp = d2 + "/" + (m2) + "/" + datePosted.getFullYear();
 }
 
 function getJobTypeFor(jobType) {

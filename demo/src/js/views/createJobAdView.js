@@ -57,7 +57,18 @@ function getSkills(skills) {
     if (skills === "") {
         return "";
     }
-    return skills.split("/[ ,]+/");
+    let skillsArr = skills.match(/"[^"]*"|\S+/g);
+   
+    // remove double quotes around any multi word strings
+    for (var i = 0; i < skillsArr.length; i++) {
+        if (skillsArr[i].charAt(0) === '"' && skillsArr[i].charAt(skillsArr[i].length-1) === '"') {
+            skillsArr[i] = skillsArr[i].substr(1, skillsArr[i].length-2);
+        } else {
+            console.log(i + " -> MOOO!");
+        }
+    }
+    console.log("Skills list = " + skillsArr + "; length = " + skillsArr.length);
+    return skillsArr;
 }
 
 function calculateJobReference() {
@@ -125,11 +136,8 @@ export const validateData = (data) => {
         var x = document.getElementById("internalref-error");
         checkStyle(x);
     }
-    console.log("data.location length = " + data.location.length);
-    console.log("data.remote = " + data.remote);
     if (data.location.length === 0 && data.remote === "false") {
         error = true;
-        console.log("YES ERROR");
         var x = document.getElementById("location-error");
         checkStyle(x);
     }

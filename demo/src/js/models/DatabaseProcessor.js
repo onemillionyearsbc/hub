@@ -21,15 +21,15 @@ export default class DatabaseProcessor {
                 },
                 body: data
             });
-
+            
             var text = await resp.text();
-           
+
             var obj = JSON.parse(text);
-           
+
             var resp = obj.error;
             if (resp != undefined) {
                 console.log(">>>>> error text = " + resp);
-                return resp;
+                throw resp;
             } else {
                 // everything ok: print out the JSON properties received
                 console.log(">>>>> everything ok! = ");
@@ -37,12 +37,12 @@ export default class DatabaseProcessor {
                     console.log(property + ": " + obj[property]);
                 }
             }
-            return null; // no error
-           
+            return obj; // no error
+
 
         } catch (error) {
             console.log("+++++ PUT ERROR, err = " + error);
-            return error;
+            throw error;
         }
     }
 

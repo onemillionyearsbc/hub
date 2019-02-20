@@ -54,11 +54,16 @@ export const elements = {
     jobcompany: document.getElementById("jobcompany"),
     jobtype: document.getElementById("jobtype"),
     jobtime: document.getElementById("jobtime"),
-    jobdescription: document.getElementById("jobdescription")
+    jobdescription: document.getElementById("jobdescription"),
+    jobcontact: document.getElementById("jobcontact"),
+    jobref: document.getElementById("jobref"),
+    jobid: document.getElementById("jobid"),
+    joblogo: document.getElementById("joblogo"),
 };
 
 export const dbelements = {
-    databaseUri: "http://localhost:8083/apiput.php", // TODO change to ip of server
+    databaseInsertUri: "http://localhost:8083/sqlinsert.php", // TODO change to ip of server
+    databaseSelectUri: "http://localhost:8083/sqlselectbyid.php", // TODO change to ip of server
     databaseTable: "company_logo",
     databaseName: "hubdb"
 };
@@ -220,9 +225,7 @@ export function enableCreateJobButton(remaining) {
 }
 
 export function getSelectedOption(sel) {
-    console.log("+++++++++++ Looking for value of " + sel);
     if (sel.options[sel.selectedIndex].disabled === false) {
-        console.log("+++++++++++ sel.value = " + sel.value);
         return sel.value;
     }
     return "";

@@ -19,7 +19,7 @@ import { setJobAdsNumber, setTotalJobPrice, restyle, adjustSlider, getBuyJobCred
 import DatabaseProcessor from './models/DatabaseProcessor';
 import ImageLoader from './models/ImageLoader';
 import { populateFilterTable, populatePostedBy, setJobStats } from './views/manageJobAdsView';
-import { setJobFields } from './views/displayJobView';
+import { setJobFields, setJobLogo, checkHash } from './views/displayJobView';
 
 const state = {};
 var quill;
@@ -204,8 +204,8 @@ const getJobAdsHandler = async () => {
 }
 
 const createJobAdHandler = async () => {
-    var email = sessionStorage.getItem('email');
-    const formData = createJobAdView.getFormData(email, quill.root.innerHTML);
+    var myemail = sessionStorage.getItem('email');
+    const formData = createJobAdView.getFormData(myemail, quill.root.innerHTML);
     const error = createJobAdView.validateData(formData);
 
     if (error) {
@@ -227,32 +227,42 @@ const createJobAdHandler = async () => {
     formData.logohash = myhash;
 
     // 3. write the job id and hash to the database with the image
+
+    // This should go in a createJobModel class really
     var body = JSON.stringify({
         database: dbelements.databaseName,
         table: dbelements.databaseTable,
+        email: myemail,
         id: formData.jobReference,
         hash: myhash,
         image: blob
     });
-    const dp = new DatabaseProcessor(dbelements.databaseUri);
+    const dp = new DatabaseProcessor(dbelements.databaseInsertUri);
 
-    var result = await dp.transactionPut(body);
-
-    // var err = null;
-    if (result !== undefined && result != null) {
-        err = result.error;
-        if (result.error === undefined) {
-            clearLoader();
-            displayErrorPopup('Database put failed: ' + result);
-            return;
-        }
-    }
-    if (err != null) {
+    var result;
+    try {
+        result = await dp.transactionPut(body);
+    } catch (error) {
         clearLoader();
-        displayErrorPopup('Database put failed: ' + err.message);
-        // TODO error checking here
+        displayErrorPopup('Database put failed: ' + error);
         return;
     }
+    
+    // // var err = null;
+    // if (result !== undefined && result != null) {
+    //     err = result.error;
+    //     if (result.error === undefined) {
+    //         clearLoader();
+    //         displayErrorPopup('Database put failed: ' + result);
+    //         return;
+    //     }
+    // }
+    // if (err != null) {
+    //     clearLoader();
+    //     displayErrorPopup('Database put failed: ' + err.message);
+    //     // TODO error checking here
+    //     return;
+    // }
 
     // if database succeeds...add to the blockchain
     state.login = new TransactionProcessor(formData, strings.createJobAdUrl);
@@ -272,9 +282,43 @@ const createJobAdHandler = async () => {
         // TODO Commit Database transaction: update committed column to "true"
         clearLoader();
         await displaySuccessPopup('Job Ad Successfully Posted!');
-        window.location = "recruiter-dashboard.html";
+        // window.location = "recruiter-dashboard.html";
     }
 
+}
+const displayJobHandler = async () => {
+    setJobFields();
+    // var logo=getLogoFromDataStore();
+
+    var body = JSON.stringify({
+        database: dbelements.databaseName,
+        table: dbelements.databaseTable,
+        id: sessionStorage.getItem("jobReference")
+    });
+    
+    const dp = new DatabaseProcessor(dbelements.databaseSelectUri);
+
+    var result;
+    try {
+        result = await dp.transactionPut(body);
+    } catch (error) {
+        displayErrorPopup('Database select image failed: ' + error);
+        clearLoader();
+        return;
+    }
+   
+    clearLoader();
+    if (result.length != 1) {
+        displayErrorPopup('Database select image failed: number rows = ' + result.length);
+    }
+    const row0 = result[0];
+    for (var property in row0) {
+        console.log(property + ": " + row0[property]);
+    }
+    const retVal = await checkHash(row0["image"], row0["hash"]);
+    if (retVal === true) {
+        setJobLogo(row0["image"]);
+    } 
 }
 
 
@@ -343,7 +387,7 @@ if (document.URL.includes("managejobads")) {
 
 // VIEW JOB
 if (document.URL.includes("displayjob")) {
-    setJobFields();
+    displayJobHandler();
 }
 
 // CREATEJOBADPAGE
