@@ -59,7 +59,7 @@ transaction BuyJobCredits {
   o Integer		credits
 }
 
-transaction CreateJobPosting {
+concept JobPostingParameters {
   o String    jobReference
   o String    email
   o String    company
@@ -80,6 +80,18 @@ transaction CreateJobPosting {
   o String      logohash
 
   o Boolean     testData default=false // if set to true will generate random datePosted in the past (for testing)
+}
+transaction CreateJobPosting {
+  o JobPostingParameters params
+}
+
+transaction UpdateJobPosting {
+  o JobPostingParameters params
+}
+
+transaction expireJobPosting {
+  o String    jobReference
+  o String    email
 }
 
 enum JobFilterType {

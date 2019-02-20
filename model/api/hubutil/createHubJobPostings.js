@@ -20,13 +20,7 @@ const transactionType = "CreateJobPosting";
 var refCount = [0,0,0,0,0];
 
 bnUtil.cardName='admin@hubtutorial';
-if(process.argv.length < 3){
-    console.log("Usage: node createHubAccounts   <card-name> ")
-    console.log("Amending Network using a card: ",bnUtil.cardName);
-} else {
-    bnUtil.cardName = process.argv[2];
-    console.log("Amending Network using a card: ",bnUtil.cardName);
-}
+
 // bnUtil.connect(removeRecruitersAndJobSeekers);
 try{
     bnUtil.connect(main);
@@ -40,6 +34,12 @@ try{
 // Error has value if there was an error in connect()
 async function main(){
 
+    var email="";
+    var randEmail = true;
+    if (process.argv.length == 3) {
+        console.log("using email: " + process.argv[2]);
+        email=process.argv[2];
+    }
     // start();
     const  bnDef = bnUtil.connection.getBusinessNetwork();
     const  factory = bnDef.getFactory();
@@ -50,9 +50,19 @@ async function main(){
     
     console.log('Received Registry: ', registry.id);
     var recruiters = await registry.getAll();
-  
+    if (email != "") {
+        console.log("trying to find " + email);
+        for (var i = 0; i < recruiters.length; i++) {
+            if (recruiters[i].email === email) {
+                company = recruiters[i].company;
+                randEmail = false;
+                console.log("---> Found!");
+                break;
+            }
+        }
+    }
     console.log('Retrieved Hub recruiters : ', recruiters.length);
-
+     
 
     const assetNamespace = 'io.onemillionyearsbc.hubtutorial.jobs';
     const jobAdsResourceName = 'JobAds';
@@ -90,11 +100,13 @@ async function main(){
    // var email = 'emerysolutions@yahoo.co.uk';
     // var company = getRandomArrayElement(companyArray);
 
-    for (var i = 0; i < 1000; i++) {
+    for (var i = 0; i < 10; i++) {
 
         let accountIndex = getRandomIndex(0,recruiters.length-1);
-        var email = recruiters[accountIndex].email;
-        var company = recruiters[accountIndex].company;
+        if(randEmail === true) {
+            email = recruiters[accountIndex].email;
+            company = recruiters[accountIndex].company;
+        }
 
         var jobReference = new Date().getTime().toString().substr(-8);
 
@@ -167,7 +179,7 @@ async function main(){
 
 
         try {
-            bnUtil.connection.submitTransaction(transaction);
+            await bnUtil.connection.submitTransaction(transaction);
             console.log("Transaction processed: Job Posting created for email " + email)
 
         } catch (error) {
@@ -306,7 +318,7 @@ var salaryContractorArray = [
 ]
 
 var countriesArray = ["Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua & Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bermuda", "Bhutan", "Bolivia", "Bosnia & Herzegovina", "Botswana", "Brazil", "British Virgin Islands", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cambodia", "Cameroon", "Canada", "Cape Verde", "Cayman Islands", "Central Arfrican Republic", "Chad", "Chile", "China", "Colombia", "Congo", "Cook Islands", "Costa Rica", "Cote D Ivoire", "Croatia", "Cuba", "Curacao", "Cyprus", "Czech Republic", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Ethiopia", "Falkland Islands", "Faroe Islands", "Fiji", "Finland", "France", "French Polynesia", "French West Indies", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Gibraltar", "Greece", "Greenland", "Grenada", "Guam", "Guatemala", "Guernsey", "Guinea", "Guinea Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Isle of Man", "Israel", "Italy", "Jamaica", "Japan", "Jersey", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Kosovo", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Macau", "Macedonia", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauro", "Nepal", "Netherlands", "Netherlands Antilles", "New Caledonia", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Korea", "Norway", "Oman", "Pakistan", "Palau", "Palestine", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Reunion", "Romania", "Russia", "Rwanda", "Saint Pierre & Miquelon", "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Korea", "South Sudan", "Spain", "Sri Lanka", "St Kitts & Nevis", "St Lucia", "St Vincent", "Sudan", "Suriname", "Swaziland", "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Timor L'Este", "Togo", "Tonga", "Trinidad & Tobago", "Tunisia", "Turkey", "Turkmenistan", "Turks & Caicos", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States of America", "Uruguay", "Uzbekistan", "Vanuatu", "Vatican City", "Venezuela", "Vietnam", "Virgin Islands (US)", "Yemen", "Zambia", "Zimbabwe"];
-        
+
 var skillsArray = ["JavaScript", "NodeJS","Web", "C++", "Typescript", "Java", "Python", "Rust", "PHP", "Go", 
 "UNIX", "Oracle", "MySQL", "NOSQL", "C#", "CSS/HTML5"]
 

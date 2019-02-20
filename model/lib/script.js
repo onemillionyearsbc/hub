@@ -298,15 +298,15 @@ async function GetJobPostingsDynamic(filterCriteria) {
         filter.filterBy = filterCriteria.filterBy;
     } 
     if (filterCriteria.dateFrom != "") {
-        and += " AND (datePosted < _$dateFrom)";
+        and += " AND (datePosted > _$dateFrom)";
         filter.dateFrom = filterCriteria.dateFrom;
     } 
     if (filterCriteria.dateTo != "") {
-        and += " AND (datePosted > _$dateTo)";
+        and += " AND (datePosted < _$dateTo)";
         filter.dateTo = filterCriteria.dateTo;
     } 
     if (filterCriteria.user != "") {
-        and += " AND (user == _$user)";
+        and += " AND (contact == _$user)";
         filter.user = filterCriteria.user;
     } 
     if (filterCriteria.filterType != "" && filterCriteria.filterType != "ALL") {
@@ -354,14 +354,14 @@ async function CreateJobPosting(credentials) {
     var factory = getFactory();
  	var jobAdsRegistry = await getAssetRegistry(NSJOBS + '.JobAds');
 
-    var user = await jobAdsRegistry.get(credentials.email);
+    var user = await jobAdsRegistry.get(credentials.params.email);
   
   	// check this user has remaining job credits 
     if (user.remaining == 0) {
       throw new Error("No job credits remaining");
     }
 
-    var posting = fillPosting(NSJOBS, factory,credentials);
+    var posting = fillPosting(NSJOBS, factory, credentials.params);
   	
   	// TODO set JobAds data
 
@@ -371,7 +371,7 @@ async function CreateJobPosting(credentials) {
   
     const participantRegistry = await getParticipantRegistry(NS + '.HubRecruiter');
 
-    var recruiter = await participantRegistry.get(credentials.email);
+    var recruiter = await participantRegistry.get(credentials.params.email);
 
     if (recruiter.jobPostings == undefined) {
         recruiter.jobPostings = new Array();
@@ -382,9 +382,12 @@ async function CreateJobPosting(credentials) {
     participantRegistry.update(recruiter);
   
     // Update JobAds stats object
-   
-
-    user.live += 1;
+    if (credentials.params.testData === true) {
+    // if datePosted > today -1 month
+        user.live += 1;
+    } else {
+        user.live += 1;
+    }
   	user.posted += 1;
     user.remaining -= 1;
 
@@ -392,8 +395,52 @@ async function CreateJobPosting(credentials) {
     await jobAdsRegistry.update(user);
 }
 
-function fillPosting(NSJOBS, factory,credentials) {
+/**
+ * Update JobPosting
+ * @param {io.onemillionyearsbc.hubtutorial.jobs.UpdateJobPosting} credentials
+ * @transaction
+ */
+async function UpdateJobPosting(credentials) {
+    var NSJOBS = 'io.onemillionyearsbc.hubtutorial.jobs';
+    var factory = getFactory();
+
+    const jobPostingRegistry = await getAssetRegistry(NSJOBS + '.JobPosting');
+
+    var existingPosting = await jobPostingRegistry.get(credentials.params.jobReference);
+
+    var posting = fillJobAdParams(existingPosting, credentials.params);
+
+    await jobPostingRegistry.update(posting);
+}
+
+function fillPosting(NSJOBS, factory, credentials) {
     var posting = factory.newResource(NSJOBS, 'JobPosting', credentials.jobReference);
+   
+    fillJobAdParams(posting, credentials);
+
+  	// The calculated stuff...
+    var d = new Date();
+      
+    if (credentials.testData === true) {
+        var min = 1;
+
+        var max = 60;
+        // set date to random number of days in the past between 1 and 60
+        var days = Math.round(Math.random() * (max - min)) + min;
+        d = new Date(d.getTime() - days*24*60*60*1000);
+    }
+  	posting.datePosted = d;
+  
+  	var dplus1Month = new Date(d.getFullYear(), d.getMonth() +1, d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds(),d.getMilliseconds());
+  	posting.expiryDate = dplus1Month;
+  
+  	posting.views = 0;
+    posting.applications = 0;
+      
+    return posting;
+}
+
+function fillJobAdParams(posting, credentials) {
     posting.email = credentials.email;
     posting.jobReference = credentials.jobReference;
     posting.company = credentials.company;
@@ -416,25 +463,31 @@ function fillPosting(NSJOBS, factory,credentials) {
     }
 
   	posting.logohash = credentials.logohash;
-  
-  	// The calculated stuff...
-    var d = new Date();
-      
-    if (credentials.testData === true) {
-        var min = 1;
-
-        var max = 60;
-        // set date to random number of days in the past between 1 and 60
-        var days = Math.round(Math.random() * (max - min)) + min;
-        d = new Date(d.getTime() - days*24*60*60*1000);
-    }
-  	posting.datePosted = d;
-  
-  	var dplus1Month = new Date(d.getFullYear(), d.getMonth() +1, d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds(),d.getMilliseconds());
-  	posting.expiryDate = dplus1Month;
-  
-  	posting.views = 0;
-    posting.applications = 0;
-      
     return posting;
 }
+
+/*
+{
+    "$class": "io.onemillionyearsbc.hubtutorial.jobs.UpdateJobPosting",
+    "params": {
+      "$class": "io.onemillionyearsbc.hubtutorial.jobs.JobPostingParameters",
+      "jobReference": "1100",
+    "email": "a.hitler@nazis.com",
+    "company": "Nazi Party",
+    "jobType": "FULLTIME",
+    "remote": false,
+    "jobTitle": "Clever Statesman",
+    "blockchainName": "ETHEREUM",
+    "description": "clever gent needed for Berlin politics job",
+    "contact": "A.Speer",
+    "internalRef": "AS01",
+    "employer": true,
+    "skills": [
+      "Economics",
+      "Architecture"
+    ],
+    "logohash": "baef234efd45689a4",
+      "testData": false
+    }
+  }
+  */
