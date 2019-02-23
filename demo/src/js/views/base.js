@@ -20,6 +20,10 @@ export const elements = {
     companyName: document.getElementById("companyName"),
     company: document.getElementById("company"),
     contact: document.getElementById("contact"),
+    internalref: document.getElementById("internalref"),
+    skills: document.getElementById("skills"),
+    salary: document.getElementById("salary"),
+    location: document.getElementById("location"),
     dashboard: document.getElementById("dash"),
     createBtn: document.getElementById("createBtn"),
     mainWindow: document.getElementById("main"),
@@ -47,22 +51,24 @@ export const elements = {
     dateFrom: document.getElementById("datefrom"),
     dateTo: document.getElementById("dateto"),
     bulkType: document.getElementById("bulkType"),
-    viewJob: document.getElementById("viewjob"),
+    viewJob: document.getElementById("displayjob"),
     jobtitle: document.getElementById("jobtitle"),
     joblocation: document.getElementById("joblocation"),
     jobsalary: document.getElementById("jobsalary"),
     jobcompany: document.getElementById("jobcompany"),
-    jobtype: document.getElementById("jobtype"),
     jobtime: document.getElementById("jobtime"),
     jobdescription: document.getElementById("jobdescription"),
     jobcontact: document.getElementById("jobcontact"),
     jobref: document.getElementById("jobref"),
     jobid: document.getElementById("jobid"),
     joblogo: document.getElementById("joblogo"),
+    amendjobbutton: document.getElementById("amendjobbutton"),
+    expirejobbutton: document.getElementById("expirejobbutton"),
+    jobdescription: document.getElementById("jobdescription")
 };
 
 export const dbelements = {
-    databaseInsertUri: "http://localhost:8083/sqlinsert.php", // TODO change to ip of server
+    databaseInsertUri: "http://localhost:8083/sqlinsert.php", // TODO change to ip of server (CONFIG)
     databaseSelectUri: "http://localhost:8083/sqlselectbyid.php", // TODO change to ip of server
     databaseTable: "company_logo",
     databaseName: "hubdb"
@@ -84,7 +90,10 @@ var setLoggedInTransaction = "io.onemillionyearsbc.hubtutorial.SetLoggedIn";
 var buyJobAdsTransaction = "io.onemillionyearsbc.hubtutorial.jobs.BuyJobCredits";
 var getJobAdsTransaction = "io.onemillionyearsbc.hubtutorial.jobs.GetJobAds";
 var createJobAdTransaction = "io.onemillionyearsbc.hubtutorial.jobs.CreateJobPosting";
+var updateJobAdTransaction = "io.onemillionyearsbc.hubtutorial.jobs.UpdateJobPosting";
 var getJobPostingsTransaction = "io.onemillionyearsbc.hubtutorial.jobs.GetJobPostingsDynamic";
+var expireJobAdTransaction = "io.onemillionyearsbc.hubtutorial.jobs.ExpireJobPosting";
+
 
 export const strings = {
     loader: 'loader',
@@ -99,6 +108,8 @@ export const strings = {
     buyJobAdsTransaction: `${buyJobAdsTransaction}`,
     getJobAdsTransaction: `${getJobAdsTransaction}`,
     createJobAdTransaction: `${createJobAdTransaction}`,
+    updateJobAdTransaction: `${updateJobAdTransaction}`,
+    expireJobAdTransaction: `${expireJobAdTransaction}`,
     getJobPostingsTransaction: `${getJobPostingsTransaction}`,
     loginRecruiterUrl: `http://${ipAddress}:3000/api/${recruiterLoginTransaction}`,
     loginJobSeekerUrl: `http://${ipAddress}:3000/api/${jobSeekerLoginTransaction}`,
@@ -108,6 +119,8 @@ export const strings = {
     buyJobAdsUrl: `http://${ipAddress}:3000/api/${buyJobAdsTransaction}`,
     getJobAdsurl: `http://${ipAddress}:3000/api/${getJobAdsTransaction}`,
     createJobAdUrl: `http://${ipAddress}:3000/api/${createJobAdTransaction}`,
+    updateJobAdUrl: `http://${ipAddress}:3000/api/${updateJobAdTransaction}`,
+    expireJobAdUrl: `http://${ipAddress}:3000/api/${expireJobAdTransaction}`,
     getJobPostingsUrl: `http://${ipAddress}:3000/api/${getJobPostingsTransaction}`,
     beginningOfTime: "1970-01-01T15:11:47.728Z",
     endOfTime: "3070-01-01T15:11:47.728Z",
@@ -161,6 +174,13 @@ export const renderLoader = parent => {
 export const renderLoaderEnd = parent => {
     const loader = `
         <div style="top:65%"class="${strings.loader}"></div>
+    `;
+    parent.insertAdjacentHTML('beforeend', loader); // beforeend means insert before the end of the parent element
+};
+
+export const renderLoaderEndByNumber = (parent, percent) => {
+    const loader = `
+        <div style="top:${percent}%"class="${strings.loader}"></div>
     `;
     parent.insertAdjacentHTML('beforeend', loader); // beforeend means insert before the end of the parent element
 };

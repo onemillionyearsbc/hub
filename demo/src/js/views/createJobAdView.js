@@ -1,5 +1,6 @@
 import { elements, strings, checkStyle, clearError, getSelectedOption } from './base';
 
+
 export const setEmail = (email) => {
     var emailElement = document.getElementById("email");
     emailElement.value = email;
@@ -14,7 +15,77 @@ export const setCompany = (company) => {
     companyElement.style.color = "#aaa";
 }
 
-export const getFormData = (email, html) => {
+export const setAmendFields = () => {
+
+    // title
+    let paj = document.getElementById("postajob");
+    paj.innerHTML = "Update Job: " + sessionStorage.getItem("jobReference");
+
+    // job type
+    let jobType = sessionStorage.getItem("jobType");
+    elements.jobtype.value = jobType;
+    elements.jobtype.style.color = 'black';
+
+    // job title
+    var jt = sessionStorage.getItem("jobTitle");
+    elements.jobtitle.value = jt;
+    var placeholder = document.getElementById("bollocks1");
+    placeholder.style.display = "block";
+
+    // logo
+    var image = sessionStorage.getItem("logo");
+    setLogoFileAndImage("", image);
+
+    // remote
+    var remote = sessionStorage.getItem("remote");
+    if (remote === "true") {
+        document.getElementById("yesremote").checked = true;
+    } else {
+        document.getElementById("noremote").checked = true;
+    }
+
+    // blockchain name
+    var bt = sessionStorage.getItem("blockchainName");
+    elements.blockchain.value = bt;
+    placeholder = document.getElementById("bollocks2");
+    placeholder.style.display = "block";
+    elements.blockchain.style.color = 'black';
+
+    // contact
+    var contact = sessionStorage.getItem("contact");
+    elements.contact.value = contact;
+
+    // internal ref
+    var iref = sessionStorage.getItem("internalRef");
+    elements.internalref.value = iref;
+
+    // skills
+    let skills = sessionStorage.getItem("skills");
+    elements.skills.value = skills;
+
+    // employer/agency
+    var employer = sessionStorage.getItem("employer");
+    if (employer === true) {
+        document.getElementById("employer").checked = true;
+    } else {
+        document.getElementById("agency").checked = true;
+    }
+
+    // salary
+    let salary = sessionStorage.getItem("salary");
+    elements.salary.value = salary;
+
+    // location
+    let location = sessionStorage.getItem("location");
+    elements.location.value = location;
+
+    // description
+    let htmlToInsert = sessionStorage.getItem("description");
+    var editor = document.getElementsByClassName('ql-editor')
+    editor[0].innerHTML = htmlToInsert;
+}
+
+export const getFormData = (email, html, transaction) => {
     var form = elements.adForm;
     var el = form.querySelectorAll('input');
     var myData = {};
@@ -26,22 +97,28 @@ export const getFormData = (email, html) => {
     };
 
     var formData = {
-        $class: strings.createJobAdTransaction,
-        jobReference: calculateJobReference(),
-        email: email,
-        company: myData["company"],
-        jobTitle: myData["jobtitle"],
-        remote: getRemote(),
-        jobType: getSelectedOption(elements.jobtype),
-        blockchainName: getSelectedOption(elements.blockchain),
-        description: html,
-        contact: myData["contact"],
-        internalRef: myData["internalref"],
-        employer: getEmployer(),
-        salary: myData["salary"],
-        location: myData["location"],
-        skills: getSkills(myData["skills"])
+        $class: transaction,
+        params: {
+            $class: "io.onemillionyearsbc.hubtutorial.jobs.JobPostingParameters",
+            jobReference: calculateJobReference(),
+            email: email,
+            company: myData["company"],
+            jobTitle: myData["jobtitle"],
+            remote: getRemote(),
+            jobType: getSelectedOption(elements.jobtype),
+            blockchainName: getSelectedOption(elements.blockchain),
+            description: html,
+            contact: myData["contact"],
+            internalRef: myData["internalref"],
+            employer: getEmployer(),
+            salary: myData["salary"],
+            location: myData["location"],
+            skills: getSkills(myData["skills"])
+        }
     };
+    if (document.querySelector("#imgs").getAttribute('src') === "") {
+        sessionStorage.setItem("logohash", "");
+    }
     return formData;
 }
 
@@ -58,11 +135,11 @@ function getSkills(skills) {
         return "";
     }
     let skillsArr = skills.match(/"[^"]*"|\S+/g);
-   
+
     // remove double quotes around any multi word strings
     for (var i = 0; i < skillsArr.length; i++) {
-        if (skillsArr[i].charAt(0) === '"' && skillsArr[i].charAt(skillsArr[i].length-1) === '"') {
-            skillsArr[i] = skillsArr[i].substr(1, skillsArr[i].length-2);
+        if (skillsArr[i].charAt(0) === '"' && skillsArr[i].charAt(skillsArr[i].length - 1) === '"') {
+            skillsArr[i] = skillsArr[i].substr(1, skillsArr[i].length - 2);
         } else {
             console.log(i + " -> MOOO!");
         }
@@ -72,6 +149,9 @@ function getSkills(skills) {
 }
 
 function calculateJobReference() {
+    if (sessionStorage.getItem("amend") === "true") {
+        return sessionStorage.getItem("jobReference");
+    }
     return new Date().getTime().toString().substr(-8);
 }
 
@@ -85,10 +165,20 @@ export const clearValidationErrorMessages = () => {
 
 export const validateField = (element) => {
 
+    console.log("VALIDATING: " + element.id);
     var x;
     x = document.getElementById(`${element.id}-error`);
 
     if (x == null) {
+        return;
+    }
+    if (element.id === "location") {
+        console.log("PARP 2 ! data.remote = " + getRemote());
+        if (element.value.length === 0 && getRemote() === "false") {
+            var x = document.getElementById("location-error");
+            checkStyle(x);
+        } else {
+            clearError(x);        }
         return;
     }
     if (element.value.length === 0) {
@@ -136,6 +226,7 @@ export const validateData = (data) => {
         var x = document.getElementById("internalref-error");
         checkStyle(x);
     }
+    console.log("PARP ! data.remote = " + data.remote);
     if (data.location.length === 0 && data.remote === "false") {
         error = true;
         var x = document.getElementById("location-error");

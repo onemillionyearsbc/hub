@@ -7,9 +7,16 @@ export const setJobFields = () => {
     let description = sessionStorage.getItem("description");
     elements.jobdescription.innerHTML = description;
 
+    
     let location = sessionStorage.getItem("location");
-    elements.joblocation.innerHTML = location;
-
+   
+    if (sessionStorage.getItem("remote") === "true") {
+        elements.joblocation.innerHTML = "REMOTE";
+        elements.joblocation.style.color = "red";
+    } else {
+        elements.joblocation.innerHTML = location;
+    }
+   
     let title = sessionStorage.getItem("jobTitle");
     elements.jobtitle.innerHTML = title;
 
@@ -43,6 +50,7 @@ export const setJobFields = () => {
 
 }
 export const setJobLogo = (image) => {
+    console.log("IMAGE ->>>>" + image);
     sessionStorage.setItem("logo", image);
     elements.joblogo.setAttribute('src', image);
 }
@@ -87,7 +95,14 @@ export const checkHash = async (image, dbhash) => {
     }
 }
 
-
+export const getExpireJobData = (mail, ref) => {
+    var expireJobData = {
+        $class: strings.expireJobAdTransaction,
+        email: mail,
+        jobReference: ref
+    };
+    return expireJobData;
+ }
 
 
 
@@ -101,7 +116,7 @@ function getJobTimeFor(expiryDate, postedDate) {
     let timeDiff = ed.getTime() - now.getTime();
     let dayDifference = Math.round(timeDiff / (1000 * 3600 * 24));
 
-    if (dayDifference < 0) {
+    if (ed < now) {
         return "EXPIRED";
     } else if (dayDifference == 0) {
         return "Expires today"

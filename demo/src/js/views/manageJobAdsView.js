@@ -116,7 +116,9 @@ export const populateFilterTable = (rows, bulkt) => {
 
         let loc = rows[i].location;
         let style = "";
-        if (loc === "") {
+        
+        console.log("remote = " + rows[i].remote);
+        if (loc === "" && rows[i].remote === true) {
             loc = "REMOTE";
             style = 'style="color:red"';
         }

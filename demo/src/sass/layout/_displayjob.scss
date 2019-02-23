@@ -51,12 +51,12 @@
                 align-items: flex-end;
                 width: 20%;
                 margin-top: 5rem;
-                margin-right: 10rem;
+                margin-right: 15rem;
               
                 img {
-                    max-height: 20rem;
+                    max-height: 15rem;
                     width: auto;
-                    padding-right: 2rem;
+                    padding-right: 10rem;
                 }
             }
            
@@ -68,6 +68,7 @@
             font-size: 1.7rem;
             font-weight: 300;
             margin-bottom: 5rem;
+            
         }
         .lowerpane span {
             font-size: 2rem;
@@ -86,9 +87,19 @@
             text-align: center;
             padding-bottom: 2rem;
             button {
-                display: inline-block
+                display: inline-block;
+                margin-left: 2rem;
             }
         }
     }
+}
+.ql-indent-1 {
+    margin-left: 40px;
+}
+.ql-indent-2 {
+    margin-left: 80px;
+}
+.ql-indent-3 {
+    margin-left: 120px;
 }
 

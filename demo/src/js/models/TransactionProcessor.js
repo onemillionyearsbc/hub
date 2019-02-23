@@ -23,14 +23,7 @@ export default class TransactionProcessor {
                 });
             console.log("response = " + response);
             var resp = await response.json();
-            var payload = resp.error;
 
-            if (resp.error !== undefined) {
-                console.log(resp.error);
-            }
-            else {
-                // return null;
-            }
             return resp;
 
         } catch (error) {
