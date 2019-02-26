@@ -76,7 +76,9 @@ async function main(){
     console.log('Retrieved JobAds : ', jobAds.length);
 
     for (var i = 0; i < jobAds.length; i++) {
-        jobAds[i].remaining = 100;
+        if (jobAds[i] < 10) {
+            jobAds[i].remaining = 100;
+        }
     }
 
     // Update the asset in the asset registry.
@@ -98,7 +100,7 @@ async function main(){
    // var email = 'emerysolutions@yahoo.co.uk';
     // var company = getRandomArrayElement(companyArray);
 
-    for (var i = 0; i < 1000; i++) {
+    for (var i = 0; i < 10; i++) {
 
         let accountIndex = getRandomIndex(0,recruiters.length-1);
         if(randEmail === true) {
@@ -140,10 +142,8 @@ async function main(){
         skills = getUniqueRandomArrayElements(skillsArray, numSkills);
         var logohash = "6c631acfc202d6fbc37b5bf7e7c06a1f853bf3a0c9f5ff61416e97f2d7e069b6"; // stool
 
-      
-        console.log(">>> generating job posting for email: " + email);
-        console.log("   => jobRef =  " + jobReference);
-          /*
+        /*
+        console.log(email);
         console.log(company);
         console.log("remote: " + remote);
         console.log(jobType);
@@ -160,26 +160,23 @@ async function main(){
     */
                 
         let transaction = factory.newTransaction(namespace,transactionType,"",options);
-       
-        var params = factory.newConcept(namespace, 'JobPostingParameters');
-        params.email = email;
-        params.jobReference = jobReference;
-        params.company = company;
-        params.remote = remote;
-        params.jobType = jobType;
-        params.jobTitle = jobTitle;
-        params.blockchainName = blockchain;
-        params.description = description;
-        params.contact = contact;
-        params.internalRef = internalRef;
-        params.employer = employer;
-        params.salary = salary;
-        params.location = location;
-        params.skills = skills;
-        params.logohash = logohash;
-        params.testData = true;
+        transaction.setPropertyValue('email',email);
+        transaction.setPropertyValue('jobReference',jobReference);
+        transaction.setPropertyValue('company',company);
+        transaction.setPropertyValue('remote',remote);
+        transaction.setPropertyValue('jobType',jobType);
+        transaction.setPropertyValue('jobTitle',jobTitle);
+        transaction.setPropertyValue('blockchainName',blockchain);
+        transaction.setPropertyValue('description',description);
+        transaction.setPropertyValue('contact',contact);
+        transaction.setPropertyValue('internalRef',internalRef);
+        transaction.setPropertyValue('employer',employer);
+        transaction.setPropertyValue('salary',salary);
+        transaction.setPropertyValue('location',location);
+        transaction.setPropertyValue('skills',skills);
+        transaction.setPropertyValue('logohash',logohash);
+        transaction.setPropertyValue('testData',true);
 
-        transaction.setPropertyValue('params',params);
 
         try {
             await bnUtil.connection.submitTransaction(transaction);
@@ -191,7 +188,7 @@ async function main(){
     }
          
     console.log("All done.");
-    // bnUtil.disconnect();
+    bnUtil.disconnect();
 
 }
 

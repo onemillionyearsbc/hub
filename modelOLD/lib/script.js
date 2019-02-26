@@ -344,41 +344,6 @@ async function GetJobPostingsDynamic(filterCriteria) {
 }
 
 /**
- * Return JobPosting array of records according filter critereia 
- * @param {io.onemillionyearsbc.hubtutorial.jobs.FilterJobPostingsDynamic} filterCriteria
- * @returns {io.onemillionyearsbc.hubtutorial.jobs.JobPosting[]} The JobPosting records for these criteria
- * @transaction
- */
-async function FilterJobPostingsDynamic(filterCriteria) {
-    
-    var predicate="";
-    var filter = {};
-    var nextWord="WHERE";
-	
-  	if (filterCriteria.filterBy != "") {
-      	predicate += ` ${nextWord} ((company == _$filterBy OR internalRef == _$filterBy 
-              OR jobTitle == _$filterBy OR jobReference== _$filterBy) OR (skills CONTAINS _$filterBySkills))`;
-          
-      	filter.filterBy = filterCriteria.filterBy;
-      	filter.filterBySkills = filterCriteria.filterBySkills;
-        nextWord="AND";
-    } 
-    
-    if (nextWord=="WHERE") {
-        predicate="LIMIT 1000";
-    }
-    var statement = `SELECT io.onemillionyearsbc.hubtutorial.jobs.JobPosting ${predicate}`;
-  
-  	// Build a query.
-    let qry = buildQuery(statement);
-    
-    // Execute the query
-    let results = await query(qry, filter);
-  
-  	return results;
-  		
-}
-/**
  * Return HubUser according to email and password
  * @param {io.onemillionyearsbc.hubtutorial.jobs.CreateJobPosting} credentials
  * @transaction
@@ -430,7 +395,12 @@ async function CreateJobPosting(credentials) {
     await jobAdsRegistry.update(user);
 }
 
-/**
+// transaction ExpireJobPosting {
+//     o String    jobReference
+//     o String    email
+//   }
+
+  /**
  * Expire JobPosting
  * @param {io.onemillionyearsbc.hubtutorial.jobs.ExpireJobPosting} credentials
  * @transaction
@@ -532,20 +502,6 @@ function fillJobAdParams(posting, credentials) {
     return posting;
 }
 
-/**
- * Return all JobPosting objects
- * @param {io.onemillionyearsbc.hubtutorial.jobs.GetAllJobPostings} credentials
- * @returns {io.onemillionyearsbc.hubtutorial.jobs.JobPosting[]} 
- * @transaction
- */
-async function GetAllJobPostings(credentials) {
-    let results = await query('selectAllJobPostings', {
-        
-    });
-   
-    return results;
-}
-
 /*
 {
     "$class": "io.onemillionyearsbc.hubtutorial.jobs.UpdateJobPosting",
@@ -570,25 +526,4 @@ async function GetAllJobPostings(credentials) {
       "testData": false
     }
   }
-
-  {
-  "$class": "io.onemillionyearsbc.hubtutorial.jobs.CreateJobPosting",
-  "params": {
-    "$class": "io.onemillionyearsbc.hubtutorial.jobs.JobPostingParameters",
-    "jobReference": "123457",
-    "email": "a.hitler@nazis.com",
-    "company": "Nazi Party",
-    "jobType": "FULLTIME",
-    "remote": false,
-    "jobTitle": "Dictator",
-    "blockchainName": "ETHEREUM",
-    "description": "Austrian zealot required to start wars",
-    "contact": "Heinrich Himmler",
-    "internalRef": "HH01",
-    "employer": false,
-    "skills": ["tanks", "politics"],
-    "logohash": "0987654321",
-    "testData": false
-  }
-}
   */

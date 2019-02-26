@@ -101,27 +101,6 @@ enum JobFilterType {
   o EXPIRED
 }
 
-enum EmployerFilterType {
-  o AGENCY
-  o EMPLOYER
-}
-
-enum DateFilterType {
-  o THREE
-  o SEVEN
-  o TWENTYFOUR
-}
-
-enum ContractFilterType {
-  o PERMANENT
-  o CONTRACT
-}
-
-enum OnSiteType {
-  o REMOTE
-  o NONREMOTE
-}
-
 @commit(false)
 @returns(JobAds)
 transaction GetJobAds {
@@ -146,29 +125,3 @@ transaction GetJobPostingsDynamic {
   o String user optional
   o Integer expiringDays default=5
 }
-
-@commit(false)
-@returns(JobPosting[])
-transaction FilterJobPostingsDynamic {
-  o String filterBy default=""
-  o String[] filterBySkills optional 
-  o String location default=""
-  o String filterType default=""
-  o String dateFilter default=""
-  o String employerFilter default=""
-  o String jobFilter default=""
-  o String onSiteFilter default=""
-  o String blockchainFilter default=""
-}
-
-
-@commit(false)
-@returns(JobPosting[])
-transaction GetPopularEmployers {
-}
-
-@commit(false)
-@returns(JobPosting[])
-transaction GetAllJobPostings {
-}
-

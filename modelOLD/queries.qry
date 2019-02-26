@@ -41,9 +41,3 @@ query filterJobAdsForRecruiter {
     	  SELECT io.onemillionyearsbc.hubtutorial.jobs.JobPosting
             WHERE (email == _$email AND (internalRef == _$filterBy OR jobTitle == _$filterBy OR jobReference == _$filterBy))
 }
-
-query selectAllJobPostings {
-  	description: "Returns all job postings in the registry"
-  	statement:
-    	SELECT io.onemillionyearsbc.hubtutorial.jobs.JobPosting
-}

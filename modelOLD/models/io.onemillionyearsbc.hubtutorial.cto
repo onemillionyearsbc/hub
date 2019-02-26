@@ -1,0 +1,160 @@
+
+/* 1. single namespace */
+
+namespace io.onemillionyearsbc.hubtutorial
+
+import io.onemillionyearsbc.hubtutorial.jobs.JobAds
+import io.onemillionyearsbc.hubtutorial.jobs.JobPosting
+
+/**
+  Six types of resource definitions
+  1. Assets = objects of value
+  2. Participants = actors in the system
+  3. Transactions = actions performed on the system
+  4. Events = notifications
+  5. Enumerated types = labels within a class
+  6. Concepts = grouping of fields to enable reuse across multiple resources */
+
+
+/* <class name> <name> <identified by <field>> */
+
+/* New Stuff 
+	1. Added dateCreated DateTime field to HubAccount
+  2. Added hubTokenBalance to HubUser
+  3. Added concepts: Name and Address
+	4. Added accountId to abstract transaction 
+  5. Added a concept HubJobSeekerParameters to be used by the HubJobSeeker participant 
+   	  and CreateJobSeekerAccount transaction
+*/
+
+/* Class Definitions */
+
+abstract participant HubUser identified by email {
+  o String      email 
+  o Double      hubTokenBalance default=0.0 optional
+}
+
+participant HubRecruiter extends HubUser {
+  o String name
+  o String company
+  --> JobAds jobAds
+  --> JobPosting[] jobPostings optional
+}
+
+participant HubJobSeeker extends HubUser {
+  o HubJobSeekerParameters params
+}
+
+concept HubJobSeekerParameters {
+  o Name name
+  o Address address
+}
+  
+concept Name {
+  o Title title optional
+  o String firstName
+  o String lastName
+}
+
+enum Title {
+  o DR
+  o MR
+  o MRS
+  o MISS
+  o MS
+}
+
+concept Address {
+  o String street optional
+  o String city optional
+  o String postCode optional
+  o String country
+}
+
+asset HubAccount identified by email {
+  o String      email 
+  o String      password
+  o Boolean     loggedIn default=false
+  --> HubUser   owner
+  o AccountType accountType default="JOBSEEKER"
+  o DateTime    dateCreated
+}
+
+
+
+// Testing only; should only be called via CreateAccount
+// transaction CreateHubUserRecruiter {
+//   o String email 
+//   o String name
+//   o String company
+//   o Double hubTokenBalance default=0.0 
+// }
+
+// Testing only; should only be called via CreateAccount
+// transaction CreateHubUserJobSeeker {
+//   o String email 
+//   o HubJobSeekerParameters parameters optional
+//   o Double hubTokenBalance default=0.0 optional
+// }
+
+abstract transaction CreateAccount {
+  o String      email 
+  o String      password
+  o Double      hubTokenBalance optional
+}
+
+// TODO UpdateAccount and RemoveAccount
+
+transaction CreateRecruiterAccount extends CreateAccount {
+  o String name
+  o String company //TODO replace with HubRecruiterParameters once we decide what these are
+  o String image optional
+  o AccountType accountType default="RECRUITER"
+}
+
+transaction CreateJobSeekerAccount extends CreateAccount {
+  o HubJobSeekerParameters params
+  o AccountType accountType default="JOBSEEKER"
+}
+
+enum AccountType {
+  o   JOBSEEKER
+  o   RECRUITER
+}
+
+transaction SetLoggedIn {
+  o String      email 
+  o Boolean     loggedIn
+}
+
+/* test calling of named query. The idea here  is to have a named query return the account then to use
+the email to then get hold of the embedded HubUser field, so a two-part transaction to see if we can return
+the correct HubUser for a given email/password combination)
+*/
+@returns(HubRecruiter)
+transaction GetHubRecruiter {
+  o String email
+  o String password 
+}
+
+@returns(HubJobSeeker)
+transaction GetHubJobSeeker {
+  o String email
+  o String password
+}
+  
+  
+@commit(false)
+@returns(HubAccount)
+transaction GetHubAccount {
+  o String email
+  o String password
+}
+
+
+/* TODO model the JobPosting asset */
+/* TODO model:
+  1. transactions to update data (user participant, job posting)
+  2. apply for job transaction plus event */
+
+
