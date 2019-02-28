@@ -3,7 +3,7 @@
     "composer": "^0.20.1"
   },
   "name": "hubtutorial",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "An example Composer Business Network for use in the series of tutorials ",
   "scripts": {
     "prepublish": "mkdirp ./dist && composer archive create --sourceType dir --sourceName . -a ./dist/hubtutorial.bna",
@@ -34,7 +34,10 @@
     "mocha": "latest"
   },
   "dependencies": {
+    "atob": "^2.1.2",
+    "blob-util": "^2.0.2",
     "csvtojson": "^2.0.8",
-    "lorem-ipsum": "^1.0.6"
+    "lorem-ipsum": "^1.0.6",
+    "stream-to-blob": "^1.0.1"
   }
 }
