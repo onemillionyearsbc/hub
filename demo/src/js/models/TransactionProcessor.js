@@ -5,7 +5,7 @@ export default class TransactionProcessor {
     constructor(data, url) {
         this.email = data.email;
         this.data = JSON.stringify(data);
-        console.log(data);       
+        console.log(data);
         this.url = url;
     }
 
@@ -14,7 +14,7 @@ export default class TransactionProcessor {
             const myData = this.data;
             console.log("FIRING TRANSACTION...with following data");
             console.log(myData);
-           
+            console.log("BARKINGTON: URL = " + this.url);
             var response = await fetch(this.url,
                 {
                     method: 'post',

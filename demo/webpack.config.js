@@ -80,6 +80,10 @@ module.exports = {
             filename: 'displayjob.html',
             template: './src/displayjob.html'
         }),
+        new HtmlWebpackPlugin({
+            filename: 'search.html',
+            template: './src/search.html'
+        }),
         new CopyWebpackPlugin([{
             from: 'src/img',
             to: 'img',

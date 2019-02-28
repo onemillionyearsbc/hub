@@ -85,7 +85,7 @@ async function main(){
             // Submit the transaction
          
             try {
-                bnUtil.connection.submitTransaction(transaction);
+                await bnUtil.connection.submitTransaction(transaction);
                 console.log("Transaction processed: Account created for email " + val.email)
         
             } catch (error) {

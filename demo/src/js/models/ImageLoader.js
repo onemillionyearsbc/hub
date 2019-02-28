@@ -36,6 +36,9 @@ export default class ImageLoader {
         var ablob = await this.createBlob(this._PREVIEW_URL);
     
         var reader = new FileReader();
+        console.log("+++BEFORE+++");
+        console.log(ablob);
+        console.log("+++AFTER+++");
         await reader.readAsDataURL(ablob);
 
         const result = await new Promise((resolve, reject) => {

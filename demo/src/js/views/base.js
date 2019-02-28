@@ -92,6 +92,7 @@ var getJobAdsTransaction = "io.onemillionyearsbc.hubtutorial.jobs.GetJobAds";
 var createJobAdTransaction = "io.onemillionyearsbc.hubtutorial.jobs.CreateJobPosting";
 var updateJobAdTransaction = "io.onemillionyearsbc.hubtutorial.jobs.UpdateJobPosting";
 var getJobPostingsTransaction = "io.onemillionyearsbc.hubtutorial.jobs.GetJobPostingsDynamic";
+var getAllJobPostingsTransaction = "io.onemillionyearsbc.hubtutorial.jobs.GetAllJobPostings";
 var expireJobAdTransaction = "io.onemillionyearsbc.hubtutorial.jobs.ExpireJobPosting";
 
 
@@ -111,6 +112,7 @@ export const strings = {
     updateJobAdTransaction: `${updateJobAdTransaction}`,
     expireJobAdTransaction: `${expireJobAdTransaction}`,
     getJobPostingsTransaction: `${getJobPostingsTransaction}`,
+    getAllJobPostingsTransaction: `${getAllJobPostingsTransaction}`,
     loginRecruiterUrl: `http://${ipAddress}:3000/api/${recruiterLoginTransaction}`,
     loginJobSeekerUrl: `http://${ipAddress}:3000/api/${jobSeekerLoginTransaction}`,
     registerRecruiterUrl: `http://${ipAddress}:3000/api/${recruiterRegisterTransaction}`,
@@ -122,6 +124,7 @@ export const strings = {
     updateJobAdUrl: `http://${ipAddress}:3000/api/${updateJobAdTransaction}`,
     expireJobAdUrl: `http://${ipAddress}:3000/api/${expireJobAdTransaction}`,
     getJobPostingsUrl: `http://${ipAddress}:3000/api/${getJobPostingsTransaction}`,
+    getAllJobPostingsUrl: `http://${ipAddress}:3000/api/${getAllJobPostingsTransaction}`,
     beginningOfTime: "1970-01-01T15:11:47.728Z",
     endOfTime: "3070-01-01T15:11:47.728Z",
 };

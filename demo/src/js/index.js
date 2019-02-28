@@ -103,7 +103,7 @@ const signOutHandler = async (e) => {
             renderLoader(elements.madForm);
         } else if (state.page === elementConsts.DISPLAYJOBPAGE) {
             renderLoader(elements.viewJob);
-        } 
+        }
     }
 
     var email = sessionStorage.getItem('email');
@@ -146,6 +146,31 @@ const buyJobCreditsHandler = async () => {
     clearLoader();
 }
 
+// SEARCH CONTROLLER
+const searchJobsHandler = async () => {
+
+    var data = {
+        $class: strings.getAllJobPostingsTransaction,
+    };
+    // const data = { "$class": "io.onemillionyearsbc.hubtutorial.jobs.GetJobAds", "email": sessionStorage.getItem('email') };
+    const tp = new TransactionProcessor(data, strings.getAllJobPostingsUrl);
+    
+    let rows = await tp.transaction();
+
+    var err = null;
+    if (rows.error !== undefined) {
+        err = rows.error;
+    }
+    if (err != null) {
+        displayErrorPopup('Search failed: ' + err);
+    } else {
+        console.log("BARKINGTON!! =============== NUM ROWS = " + rows.length);
+    }
+}
+
+
+
+
 const expireJobHandler = async () => {
     renderLoaderEndByNumber(elements.jobdescription, 130);
     const email = sessionStorage.getItem('email');
@@ -164,7 +189,7 @@ const expireJobHandler = async () => {
         } else {
             displayErrorPopup('Failed to expire Job: ' + err.message);
         }
-       
+
         clearLoader();
     } else {
         clearLoader();
@@ -286,7 +311,7 @@ const createJobAdHandler = async (transaction, ins) => {
     } else {
 
         // TODO Commit Database transaction: update committed column to "true"
-        clearLoader();
+        // clearLoader();
         await displaySuccessPopup('Job Ad Successfully Posted!');
         window.location = "recruiter-dashboard.html";
     }
@@ -403,10 +428,15 @@ if (document.URL.includes("displayjob")) {
         e.preventDefault();
         expireJobHandler();
     });
-    
 }
 
+// SEARCH JOBS
+
 // CREATEJOBADPAGE
+if (document.URL.includes("search")) {
+    searchJobsHandler();
+}
+
 if (document.URL.includes("createjobad")) {
 
     quill = new Quill('#editor-container', {
@@ -472,6 +502,7 @@ if (document.URL.includes("createjobad")) {
         path = path.substring(path.lastIndexOf('\\') + 1);
 
         try {
+            console.log("++++++++ FILE = " + this.files[0]);
             var img = imageLoader.loadImage(this.files[0]);
             createJobAdView.setLogoFileAndImage(path, img);
             state.newImage = true;
@@ -549,7 +580,7 @@ if (document.URL.includes("register")) {
         e.preventDefault();
         loginView.clearValidationErrorMessages(state.tabIndex); // clear the one not selected ie login 
         state.inputType = inputType.REGISTER;
-        signInHandler(e, registerJobSeekerView, strings.jobSeekerRegisterTransaction);
+        signInHandler(e, registerJobSeekerView, strings.registerJobSeekerUrl);
     });
 
     // LOGIN RECRUITER
@@ -629,4 +660,25 @@ const displayErrorPopup = async (theText) => {
     });
 };
 
+async function getImage() {
+    // var xhr = new XMLHttpRequest();
+    var imageURL = 'http://localhost:8083/img/bubbles.jpg';
+    var response = await fetch(imageURL);
+    console.log(">>>>>>>>>>>>>>>>>>>>>>>BEGIN>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+    console.log(response);
+    console.log(">>>>>>>>>>>>>>>>>>>>>>>END>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+
+    var blob = await response.blob();
+    console.log(blob);
+    console.log(">>>>>>>>>>>>>>>>>>>>>>>END 2 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+    var reader = new FileReader();
+    reader.readAsDataURL(blob);
+    reader.onloadend = function () {
+        console.log(reader.result);
+        console.log(">>>>>>>>>>>>>>>>>>>>>>>END 3 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        console.log("STRING LEN = " + reader.result.length);
+    };
+
+}
+getImage();
 

@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css?family=Josefin+Sans:300,400,400i|Nunito:300,300i" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="shortcut icon" type="image/png" href="img/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <title>View Job</title>
+</head>
+
+<body>
+    <div id="jobsearchpage">
+        <div>
+            <div class="dashboard__topbar">
+                <div class="topleft">
+                    <a href="index.html">
+                        <img src="img/logo-small.png" alt="1MYBC">
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div>
+            <nav class="navbar animated slideInRight delay-2s">
+                <ul class="navbar-menu navbar__left">
+                    <li class="item-1"><a href="recruiter-dashboard.html">Dashboard</a></li>
+                    <li><a href="jobcredits.html">Job Credits</a></li>
+                    <li class="signin"><a href="#" class="link-icon">Log Out</a></li>
+                </ul>
+            </nav>
+            <div id="searchjob" class="container searchjob">
+                <div class="main">
+                    <div class="main__top">
+                        <p> 11,671 blockchain jobs</p>
+                    </div>
+                    <div class="main__explore">
+                        <p>Explore Results</p>
+                    </div>
+                    <div class="main__mid">
+                        <div class="main__mid--left">
+                            <div class="item">
+                                <form autocomplete="off" id="smallsearchform" class="myForm" top="false">
+                                    <p>What</p>
+                                    <div class="myForm__itemholder">
+                                        <div class="myForm__itemholder--item">
+                                            <input id="what" class="loginform__textfield glowing-border" type="text"
+                                                placeholder="Job title, skill or company" autocomplete="off"
+                                                autocomplete="off" />
+                                        </div>
+                                        <button id="what-btn" class="explorebtn btn btn--orange" disabled>Search
+                                            <div id="nested-div"></div>
+                                        </button>
+                                    </div>
+                                    <p>Where</p>
+                                    <div class="myForm__itemholder">
+                                        <div class="myForm__itemholder--item">
+                                            <input id="where" class="loginform__textfield glowing-border" type="text"
+                                                placeholder="location" autocomplete="off" />
+                                        </div>
+                                        <button id="where-btn" class="explorebtn btn btn--orange" disabled>Search
+                                            <div id="nested-div"></div>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="item">
+                                <div class="explorepanel">
+                                    <p>Locations</p>
+                                    <div class="locationpanel">
+                                        <ul id="myUL">
+                                            <li><span class="caret">UK<span class="numjobs">(6,382)</span></span>
+                                                <ul class="nested">
+                                                    <li><span class="caret">London<span
+                                                                class="numjobs">(2,566)</span></span>
+                                                        <ul class="nested">
+                                                            <li>Moorgate<span class="numjobs">(87)</span></li>
+                                                            <li>Blackfriars<span class="numjobs">(43)</span></li>
+                                                            <li>Aldersgate<span class="numjobs">(2)</span></li>
+                                                            <li>Clerkenwell<span class="numjobs">(5)</span></li>
+                                                            <li>Barbican<span class="numjobs">(11)</span></li>
+                                                            <li>Houndsditch<span class="numjobs">(2)</span></li>
+                                                            <li>Tower Hill<span class="numjobs">(98)</span></li>
+                                                        </ul>
+                                                    </li>
+                                                    <li><span class="caret">Berkshire<span
+                                                                class="numjobs">(12)</span></span>
+                                                        <ul class="nested">
+                                                            <li>Reading<span class="numjobs">(7)</span></li>
+                                                            <li>Bracknell<span class="numjobs">(3)</span></li>
+                                                            <li>Newbury<span class="numjobs">(2)</span></li>
+                                                        </ul>
+                                                    </li>
+                                                    <li><span class="caret">Oxfordshire</span>
+                                                        <ul class="nested">
+                                                            <li>Black Tea</li>
+                                                            <li>White Tea</li>
+                                                            <li><span class="caret">Green Tea</span>
+                                                                <ul class="nested">
+                                                                    <li>Sencha</li>
+                                                                    <li>Gyokuro</li>
+                                                                    <li>Matcha</li>
+                                                                    <li>Pi Lo Chun</li>
+                                                                </ul>
+                                                            </li>
+                                                        </ul>
+                                                    </li>
+                                                    <li><span class="caret">Hampshire</span>
+                                                        <ul class="nested">
+                                                            <li>Black Tea</li>
+                                                            <li>White Tea</li>
+                                                            <li><span class="caret">Green Tea</span>
+                                                                <ul class="nested">
+                                                                    <li>Sencha</li>
+                                                                    <li>Gyokuro</li>
+                                                                    <li>Matcha</li>
+                                                                    <li>Pi Lo Chun</li>
+                                                                </ul>
+                                                            </li>
+                                                        </ul>
+                                                    </li>
+                                                    <li><span class="caret">Hertfordshire</span>
+                                                        <ul class="nested">
+                                                            <li>Black Tea</li>
+                                                            <li>White Tea</li>
+                                                            <li><span class="caret">Green Tea</span>
+                                                                <ul class="nested">
+                                                                    <li>Sencha</li>
+                                                                    <li>Gyokuro</li>
+                                                                    <li>Matcha</li>
+                                                                    <li>Pi Lo Chun</li>
+                                                                </ul>
+                                                            </li>
+                                                        </ul>
+                                                    </li>
+                                                    <li><span class="caret">Buckinghamshire</span>
+                                                        <ul class="nested">
+                                                            <li>Black Tea</li>
+                                                            <li>White Tea</li>
+                                                            <li><span class="caret">Green Tea</span>
+                                                                <ul class="nested">
+                                                                    <li>Sencha</li>
+                                                                    <li>Gyokuro</li>
+                                                                    <li>Matcha</li>
+                                                                    <li>Pi Lo Chun</li>
+                                                                </ul>
+                                                            </li>
+                                                        </ul>
+                                                    </li>
+                                                    <li><span class="caret">West Sussex</span>
+                                                        <ul class="nested">
+                                                            <li>Black Tea</li>
+                                                            <li>White Tea</li>
+                                                            <li><span class="caret">Green Tea</span>
+                                                                <ul class="nested">
+                                                                    <li>Sencha</li>
+                                                                    <li>Gyokuro</li>
+                                                                    <li>Matcha</li>
+                                                                    <li>Pi Lo Chun</li>
+                                                                </ul>
+                                                            </li>
+                                                        </ul>
+                                                    </li>
+                                                    <li><span class="caret">Kent</span>
+                                                        <ul class="nested">
+                                                            <li>Black Tea</li>
+                                                            <li>White Tea</li>
+                                                            <li><span class="caret">Green Tea</span>
+                                                                <ul class="nested">
+                                                                    <li>Sencha</li>
+                                                                    <li>Gyokuro</li>
+                                                                    <li>Matcha</li>
+                                                                    <li>Pi Lo Chun</li>
+                                                                </ul>
+                                                            </li>
+                                                        </ul>
+                                                    </li>
+                                                    <li><span class="caret">Bedfordshire</span>
+                                                        <ul class="nested">
+                                                            <li>Black Tea</li>
+                                                            <li>White Tea</li>
+                                                            <li><span class="caret">Green Tea</span>
+                                                                <ul class="nested">
+                                                                    <li>Sencha</li>
+                                                                    <li>Gyokuro</li>
+                                                                    <li>Matcha</li>
+                                                                    <li>Pi Lo Chun</li>
+                                                                </ul>
+                                                            </li>
+                                                        </ul>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="explorepanel">
+                                    <p>Miles Radius</p>
+                                    <div class="toggle">
+                                        <input type="radio" name="miles" value="0" id="0miles" checked="checked" />
+                                        <label for="0miles">0</label>
+                                        <input type="radio" name="miles" value="5" id="5miles" />
+                                        <label for="5miles">5</label>
+                                        <input type="radio" name="miles" value="10" id="10miles" />
+                                        <label for="10miles">10</label>
+                                        <input type="radio" name="miles" value="20" id="20miles" />
+                                        <label for="20miles">20</label>
+                                        <input type="radio" name="miles" value="30" id="30miles" />
+                                        <label for="30miles">30</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="explorepanel">
+                                    <p>Date Posted</p>
+                                    <ul>
+                                        <li>Last 24 hours<span class="numjobs">(45)</span></li>
+                                        <li>Last 7 days<span class="numjobs">(467)</span></li>
+                                        <li>Last 14 days<span class="numjobs">(1,098)</span></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="explorepanel">
+                                    <p>Recuiters</p>
+                                    <ul>
+                                        <li>Agency<span class="numjobs">(76)</span></li>
+                                        <li>Employer<span class="numjobs">(165</span></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="explorepanel">
+                                    <p>Job Types</p>
+                                    <ul>
+                                        <li>Permanent<span class="numjobs">(76)</span></li>
+                                        <li>Contract<span class="numjobs">(165</span></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="explorepanel">
+                                    <p>On Site Location</p>
+                                    <ul>
+                                        <li>Remote<span class="numjobs">(10,076)</span></li>
+                                        <li>Non-Remote<span class="numjobs">(12,165</span></li>
+                                    </ul>
+                                </div>
+                                <div class="explorepanel">
+                                    <p>Blockchain</p>
+                                    <ul>
+                                        <li>Corda<span class="numjobs">(8,073)</span></li>
+                                        <li>Ethereum<span class="numjobs">(1,887)</span></li>
+                                        <li>Hyperledger<span class="numjobs">(10,009)</span></li>
+                                        <li>Neo<span class="numjobs">(6)</span></li>
+                                        <li>Quorum<span class="numjobs">(98)</span></li>
+                                        <li>Riplle<span class="numjobs">(7)</span></li>
+                                        <li>Other<span class="numjobs">(5,433)</span></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="explorepanel">
+                                    <p>Popular Employers</p>
+                                    <ul>
+                                        <li>Totaljobs Groups<span class="numjobs">(761)</span></li>
+                                        <li>IBM<span class="numjobs">(712)</span></li>
+                                        <li>Adidas<span class="numjobs">(642)</span></li>
+                                        <li>OneMillionYearsBC<span class="numjobs">(612)</span></li>
+                                        <li>The Fungus Factory<span class="numjobs">(543)</span></li>
+                                    </ul>
+                                    <!-- fill in with the "top 5" for example -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="main__mid--right">
+                            <ul>
+                                <li>
+                                    <div class="item-job">
+                                        <div id="jobtitle" class="title">
+                                            <p>Senior Node.JS Developer</p>
+                                            <div class="corner"><span>New</span></div>
+                                            <!-- <div class="corner"></div> -->
+                                        </div>
+                                        <div class="top">
+                                            <div class="left">
+                                                <div class="left__item">
+                                                    <div class="loggy">
+                                                        <i class="loggy__icon fas fa-map-marker-alt fa-fw"></i>
+                                                        <p id="joblocation" class="loggy__label">West London</p>
+                                                    </div>
+                                                </div>
+                                                <div class="left__item">
+                                                    <div class="loggy">
+                                                        <i class="loggy__icon fas fa-pound-sign fa-fw"></i>
+                                                        <p id="jobsalary" class="loggy__label">From £75,000 to £90,000
+                                                            per annum
+                                                            +
+                                                            superb
+                                                            benefits as
+                                                            listed
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div class="left__item">
+                                                    <div class="loggy">
+                                                        <i class="loggy__icon fas fa-table fa-fw"></i>
+                                                        <a id="jobcompany" class="loggy__label"
+                                                            href="search.html">Revere
+                                                            Digital
+                                                            Recruitment</a>
+                                                    </div>
+                                                </div>
+                                                <div class="left__item">
+                                                    <div class="loggy">
+                                                        <i class="loggy__icon fas fa-user-alt fa-fw"></i>
+                                                        <p id="jobtype" class="loggy__label">Permanent</a>
+                                                    </div>
+                                                </div>
+                                                <div class="left__item">
+                                                    <div class="loggy">
+                                                        <i class="loggy__icon far fa-clock fa-fw"></i>
+                                                        <p id="jobtime" class="loggy__label">Posted 2 days ago</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="right">
+                                                <img id="joblogo" src="img/revere.png">
+                                            </div>
+
+                                        </div>
+
+                                        <div id="jobdescription" class="texty description">
+                                            <p><strong>Tech stack: Node, Typescript, AWS, Lambda</strong></p>
+                                            <p>My client is a rapidly expanding technology company which are funded by a
+                                                well-known
+                                                startup
+                                                VC who’ve put series A funding into them. Due to successful growth, they
+                                                now
+                                                need a
+                                                talented
+                                                Senior Node.JS Developer to them full time.</p>
+                                            <p>As Senior Node.JS Developer you will work directly with the head of the
+                                                department as
+                                                this
+                                                business going through an exciting phase of technology change moving
+                                                over to
+                                                serverless
+                                                tech
+                                                stack.</p>
+                                            <p>The ideal Senior Node.JS Developer will be an expert with server-side
+                                                Node.JS and
+                                                understand
+                                                the importance of TypeScript in infrastructure.</p>
+                                            <p><strong>Key technolog...
+                                        </div>
+
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="item-job">
+                                        <div id="jobtitle" class="title">
+                                            <p>Junior Blockchain Developer</p>
+                                        </div>
+                                        <div class="top">
+                                            <div class="left">
+                                                <div class="left__item">
+                                                    <div class="loggy">
+                                                        <i class="loggy__icon fas fa-map-marker-alt fa-fw"></i>
+                                                        <p id="joblocation" class="loggy__label">West London</p>
+                                                    </div>
+                                                </div>
+                                                <div class="left__item">
+                                                    <div class="loggy">
+                                                        <i class="loggy__icon fas fa-pound-sign fa-fw"></i>
+                                                        <p id="jobsalary" class="loggy__label">From £75,000 to £90,000
+                                                            per annum
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div class="left__item">
+                                                    <div class="loggy">
+                                                        <i class="loggy__icon fas fa-table fa-fw"></i>
+                                                        <a id="jobcompany" class="loggy__label"
+                                                            href="search.html">Revere
+                                                            Digital
+                                                            Recruitment</a>
+                                                    </div>
+                                                </div>
+                                                <div class="left__item">
+                                                    <div class="loggy">
+                                                        <i class="loggy__icon fas fa-user-alt fa-fw"></i>
+                                                        <p id="jobtype" class="loggy__label">Permanent</a>
+                                                    </div>
+                                                </div>
+                                                <div class="left__item">
+                                                    <div class="loggy">
+                                                        <i class="loggy__icon far fa-clock fa-fw"></i>
+                                                        <p id="jobtime" class="loggy__label">Posted 2 days ago</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="right">
+                                                <img id="joblogo" src="img/logo-small.png">
+                                            </div>
+
+                                        </div>
+
+                                        <div id="jobdescription" class="texty description">
+                                            <p><strong>Tech stack: Node, Typescript, AWS, Lambda</strong></p>
+                                            <p>My client is a rapidly expanding technology company which are funded by a
+                                                well-known
+                                                startup
+                                                VC who’ve put series A funding into them. Due to successful growth, they
+                                                now
+                                                need a
+                                                talented
+                                                Senior Node.JS Developer to them full time.</p>
+                                            <p>As Senior Node.JS Developer you will work directly with the head of the
+                                                department as
+                                                this
+                                                business going through an exciting phase of technology change moving
+                                                over to
+                                                serverless
+                                                tech
+                                                stack.</p>
+                                            <p>The ideal Senior Node.JS Developer will be an expert with server-side
+                                                Node.JS and
+                                                understand
+                                                the importance of TypeScript in infrastructure.</p>
+                                            <p><strong>Key technolog...
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                            <button class="btn btn--orange btn--icon"><i class="far fa-envelope"></i>Alert me to
+                                jobs
+                                like these</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</body>
+<script>
+    var toggler = document.getElementsByClassName("caret");
+    var i;
+
+    for (i = 0; i < toggler.length; i++) {
+        toggler[i].addEventListener("click", function () {
+            this.parentElement.querySelector(".nested").classList.toggle("active");
+            this.classList.toggle("caret-down");
+        });
+    }
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('input[type="text"]').on('keyup', function () {
+            if ($('#what').val() == '') {
+                $('#what-btn').prop('disabled', true);
+            } else {
+                $('#what-btn').prop('disabled', false);
+            }
+            if ($('#where').val() == '') {
+                $('#where-btn').prop('disabled', true);
+            } else {
+                $('#where-btn').prop('disabled', false);
+            }
+        });
+    });
+</script>
+<script src="js/scripts/truncate.js"></script>
+<script type="text/javascript">
+    function Truncate(obj) {
+        this.className = obj.className;
+        this.char = obj.char || 150;
+        this.numOfTruncateBy = obj.numOfTruncateBy || 3;
+        this.truncateBy = obj.truncateBy || ".";
+        let paragraphTag = document.getElementsByClassName(this.className);
+        for (let i = 0; i < paragraphTag.length; i++) {
+            var paragraph = paragraphTag[i].innerHTML;
+            if (paragraph.length > this.char) {
+                var truncate = '';
+                if (typeof (paragraph) === 'string') {
+                    for (let j = 0; j < this.char; j++) {
+                        truncate = truncate + paragraph.charAt(j);
+                    }
+                    for (let k = 0; k < this.numOfTruncateBy; k++) {
+                        truncate = truncate + this.truncateBy;
+                    }
+                }
+                paragraphTag[i].innerHTML = truncate;
+            }
+        }
+    }
+    Truncate({
+        className: "description",
+        char: 400,
+        // truncateBy : "<span style='color:red'> read more</span>",
+        // numOfTruncateBy : 1
+
+    });
+
+	// Truncate({
+	// 	className : "truncate2"
+	// });
+</script>
+
+</html>

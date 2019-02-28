@@ -1,4 +1,4 @@
-import { elements, checkStyle, clearError } from './base';
+import { elements, checkStyle, clearError, strings } from './base';
 
 export const getFormFor = (btn) => {
 
@@ -31,7 +31,7 @@ export const getFormData = (form) => {
   
     // TODO move hardwired composer object names into base.js
     var formData = {
-        $class: "io.onemillionyearsbc.hubtutorial.CreateJobSeekerAccount",
+        $class: strings.jobSeekerRegisterTransaction,
         params: {
             $class: "io.onemillionyearsbc.hubtutorial.HubJobSeekerParameters",
             name: {
@@ -44,11 +44,11 @@ export const getFormData = (form) => {
                 country: myData["location"]
             }
         },
-        accountType: "RECRUITER",
+        accountType: "JOBSEEKER",
         email: myData["email"],
         password: myData["password"]
     };
-
+  
 
     return formData;
 }
