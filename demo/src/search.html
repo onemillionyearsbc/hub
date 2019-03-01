@@ -280,13 +280,13 @@
                         </div>
 
                         <div class="main__mid--right">
-                            <ul>
-                                <li>
+                            <ul style="list-style: none;" class="results_list">
+                               
+                                <!-- <li>
                                     <div class="item-job">
                                         <div id="jobtitle" class="title">
                                             <p>Senior Node.JS Developer</p>
                                             <div class="corner"><span>New</span></div>
-                                            <!-- <div class="corner"></div> -->
                                         </div>
                                         <div class="top">
                                             <div class="left">
@@ -362,9 +362,9 @@
                                         </div>
 
                                     </div>
-                                </li>
-                                <li>
-                                    <div class="item-job">
+                                </li> -->
+                               <!-- <li>
+                                     <div class="item-job">
                                         <div id="jobtitle" class="title">
                                             <p>Junior Blockchain Developer</p>
                                         </div>
@@ -436,10 +436,11 @@
                                                 the importance of TypeScript in infrastructure.</p>
                                             <p><strong>Key technolog...
                                         </div>
-                                    </div>
-                                </li>
+                                    </div> 
+                                </li>-->
                             </ul>
-                            <button class="btn btn--orange btn--icon"><i class="far fa-envelope"></i>Alert me to
+                            <button id="alertbtn" class="btn btn--orange btn--icon"><i class="far fa-envelope"></i>Alert
+                                me to
                                 jobs
                                 like these</button>
                         </div>
@@ -476,41 +477,6 @@
         });
     });
 </script>
-<script src="js/scripts/truncate.js"></script>
-<script type="text/javascript">
-    function Truncate(obj) {
-        this.className = obj.className;
-        this.char = obj.char || 150;
-        this.numOfTruncateBy = obj.numOfTruncateBy || 3;
-        this.truncateBy = obj.truncateBy || ".";
-        let paragraphTag = document.getElementsByClassName(this.className);
-        for (let i = 0; i < paragraphTag.length; i++) {
-            var paragraph = paragraphTag[i].innerHTML;
-            if (paragraph.length > this.char) {
-                var truncate = '';
-                if (typeof (paragraph) === 'string') {
-                    for (let j = 0; j < this.char; j++) {
-                        truncate = truncate + paragraph.charAt(j);
-                    }
-                    for (let k = 0; k < this.numOfTruncateBy; k++) {
-                        truncate = truncate + this.truncateBy;
-                    }
-                }
-                paragraphTag[i].innerHTML = truncate;
-            }
-        }
-    }
-    Truncate({
-        className: "description",
-        char: 400,
-        // truncateBy : "<span style='color:red'> read more</span>",
-        // numOfTruncateBy : 1
 
-    });
-
-	// Truncate({
-	// 	className : "truncate2"
-	// });
-</script>
 
 </html>

@@ -14,9 +14,7 @@
 
         $decoded = json_decode($content, true);
 
-       
-  
-       
+    
         //If json_decode failed, the JSON is invalid.
         if(! is_array($decoded)) {
             $arr = array('code' => 'ERROR: JSON decode failed');
@@ -34,7 +32,7 @@
            
             $sqlstatement = "select image, hash from ".$table." where id = ".$id; 
            
-            doSelectStatement($conn, $sqlstatement);
+            doSelectStatement($conn, $sqlstatement, $id);
         }
     } else {
         $arr = array('code' => 'ERROR oops');

@@ -12,13 +12,15 @@ import * as createJobAdView from './views/createJobAdView';
 import * as manageJobAdsView from './views/manageJobAdsView';
 
 
+
 import { getFormFor, clearError, elements, dbelements, elementConsts, inputType, renderLoader, renderLoaderEnd, renderLoaderEndByNumber, clearLoader, navBarSetLoggedIn, setLoggedIn, strings, enableCreateJobButton } from './views/base';
 import { setCompanyName, setContactName, getJobAdsData, setJobAdsData, setJobCreditsRemaining } from './views/recruiterDashboardView';
 import { setJobAdsNumber, setTotalJobPrice, restyle, adjustSlider, getBuyJobCreditsData } from './views/jobCreditsView';
 import DatabaseProcessor from './models/DatabaseProcessor';
 import ImageLoader from './models/ImageLoader';
 import { populateFilterTable, populatePostedBy, setJobStats } from './views/manageJobAdsView';
-import { setJobFields, setJobLogo, checkHash, getExpireJobData } from './views/displayJobView';
+import { setJobFields, setJobLogo, getExpireJobData } from './views/displayJobView';
+import { renderResults } from './views/searchView';
 
 const state = {};
 var quill;
@@ -164,11 +166,37 @@ const searchJobsHandler = async () => {
     if (err != null) {
         displayErrorPopup('Search failed: ' + err);
     } else {
-        console.log("BARKINGTON!! =============== NUM ROWS = " + rows.length);
+       
+        for (var i = 0; i < rows.length; i++) {
+            await getLogos(rows[i]);
+        }
+        await rows.forEach(getLogos);
+        renderResults(rows);
     }
 }
 
-
+const getLogos = async(jobItem) => {
+    try {
+        console.log("GETTING ID FOR " + jobItem.jobReference);
+        if (jobItem.logohash.length == 0) {
+            return;
+        }
+        const image = await imageLoader.getImageFromDatabase(jobItem.jobReference, jobItem.logohash);
+       
+        jobItem.logo = image;
+        console.log("MOOINGTON!! =============== image = " + jobItem.logo);
+        return;
+    }
+    catch (error) {
+        await Swal({
+            title: 'ERROR RETRIEVING IMAGE!',
+            text: error,
+            type: 'error',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#cc6d14',
+        });
+    }
+}
 
 
 const expireJobHandler = async () => {
@@ -309,9 +337,8 @@ const createJobAdHandler = async (transaction, ins) => {
         displayErrorPopup('Failed to add Job: ' + err.message);
         clearLoader();
     } else {
-
         // TODO Commit Database transaction: update committed column to "true"
-        // clearLoader();
+        clearLoader();
         await displaySuccessPopup('Job Ad Successfully Posted!');
         window.location = "recruiter-dashboard.html";
     }
@@ -321,34 +348,19 @@ const displayJobHandler = async () => {
     state.page = elementConsts.DISPLAYJOBPAGE;
     setJobFields();
 
-    var body = JSON.stringify({
-        database: dbelements.databaseName,
-        table: dbelements.databaseTable,
-        id: sessionStorage.getItem("jobReference")
-    });
-
-    const dp = new DatabaseProcessor(dbelements.databaseSelectUri);
-
-    var result;
     try {
-        result = await dp.transactionPut(body);
-    } catch (error) {
-        displayErrorPopup('Database select image failed: ' + error);
-        clearLoader();
+        const image = await imageLoader.getImageFromDatabase(sessionStorage.getItem("jobReference"), sessionStorage.getItem("logohash"));
+        setJobLogo(image);
         return;
     }
-
-    clearLoader();
-    if (result.length != 1) {
-        displayErrorPopup('Database select image failed: number rows = ' + result.length);
-    }
-    const row0 = result[0];
-    for (var property in row0) {
-        console.log(property + ": " + row0[property]);
-    }
-    const retVal = await checkHash(row0["image"], row0["hash"]);
-    if (retVal === true) {
-        setJobLogo(row0["image"]);
+    catch (error) {
+        await Swal({
+            title: 'ERROR RETRIEVING IMAGE!',
+            text: error,
+            type: 'error',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#cc6d14',
+        });
     }
 }
 
@@ -660,25 +672,25 @@ const displayErrorPopup = async (theText) => {
     });
 };
 
-async function getImage() {
-    // var xhr = new XMLHttpRequest();
-    var imageURL = 'http://localhost:8083/img/bubbles.jpg';
-    var response = await fetch(imageURL);
-    console.log(">>>>>>>>>>>>>>>>>>>>>>>BEGIN>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-    console.log(response);
-    console.log(">>>>>>>>>>>>>>>>>>>>>>>END>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+// async function getImage() {
+//     // var xhr = new XMLHttpRequest();
+//     var imageURL = 'http://localhost:8083/img/bubbles.jpg';
+//     var response = await fetch(imageURL);
+//     console.log(">>>>>>>>>>>>>>>>>>>>>>>BEGIN>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+//     console.log(response);
+//     console.log(">>>>>>>>>>>>>>>>>>>>>>>END>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 
-    var blob = await response.blob();
-    console.log(blob);
-    console.log(">>>>>>>>>>>>>>>>>>>>>>>END 2 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-    var reader = new FileReader();
-    reader.readAsDataURL(blob);
-    reader.onloadend = function () {
-        console.log(reader.result);
-        console.log(">>>>>>>>>>>>>>>>>>>>>>>END 3 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-        console.log("STRING LEN = " + reader.result.length);
-    };
+//     var blob = await response.blob();
+//     console.log(blob);
+//     console.log(">>>>>>>>>>>>>>>>>>>>>>>END 2 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+//     var reader = new FileReader();
+//     reader.readAsDataURL(blob);
+//     reader.onloadend = function () {
+//         console.log(reader.result);
+//         console.log(">>>>>>>>>>>>>>>>>>>>>>>END 3 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+//         console.log("STRING LEN = " + reader.result.length);
+//     };
 
-}
-getImage();
+// }
+// getImage();
 

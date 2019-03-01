@@ -1,4 +1,8 @@
-import { strings } from '../views/base';
+const crypto = require('crypto');
+
+import { dbelements } from '../views/base';
+import DatabaseProcessor from './DatabaseProcessor';
+
 
 export default class ImageLoader {
 
@@ -36,9 +40,7 @@ export default class ImageLoader {
         var ablob = await this.createBlob(this._PREVIEW_URL);
     
         var reader = new FileReader();
-        console.log("+++BEFORE+++");
-        console.log(ablob);
-        console.log("+++AFTER+++");
+
         await reader.readAsDataURL(ablob);
 
         const result = await new Promise((resolve, reject) => {
@@ -57,4 +59,66 @@ export default class ImageLoader {
         return myblob;
     }
    
+    async getImageFromDatabase (jobReference, logohash)  {
+        var body = JSON.stringify({
+            database: dbelements.databaseName,
+            table: dbelements.databaseTable,
+            id: jobReference
+        });
+    
+        const dp = new DatabaseProcessor(dbelements.databaseSelectUri);
+    
+        var result;
+        try {
+            result = await dp.transactionPut(body);
+        } catch (error) {
+            console.log("QUACK 1");
+           throw error;
+        }
+    
+        if (result.length == 0) {
+            console.log("WARNING: No logo found for id " + jobReference);
+            return;
+        }
+        if (result.length > 1) {
+            console.log("QUACK 2");
+            throw error('Database select image failed: number rows = ' + result.length);
+        }
+        const row0 = result[0];
+        try {
+            console.log("QUACK 3");
+            await this.checkHash(row0["image"], row0["hash"], logohash);
+        }
+        catch (error) {
+            console.log("QUACK 4: error = " + error);
+            throw error;
+        }
+        return row0["image"];
+    }
+
+    async checkHash (image, dbhash, logohash) {
+        // get hash from blockchain
+        // hash the image again...
+        // 1. compare with hash from db
+        // 2. compare with hash from blockchain
+        const myhash = crypto.createHash('sha256') // enables digest
+            .update(image) // create the hash
+            .digest('hex'); // convert to string
+    
+        const bchash = logohash;
+        if (myhash === bchash && dbhash === bchash) {
+            console.log("HASHES EQUAL!");
+        }
+    
+        // TODO move swal stuff into separate file (and hash crypto code)
+        if (myhash !== bchash) {
+            console.log("QUACK 5");
+            throw error("HASH DISCREPANCY; hash from blockchain = " + bchash + "; hash of image from db = " + myhash);
+        }
+        if (dbhash !== bchash) {
+            console.log("QUACK 6");
+            throw error("HASH DISCREPANCY; hash from blockchain = " + bchash + "; hash from db = " + dbhash);
+        }
+    }
 }
+

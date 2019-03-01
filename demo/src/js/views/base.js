@@ -1,4 +1,5 @@
 
+
 export const elements = {
     signins: document.getElementsByClassName('signin'),
     registerForms: document.getElementsByClassName('submitRegister'),
@@ -64,7 +65,9 @@ export const elements = {
     joblogo: document.getElementById("joblogo"),
     amendjobbutton: document.getElementById("amendjobbutton"),
     expirejobbutton: document.getElementById("expirejobbutton"),
-    jobdescription: document.getElementById("jobdescription")
+    jobdescription: document.getElementById("jobdescription"),
+    searchResList: document.querySelector(".results_list"),
+    alertBtn:  document.getElementById("alertbtn")
 };
 
 export const dbelements = {
@@ -75,11 +78,14 @@ export const dbelements = {
 };
 
 //------------------------------------------------------------------
-// UK Sky Hub
-var ipAddress = '90.200.134.28';
+// UK Sky Hub (Linux)
+// var ipAddress = '90.200.134.28';
 
-// Romania Hub
+// Romania Hub (Linux)
 // var ipAddress = '84.117.182.193';
+
+// localhost (Windows)
+var ipAddress = "localhost";
 //-------------------------------------------------------------------
 
 var recruiterLoginTransaction = 'io.onemillionyearsbc.hubtutorial.GetHubRecruiter';
@@ -253,3 +259,52 @@ export function getSelectedOption(sel) {
     }
     return "";
 }
+export function getJobTimeFor(expiryDate, postedDate) {
+    const ed = new Date(expiryDate);
+    const pd = new Date(postedDate);
+    const now = new Date();
+
+    console.log("ed = " + ed + "; pd = " + pd);
+    // if within 5 days of expiring put expires in x days
+    let timeDiff = ed.getTime() - now.getTime();
+    let dayDifference = Math.round(timeDiff / (1000 * 3600 * 24));
+
+    if (ed < now) {
+        return "EXPIRED";
+    } else if (dayDifference == 0) {
+        return "Expires today"
+    } else if (dayDifference <= 5) {
+        return "Expires in " + dayDifference + " days";
+    }
+
+    timeDiff = now.getTime() - pd.getTime();
+    dayDifference = Math.round(timeDiff / (1000 * 3600 * 24));
+    if (dayDifference == 0) {
+        return "Posted today";
+    }
+    return ("Posted " + dayDifference + " days ago");
+}
+
+export function getJobTypeFor(jobType) {
+    var jt;
+    switch (jobType) {
+        case "FULLTIME":
+            jt = "Full Time";
+            break;
+        case "CONTRACT":
+            jt = "Contract";
+            break;
+        case "PARTTIME":
+            jt = "Part Time";
+            break;
+        case "INTERNSHIP":
+            jt = "Internship";
+            break;
+        case "OTHER":
+            jt = "Other";
+            break;
+    }
+    return jt;
+}
+
+

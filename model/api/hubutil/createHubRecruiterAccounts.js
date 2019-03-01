@@ -25,7 +25,6 @@ const recruiterResourceName = 'HubRecruiter';
 
 // const bnUtil = require('../bn-connection-util');
 const namespace = 'io.onemillionyearsbc.hubtutorial';
-const accountResourceName = 'HubAccount';
 const transactionType = "CreateRecruiterAccount";
 
 bnUtil.cardName='admin@hubtutorial';

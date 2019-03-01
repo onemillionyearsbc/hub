@@ -25,7 +25,7 @@
         }
     }
 
-    function doSelectStatement($conn, $a_sql_string)
+    function doSelectStatement($conn, $a_sql_string, $id)
     {
         $sql =  $a_sql_string;
         $result = $conn->query($sql);
@@ -39,7 +39,7 @@
             }
             echo json_encode($arr);
         } else {
-            json_error(mysqli_error($conn)." sql = ".$a_sql_string);
+            json_error("No image found for id ".$id);
         }
     }
 
