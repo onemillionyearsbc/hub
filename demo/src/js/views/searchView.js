@@ -1,17 +1,33 @@
-import { elements, strings, getJobTypeFor, getJobTimeFor } from './base';
+import { elements, clearLoader, getJobTypeFor, getJobTimeFor, getDaySincePosted } from './base';
+import FilterProcessor from '../models/FilterProcessor';
+
+let state = {};
 
 const renderJobItem = (jobItem, count) => {
-    
-    console.log("MOO remote = "+ jobItem.remote);
+
+    let loc = "See all blockchain jobs in " + jobItem.location;
     if (jobItem.remote === true) {
+        loc = "See all remote blockchain jobs";
         jobItem.location = "REMOTE";
     }
-    const markup =`
+    // display the corner "NEW" element if posted in last 5 days
+    let newbox = "none";
+    if (getDaySincePosted(jobItem.datePosted) < 5) {
+        newbox = "block";
+    }
+    let blockName;
+    if (blockName != "OTHER") {
+        blockName = jobItem.blockchainName.charAt(0).toUpperCase() + jobItem.blockchainName.slice(1).toLowerCase();
+    } else {
+        blockName = "blockchain";
+    }
+
+    const markup = `
         <li>
             <div class="item-job">
                 <div id="jobtitle" class="title">
                     <p>${jobItem.jobTitle}</p>
-                    <div id="newbox" class="corner"><span>New</span></div>
+                    <div style="display: ${newbox};" id="newbox" class="corner"><span>New</span></div>
                 </div>
                 <div class="top">
                     <div class="left">
@@ -53,23 +69,29 @@ const renderJobItem = (jobItem, count) => {
 
                 </div>
 
-                <div id="jobdescription" class="texty description">
+                <div style='font-size: 1.5rem' id="jobdescription" class="texty description">
                     ${jobItem.description}
                 </div>
-
+                <div class="linksave">
+                    <p>${loc}</p>
+                    <p>See All ${blockName} jobs</p>
+                    <button class="saveBtn"><i class="far fa-star"></i>Save</button>
+                </div>
             </div>
         </li>`;
-        elements.searchResList.insertAdjacentHTML("beforeend", markup);
-        var imgElement = document.getElementById("joblogo-" + count);
-        imgElement.setAttribute("src", jobItem.logo)
-        truncate({
-            className: "description",
-            char: 400,
-            // truncateBy : "<span style='color:red'> read more</span>",
-            // numOfTruncateBy : 1
-    
-        });
+    elements.searchResList.insertAdjacentHTML("beforeend", markup);
+    var imgElement = document.getElementById("joblogo-" + count);
+    imgElement.setAttribute("src", jobItem.logo)
+    truncate({
+        className: "description",
+        char: 250,
+    });
 }
+
+const clearResults = () => {
+    elements.searchResList.innerHTML = '';
+};
+
 
 function truncate(obj) {
     let trunc = {};
@@ -95,6 +117,91 @@ function truncate(obj) {
     }
 }
 
-export const renderResults = jobs => {
-    jobs.forEach(renderJobItem, i);
+
+const renderButtons = (page, numResults, resPerPage) => {
+    const pages = Math.ceil(numResults / resPerPage);
+
+    const nextb = document.getElementById("next");
+    const prevb = document.getElementById("previous");
+    const pageno = document.getElementById("pageno");
+    if (page == 1 && pages > 1) {
+        // Only Button to go to next page
+        nextb.style.display = "block";
+        prevb.style.display = "none";
+        pageno.style.display = "none";
+    } else if (page < pages) {
+        // Both buttons
+        nextb.style.display = "block";
+        prevb.style.display = "block";
+        pageno.style.display = "block";
+    }
+    else if (page === pages && pages > 1) {
+        // Only Button to go to prev page
+        nextb.style.display = "none";
+        prevb.style.display = "block";
+        pageno.style.display = "none";
+    }
+    pageno.innerHTML = `Page ${page}`;
+}
+
+export const renderResults = (jobs, page = 1, resPerPage = 10) => {
+
+    state.jobs = jobs;
+    state.page = page;
+    console.log("QUACKINGTON rows length = " + jobs.length);
+    const start = (page - 1) * resPerPage;
+    const end = page * resPerPage;
+
+    // jobs.slice(start, end).forEach(renderJobItem, i);
+    const pageOfJobs = jobs.slice(start, end);
+
+    for (var i = 0; i < pageOfJobs.length; i++) {
+        renderJobItem(pageOfJobs[i], i);
+    }
+
+    // TODO change title based on what filter(s) being used
+    elements.jobTotal.innerHTML = `${jobs.length} blockchain jobs`;
+
+    const alertb = document.getElementById("alertbtn");
+    const nojobs = document.getElementById("nojobs");
+    const pagebtns = document.getElementById("pagebuttons");
+
+
+    if (jobs.length > 0) {
+        alertb.style.display = "block";
+    } else {
+        nojobs.style.display = "block";
+    }
+    if (jobs.length > resPerPage) {
+        pagebtns.style.display = "flex";
+        renderButtons(page, jobs.length, resPerPage);
+    }
+
+    getCounts(jobs);
+}
+
+function renderBlockchainTotal(name, total) {
+    let bcName = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+    let markup = `<li>${bcName}<span class="numjobs">(${total})</span></li>`;
+    elements.blockchainTotals.insertAdjacentHTML("beforeend", markup);
+}
+
+function getCounts(jobs) {
+    console.log("QUACK -----> BEGIN");
+    let fp = new FilterProcessor(jobs);
+    let bcTotals = fp.getBlockchainTotals();
+    var propValue;
+    for (var propName in bcTotals) {
+        propValue = bcTotals[propName]
+        renderBlockchainTotal(propName, propValue);
+    }
+}
+
+export const handleNext = () => {
+    clearResults();
+    renderResults(state.jobs, state.page + 1);
+}
+export const handlePrev = () => {
+    clearResults();
+    renderResults(state.jobs, state.page - 1);
 }

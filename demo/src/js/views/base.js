@@ -67,7 +67,12 @@ export const elements = {
     expirejobbutton: document.getElementById("expirejobbutton"),
     jobdescription: document.getElementById("jobdescription"),
     searchResList: document.querySelector(".results_list"),
-    alertBtn:  document.getElementById("alertbtn")
+    alertBtn:  document.getElementById("alertbtn"),
+    jobTotal: document.getElementById("jobtotal"),
+    searchBtn: document.getElementById("mainsearchbutton"),
+    searchjob: document.getElementById("searchjob"),
+    display: document.getElementById("display"),
+    blockchainTotals: document.querySelector(".blockchaintotals"),
 };
 
 export const dbelements = {
@@ -98,7 +103,7 @@ var getJobAdsTransaction = "io.onemillionyearsbc.hubtutorial.jobs.GetJobAds";
 var createJobAdTransaction = "io.onemillionyearsbc.hubtutorial.jobs.CreateJobPosting";
 var updateJobAdTransaction = "io.onemillionyearsbc.hubtutorial.jobs.UpdateJobPosting";
 var getJobPostingsTransaction = "io.onemillionyearsbc.hubtutorial.jobs.GetJobPostingsDynamic";
-var getAllJobPostingsTransaction = "io.onemillionyearsbc.hubtutorial.jobs.GetAllJobPostings";
+var getAllJobPostingsTransaction = "io.onemillionyearsbc.hubtutorial.jobs.GetAllLiveJobPostings";
 var expireJobAdTransaction = "io.onemillionyearsbc.hubtutorial.jobs.ExpireJobPosting";
 
 
@@ -264,7 +269,6 @@ export function getJobTimeFor(expiryDate, postedDate) {
     const pd = new Date(postedDate);
     const now = new Date();
 
-    console.log("ed = " + ed + "; pd = " + pd);
     // if within 5 days of expiring put expires in x days
     let timeDiff = ed.getTime() - now.getTime();
     let dayDifference = Math.round(timeDiff / (1000 * 3600 * 24));
@@ -282,8 +286,22 @@ export function getJobTimeFor(expiryDate, postedDate) {
     if (dayDifference == 0) {
         return "Posted today";
     }
+    else if (dayDifference == 1) {
+        return ("Posted yesterday");
+    }
     return ("Posted " + dayDifference + " days ago");
 }
+
+
+export function getDaySincePosted(postedDate) {
+    const pd = new Date(postedDate);
+    const now = new Date();
+
+    let timeDiff = now.getTime() - pd.getTime();
+    let dayDifference = Math.round(timeDiff / (1000 * 3600 * 24));
+    return dayDifference;
+}
+
 
 export function getJobTypeFor(jobType) {
     var jt;

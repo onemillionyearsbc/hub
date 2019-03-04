@@ -20,7 +20,7 @@ import DatabaseProcessor from './models/DatabaseProcessor';
 import ImageLoader from './models/ImageLoader';
 import { populateFilterTable, populatePostedBy, setJobStats } from './views/manageJobAdsView';
 import { setJobFields, setJobLogo, getExpireJobData } from './views/displayJobView';
-import { renderResults } from './views/searchView';
+import { renderResults, handleNext, handlePrev } from './views/searchView';
 
 const state = {};
 var quill;
@@ -150,52 +150,64 @@ const buyJobCreditsHandler = async () => {
 
 // SEARCH CONTROLLER
 const searchJobsHandler = async () => {
+    renderLoader(elements.searchjob);
 
-    var data = {
-        $class: strings.getAllJobPostingsTransaction,
-    };
-    // const data = { "$class": "io.onemillionyearsbc.hubtutorial.jobs.GetJobAds", "email": sessionStorage.getItem('email') };
-    const tp = new TransactionProcessor(data, strings.getAllJobPostingsUrl);
-    
-    let rows = await tp.transaction();
+    let cachedData = sessionStorage.getItem("jobs");
 
-    var err = null;
-    if (rows.error !== undefined) {
-        err = rows.error;
-    }
-    if (err != null) {
-        displayErrorPopup('Search failed: ' + err);
+    if (cachedData != null) {
+        cachedData = JSON.parse(cachedData);
+        renderResults(cachedData);
     } else {
-       
-        for (var i = 0; i < rows.length; i++) {
-            await getLogos(rows[i]);
-        }
-        await rows.forEach(getLogos);
-        renderResults(rows);
-    }
-}
+        var data = {
+            $class: strings.getAllJobPostingsTransaction,
+        };
+        const tp = new TransactionProcessor(data, strings.getAllJobPostingsUrl);
 
-const getLogos = async(jobItem) => {
-    try {
-        console.log("GETTING ID FOR " + jobItem.jobReference);
-        if (jobItem.logohash.length == 0) {
-            return;
+        let rows = await tp.transaction();
+
+        var err = null;
+        if (rows.error !== undefined) {
+            err = rows.error;
         }
-        const image = await imageLoader.getImageFromDatabase(jobItem.jobReference, jobItem.logohash);
-       
-        jobItem.logo = image;
-        console.log("MOOINGTON!! =============== image = " + jobItem.logo);
-        return;
+        if (err != null) {
+            displayErrorPopup('Search failed: ' + err);
+        } else {
+            try {
+                let results = await imageLoader.getAllImagesFromDatabase();
+                // }
+                // await rows.forEach(getLogos);
+                console.log("NUMBER OF ROWS RETURNED = " + results.length);
+
+                for (var i = 0; i < rows.length; i++) {
+                    // console.log("BLOCKCHAIN HASH FOR ROW " + i + " = " + rows[i].logohash);
+                    let id = rows[i].jobReference;
+
+                    let rowfound = Array.from(results).find(row => row.id === id);
+                    // console.log("DB HASH " + i + " = " + rowfound.hash);
+
+                    // TODO I would say move this into a crypto class (CryptoProcessor)
+                    imageLoader.checkHash(rowfound.image, rowfound.hash, rows[i].logohash);
+                    // console.log("id: " + id + " => HASHES EQUAL!");
+                    rows[i].logo = rowfound.image;
+                }
+                renderResults(rows);
+                let cdata = JSON.stringify(rows);
+                sessionStorage.setItem("jobs", cdata);
+               
+            } catch (error) {
+                await Swal({
+                    title: 'ERROR RETRIEVING IMAGES!',
+                    text: error,
+                    type: 'error',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#cc6d14',
+                });
+            }
+
+        }
     }
-    catch (error) {
-        await Swal({
-            title: 'ERROR RETRIEVING IMAGE!',
-            text: error,
-            type: 'error',
-            confirmButtonText: 'OK',
-            confirmButtonColor: '#cc6d14',
-        });
-    }
+
+    clearLoader();
 }
 
 
@@ -443,10 +455,12 @@ if (document.URL.includes("displayjob")) {
 }
 
 // SEARCH JOBS
-
-// CREATEJOBADPAGE
 if (document.URL.includes("search")) {
     searchJobsHandler();
+    let nextb = document.getElementById("next");
+    nextb.addEventListener('click', handleNext);
+    let prevb = document.getElementById("previous");
+    prevb.addEventListener('click', handlePrev);
 }
 
 if (document.URL.includes("createjobad")) {
@@ -565,6 +579,16 @@ if (document.URL.includes("recruiter-dashboard")) {
     createButton.addEventListener("click", (e) => {
         sessionStorage.setItem("amend", "false");
         window.location = "createjobad.html";
+    });
+}
+
+
+if (document.URL.includes("index")) {
+    var searchBtn = elements.searchBtn;
+
+    searchBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        window.location = "search.html";
     });
 }
 

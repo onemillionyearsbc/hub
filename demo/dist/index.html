@@ -54,15 +54,16 @@
                         <form class="form" role="search" action="#" autocomplete="off">
                             <div class="form__group">
                                 <input type="text" class="form__textfield" placeholder="Job title, skill or company"
-                                    id="job" required>
+                                    id="job">
                                 <label for="job" class="form__label">Job title, skill or company</label>
                             </div>
                             <div class="form_group">
                                 <input type="text" class="form__textfield" placeholder="Town, city or postcode"
-                                    id="location" required>
+                                    id="location">
                                 <label for="location" class="form__label">Town, city or postcode</label>
                             </div>
-                            <button id="wankbutton" type="submit" class="btn btn--orange">SEARCH</button>
+                            
+                            <button id="mainsearchbutton" type="submit" class="btn btn--orange">SEARCH</button>
                         </form>
                     </div>
 
@@ -104,8 +105,8 @@
          
         </div>
 <script type="text/javascript" src="js/bundle.js"></script></body>
-<script src="sweetalert2.all.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/promise-polyfill"></script>
+<!-- <script src="sweetalert2.all.min.js"></script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/promise-polyfill"></script> -->
 <script>
     var toggleButton = document.getElementById('btn2');
     var grid = document.querySelector('.searchpanel__grid');

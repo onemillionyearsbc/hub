@@ -29,18 +29,23 @@
                 <ul class="navbar-menu navbar__left">
                     <li class="item-1"><a href="recruiter-dashboard.html">Dashboard</a></li>
                     <li><a href="jobcredits.html">Job Credits</a></li>
+                    <li><a href="managejobads.html">Job Ads</a></li>
+                </ul>
+                <ul class="navbar__right">
                     <li class="signin"><a href="#" class="link-icon">Log Out</a></li>
                 </ul>
+
             </nav>
             <div id="searchjob" class="container searchjob">
                 <div class="main">
                     <div class="main__top">
-                        <p> 11,671 blockchain jobs</p>
+                        <p id="jobtotal"></p>
                     </div>
                     <div class="main__explore">
                         <p>Explore Results</p>
                     </div>
-                    <div class="main__mid">
+                    <div id="display" class="main__mid">
+
                         <div class="main__mid--left">
                             <div class="item">
                                 <form autocomplete="off" id="smallsearchform" class="myForm" top="false">
@@ -66,6 +71,18 @@
                                         </button>
                                     </div>
                                 </form>
+                            </div>
+                            <div class="filters">
+                                <div class="filtertitle">
+                                    <p>Your Filters</p>
+                                    <p class="clear">clear all</p>
+                                </div>
+                                <div class="filtercontent">
+                                    <button class="datefilter"><i class="far fa-times-circle"></i>Last 7 days</button>
+                                    <button class="contractfilter"><i class="far fa-times-circle"></i>Contract</button>
+                                    <button class="employerfilter"><i class="far fa-times-circle"></i>Agency</button>
+                                    <button class="remotefilter"><i class="far fa-times-circle"></i>Non-Remote</button>
+                                </div>
                             </div>
                             <div class="item">
                                 <div class="explorepanel">
@@ -253,14 +270,14 @@
                                 </div>
                                 <div class="explorepanel">
                                     <p>Blockchain</p>
-                                    <ul>
-                                        <li>Corda<span class="numjobs">(8,073)</span></li>
+                                    <ul class="blockchaintotals">
+                                        <!-- <li>Corda<span class="numjobs">(8,073)</span></li>
                                         <li>Ethereum<span class="numjobs">(1,887)</span></li>
                                         <li>Hyperledger<span class="numjobs">(10,009)</span></li>
                                         <li>Neo<span class="numjobs">(6)</span></li>
                                         <li>Quorum<span class="numjobs">(98)</span></li>
                                         <li>Riplle<span class="numjobs">(7)</span></li>
-                                        <li>Other<span class="numjobs">(5,433)</span></li>
+                                        <li>Other<span class="numjobs">(5,433)</span></li> -->
                                     </ul>
                                 </div>
                             </div>
@@ -281,7 +298,7 @@
 
                         <div class="main__mid--right">
                             <ul style="list-style: none;" class="results_list">
-                               
+
                                 <!-- <li>
                                     <div class="item-job">
                                         <div id="jobtitle" class="title">
@@ -360,10 +377,14 @@
                                                 the importance of TypeScript in infrastructure.</p>
                                             <p><strong>Key technolog...
                                         </div>
-
+                                       <div class="linksave">
+                                            <p>See More Blockchain jobs in West London</p>
+                                            <p>See All Ethereum jobs</p>
+                                            <button class="saveBtn"><i class="far fa-star"></i>Save</button>
+                                       </div>
                                     </div>
-                                </li> -->
-                               <!-- <li>
+                                </li>  -->
+                                <!-- <li>
                                      <div class="item-job">
                                         <div id="jobtitle" class="title">
                                             <p>Junior Blockchain Developer</p>
@@ -437,12 +458,19 @@
                                             <p><strong>Key technolog...
                                         </div>
                                     </div> 
-                                </li>-->
+                                </li> -->
                             </ul>
-                            <button id="alertbtn" class="btn btn--orange btn--icon"><i class="far fa-envelope"></i>Alert
-                                me to
-                                jobs
-                                like these</button>
+                            <div class="warning" style="display: none;" id="nojobs">
+                                <p>For more jobs, you could consider broadening your search.</p>
+                            </div>
+                            <div style="display: none;" id="pagebuttons" class="pages">
+                                <a style="display: none;" href="#" id="previous">&laquo; Previous</a>
+                                <span style="display: none;" id="pageno">Page 1</span>
+                                <a style="display: none;" href="#" id="next">Next &raquo;</a>
+                            </div>
+                            <button style="display: none;" id="alertbtn" class="btn btn--orange btn--icon">
+                                <i class="far fa-envelope"></i>Alert me to blockchain jobs like these
+                            </button>
                         </div>
                     </div>
                 </div>

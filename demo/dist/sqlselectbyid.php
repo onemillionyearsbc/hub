@@ -29,8 +29,10 @@
             $table = $decoded["table"];
             $id = $decoded["id"];
 
-           
-            $sqlstatement = "select image, hash from ".$table." where id = ".$id; 
+            $sqlstatement = "select id, image, hash from ".$table; 
+            if ($id != "") {
+                $sqlstatement = "select image, hash from ".$table." where id = ".$id;
+            }
            
             doSelectStatement($conn, $sqlstatement, $id);
         }

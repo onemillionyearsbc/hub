@@ -534,16 +534,19 @@ function fillJobAdParams(posting, credentials) {
 
 /**
  * Return all JobPosting objects
- * @param {io.onemillionyearsbc.hubtutorial.jobs.GetAllJobPostings} credentials
+ * @param {io.onemillionyearsbc.hubtutorial.jobs.GetAllLiveJobPostings} credentials
  * @returns {io.onemillionyearsbc.hubtutorial.jobs.JobPosting[]} 
  * @transaction
  */
-async function GetAllJobPostings(credentials) {
+async function GetAllLiveJobPostings(credentials) {
     let results = await query('selectAllJobPostings', {
         
     });
+    const today = new Date();
+    
+    const liveJobs = results.filter(posting => posting.expiryDate > today);
    
-    return results;
+    return liveJobs;
 }
 
 /*

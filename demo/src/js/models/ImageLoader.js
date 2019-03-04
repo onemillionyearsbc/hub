@@ -59,6 +59,41 @@ export default class ImageLoader {
         return myblob;
     }
    
+    async getAllImagesFromDatabase ()  {
+        var body = JSON.stringify({
+            database: dbelements.databaseName,
+            table: dbelements.databaseTable,
+            id: ""
+        });
+    
+        const dp = new DatabaseProcessor(dbelements.databaseSelectUri);
+    
+        var result;
+        try {
+            result = await dp.transactionPut(body);
+        } catch (error) {
+           throw error;
+        }
+    
+        if (result.length == 0) {
+            throw error("No logos found! ");
+        }
+        // if (result.length > 1) {
+        //     throw error('Database select image failed: number rows = ' + result.length);
+        // }
+        // const row0 = result[0];
+        // try {
+        //     // await this.checkHash(row0["image"], row0["hash"], logohash);
+        //     // console.log("id: " + jobReference + " => HASHES EQUAL!");
+        //     console.log("OINKINGTON ROWS = " + result.length);
+        // }
+        // catch (error) {
+        //     console.log("BUGGER error = " + error);
+        //     throw error;
+        // }
+        // return row0["image"];
+        return result;
+    }
     async getImageFromDatabase (jobReference, logohash)  {
         var body = JSON.stringify({
             database: dbelements.databaseName,
@@ -72,7 +107,6 @@ export default class ImageLoader {
         try {
             result = await dp.transactionPut(body);
         } catch (error) {
-            console.log("QUACK 1");
            throw error;
         }
     
@@ -81,16 +115,13 @@ export default class ImageLoader {
             return;
         }
         if (result.length > 1) {
-            console.log("QUACK 2");
             throw error('Database select image failed: number rows = ' + result.length);
         }
         const row0 = result[0];
         try {
-            console.log("QUACK 3");
-            await this.checkHash(row0["image"], row0["hash"], logohash);
+            await this.checkHash(row0["image"], row0["hash"], logohash);3
         }
         catch (error) {
-            console.log("QUACK 4: error = " + error);
             throw error;
         }
         return row0["image"];
@@ -106,17 +137,13 @@ export default class ImageLoader {
             .digest('hex'); // convert to string
     
         const bchash = logohash;
-        if (myhash === bchash && dbhash === bchash) {
-            console.log("HASHES EQUAL!");
-        }
+       
     
         // TODO move swal stuff into separate file (and hash crypto code)
         if (myhash !== bchash) {
-            console.log("QUACK 5");
             throw error("HASH DISCREPANCY; hash from blockchain = " + bchash + "; hash of image from db = " + myhash);
         }
         if (dbhash !== bchash) {
-            console.log("QUACK 6");
             throw error("HASH DISCREPANCY; hash from blockchain = " + bchash + "; hash from db = " + dbhash);
         }
     }

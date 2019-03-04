@@ -104,7 +104,7 @@ async function main() {
         includeOptionalFields: false
     }
 
-    for (var i = 0; i < 5; i++) {
+    for (var i = 0; i < 500; i++) {
 
         let accountIndex = getRandomIndex(0, recruiters.length - 1);
         if (randEmail === true) {
@@ -166,7 +166,7 @@ async function main() {
         params.location = location;
         params.skills = skills;
 
-        params.testData = true;
+        params.testData = true; // true to generate jobs in the past, false generates all jobs for today
 
         var img = getRandomArrayElement(imageArray);
         var imageAsBase64 = fs.readFileSync(`./img/${img}`, 'UTF-8');

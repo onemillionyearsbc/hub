@@ -32,10 +32,9 @@ export default class DatabaseProcessor {
                 throw resp;
             } else {
                 // everything ok: print out the JSON properties received
-                console.log(">>>>> everything ok! = ");
-                for (var property in obj) {
-                    console.log(property + ": " + obj[property]);
-                }
+                // for (var property in obj) {
+                //     console.log(property + ": " + obj[property]);
+                // }
             }
             return obj; // no error
 

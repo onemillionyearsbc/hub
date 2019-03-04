@@ -169,6 +169,6 @@ transaction GetPopularEmployers {
 
 @commit(false)
 @returns(JobPosting[])
-transaction GetAllJobPostings {
+transaction GetAllLiveJobPostings {
 }
 
