@@ -115,11 +115,11 @@ export default class ImageLoader {
             return;
         }
         if (result.length > 1) {
-            throw error('Database select image failed: number rows = ' + result.length);
+            throw ('Database select image failed: number rows = ' + result.length);
         }
         const row0 = result[0];
         try {
-            await this.checkHash(row0["image"], row0["hash"], logohash);3
+            await this.checkHash(jobReference, row0["image"], row0["hash"], logohash);3
         }
         catch (error) {
             throw error;
@@ -127,7 +127,7 @@ export default class ImageLoader {
         return row0["image"];
     }
 
-    async checkHash (image, dbhash, logohash) {
+    async checkHash (id, image, dbhash, logohash) {
         // get hash from blockchain
         // hash the image again...
         // 1. compare with hash from db
@@ -141,10 +141,10 @@ export default class ImageLoader {
     
         // TODO move swal stuff into separate file (and hash crypto code)
         if (myhash !== bchash) {
-            throw error("HASH DISCREPANCY; hash from blockchain = " + bchash + "; hash of image from db = " + myhash);
+            throw ("HASH DISCREPANCY (id=" + id +"); hash from blockchain = " + bchash + "; hash of image from db = " + myhash);
         }
         if (dbhash !== bchash) {
-            throw error("HASH DISCREPANCY; hash from blockchain = " + bchash + "; hash from db = " + dbhash);
+            throw ("HASH DISCREPANCY (id=" + id +"); hash from blockchain = " + bchash + "; hash from db = " + dbhash);
         }
     }
 }

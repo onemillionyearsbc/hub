@@ -9,14 +9,52 @@
         background: $color-grey-light-1;
      
         &__top {
+            &--jobfilters {
+                padding-bottom: 1rem;
+               
+                ul {
+                    list-style-type: none;
+                    display: inline;
+                }
+                p {
+                    display: inline;
+                    font-size: 0.5;
+                    font-weight: 200;
+                    color: $color-grey-light-3;
+                }
+                
+                li {
+                    display: inline;
+                    font-size: 1.5rem;
+                    list-style-type: none;
+                    color: $button-orange-background;
+                    font-weight: 600;
+        
+                }
+                li:hover{
+                    cursor: pointer;
+                    color: $button-orange-background-darker;
+                    text-decoration: underline;
+                    font-weight: 600;
+                }
+                li:last-child { 
+                    cursor: default;
+                    text-decoration: none;
+                    font-weight: 200;
+                    color: $color-grey-light-3;
+                    font-weight: 400;
+                }
+              
+            }
             background: $color-white;
             font-size: 2rem;
             font-weight: bold;
-            padding-top: 2rem;
+            padding-top: 1rem;
             padding-bottom: 1rem;
             padding-left: 3rem;
-            display: flex;
+            // display: flex;
             align-items: center;
+            
         }
         &__explore {
             font-size: 1.6rem;
@@ -64,6 +102,7 @@
                                 }
                                 input {
                                     height: 3.2rem;
+                                    font-size: 1.4rem;
                                 }
                                 
                             }    
@@ -115,6 +154,7 @@
                                 color: $color-grey-light-2;
                                 margin-left: 0.5rem;
                             }
+                            
                         }
                         li:hover{
                             cursor: pointer;
@@ -125,6 +165,33 @@
                         .toggle {
                             padding-left: 0;
                             margin-left: 1.0rem;
+                        }
+                        .blob {
+                            margin-left: 0;
+                            padding-left: 2rem;
+                            background: $color-grey-light-1;
+                            font-weight: 600;
+                            color: black;
+                            border-radius: 5px;
+                        }
+                        .blob:hover {
+                            cursor: pointer;
+                            text-decoration: line-through;
+                            color: black;
+                        }
+                        .numjobs:hover {
+                            text-decoration: none;
+                        }
+                        .fa-times-circle {
+                            margin-left: 0.5rem;
+                         
+                            // text-align: right;
+                            margin-right: 1.5rem;
+                            color: red;
+                            float: right;
+                            margin-right: 1.5rem;
+                            margin-top: 0.5rem;
+                            font-size: 1.3rem;
                         }
                     }                   
                 }

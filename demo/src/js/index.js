@@ -13,14 +13,14 @@ import * as manageJobAdsView from './views/manageJobAdsView';
 
 
 
-import { getFormFor, clearError, elements, dbelements, elementConsts, inputType, renderLoader, renderLoaderEnd, renderLoaderEndByNumber, clearLoader, navBarSetLoggedIn, setLoggedIn, strings, enableCreateJobButton } from './views/base';
+import { getFormFor, clearError, elements, dbelements, elementConsts, inputType, renderLoader, renderLoaderEnd, renderLoaderEndByNumber, renderLoaderFromBottom, clearLoader, navBarSetLoggedIn, setLoggedIn, strings, enableCreateJobButton } from './views/base';
 import { setCompanyName, setContactName, getJobAdsData, setJobAdsData, setJobCreditsRemaining } from './views/recruiterDashboardView';
 import { setJobAdsNumber, setTotalJobPrice, restyle, adjustSlider, getBuyJobCreditsData } from './views/jobCreditsView';
 import DatabaseProcessor from './models/DatabaseProcessor';
 import ImageLoader from './models/ImageLoader';
 import { populateFilterTable, populatePostedBy, setJobStats } from './views/manageJobAdsView';
 import { setJobFields, setJobLogo, getExpireJobData } from './views/displayJobView';
-import { renderResults, handleNext, handlePrev } from './views/searchView';
+import { renderResults, handleNext, handlePrev, applyFilter } from './views/searchView';
 
 const state = {};
 var quill;
@@ -172,23 +172,27 @@ const searchJobsHandler = async () => {
         if (err != null) {
             displayErrorPopup('Search failed: ' + err);
         } else {
+            let id;
             try {
                 let results = await imageLoader.getAllImagesFromDatabase();
-                // }
-                // await rows.forEach(getLogos);
+              
                 console.log("NUMBER OF ROWS RETURNED = " + results.length);
-
+             
                 for (var i = 0; i < rows.length; i++) {
+                  
                     // console.log("BLOCKCHAIN HASH FOR ROW " + i + " = " + rows[i].logohash);
-                    let id = rows[i].jobReference;
-
+                    id = rows[i].jobReference;
+                  
                     let rowfound = Array.from(results).find(row => row.id === id);
+                  
+                    // console.log("CHECKING HASH FOR IMAGE " + id + "; image = " + rowfound.image);
                     // console.log("DB HASH " + i + " = " + rowfound.hash);
-
-                    // TODO I would say move this into a crypto class (CryptoProcessor)
-                    imageLoader.checkHash(rowfound.image, rowfound.hash, rows[i].logohash);
+                   
+                //     // TODO I would say move this into a crypto class (CryptoProcessor)
+                    await imageLoader.checkHash(id, rowfound.image, rowfound.hash, rows[i].logohash);
                     // console.log("id: " + id + " => HASHES EQUAL!");
                     rows[i].logo = rowfound.image;
+                   
                 }
                 renderResults(rows);
                 let cdata = JSON.stringify(rows);
@@ -197,7 +201,7 @@ const searchJobsHandler = async () => {
             } catch (error) {
                 await Swal({
                     title: 'ERROR RETRIEVING IMAGES!',
-                    text: error,
+                    text: error + " jobreference = " + id, 
                     type: 'error',
                     confirmButtonText: 'OK',
                     confirmButtonColor: '#cc6d14',
@@ -206,13 +210,17 @@ const searchJobsHandler = async () => {
 
         }
     }
-
+    let what = sessionStorage.getItem("what");
+    if (what != null && what != "") {
+        console.log("OOOOOOOOOOOOOOOOOOOH! what = " + what);
+        applyFilter(strings.companyFilter, what);
+    }
     clearLoader();
 }
 
 
 const expireJobHandler = async () => {
-    renderLoaderEndByNumber(elements.jobdescription, 130);
+    renderLoaderEndByNumber(elements.lower, 120);
     const email = sessionStorage.getItem('email');
     const jobid = sessionStorage.getItem('jobReference');
 
@@ -452,16 +460,52 @@ if (document.URL.includes("displayjob")) {
         e.preventDefault();
         expireJobHandler();
     });
+    elements.jobcompany.addEventListener('click', e => {
+        e.preventDefault();
+        //XXXXX search on the basis of company name
+        sessionStorage.setItem("searchtype", "companytotals");
+        console.log("QUACK 76 searching for " + e.target.text);
+        sessionStorage.setItem("what", e.target.text);
+        window.location = "search.html";
+    });
 }
 
 // SEARCH JOBS
 if (document.URL.includes("search")) {
     searchJobsHandler();
+    
     let nextb = document.getElementById("next");
     nextb.addEventListener('click', handleNext);
     let prevb = document.getElementById("previous");
     prevb.addEventListener('click', handlePrev);
+
+
+    // this is for when we click on one of the filters in the "filterchain" at the top
+    let chainItems = document.getElementsByClassName("filteritem");
+    for (let ci of chainItems) {
+        ci.addEventListener("click", (e) => {
+            sessionStorage.setItem("what", "");
+            window.location = "search.html";
+            // apply each filter in chain up to and including selected item
+        });
+    }
+
+
+    // let jc = elements.companyLabelList;
+    // console.log("OINKINGTON company element = " + jc);
+
+    let companyItems = document.getElementsByClassName("companylabel");
+    for (let ci of companyItems) {
+        ci.addEventListener("click", (e) => {
+            e.preventDefault();
+            // search on the basis of company name
+            sessionStorage.setItem("searchtype", "companytotals");
+            sessionStorage.setItem("what", e.target.text);
+            window.location = "search.html";
+        });
+    }
 }
+
 
 if (document.URL.includes("createjobad")) {
 
@@ -528,7 +572,6 @@ if (document.URL.includes("createjobad")) {
         path = path.substring(path.lastIndexOf('\\') + 1);
 
         try {
-            console.log("++++++++ FILE = " + this.files[0]);
             var img = imageLoader.loadImage(this.files[0]);
             createJobAdView.setLogoFileAndImage(path, img);
             state.newImage = true;
@@ -588,8 +631,12 @@ if (document.URL.includes("index")) {
 
     searchBtn.addEventListener("click", (e) => {
         e.preventDefault();
+        let what = document.getElementById("job");
+
+        sessionStorage.setItem("what", ""); // for now just to reload the page
         window.location = "search.html";
     });
+
 }
 
 if (document.URL.includes("register")) {

@@ -34,18 +34,26 @@
                 <ul class="navbar__right">
                     <li class="signin"><a href="#" class="link-icon">Log Out</a></li>
                 </ul>
-
             </nav>
             <div id="searchjob" class="container searchjob">
                 <div class="main">
                     <div class="main__top">
-                        <p id="jobtotal"></p>
+                        <div style="display: none;" id="filterchain" class="main__top--jobfilters">
+                            <ul class="category">
+                                <li class="filteritem">all jobs</li>
+                                <!-- <p>></p>
+                                <li class="all">Hyperledger</li> -->
+                            </ul>
+                        </div>
+                        <div class="main__top--jobcount">
+                            <p id="jobtotal"></p>
+                        </div>
+
                     </div>
                     <div class="main__explore">
                         <p>Explore Results</p>
                     </div>
                     <div id="display" class="main__mid">
-
                         <div class="main__mid--left">
                             <div class="item">
                                 <form autocomplete="off" id="smallsearchform" class="myForm" top="false">
@@ -72,16 +80,20 @@
                                     </div>
                                 </form>
                             </div>
-                            <div class="filters">
+                            <div style="display: none;" class="filters">
                                 <div class="filtertitle">
                                     <p>Your Filters</p>
                                     <p class="clear">clear all</p>
                                 </div>
-                                <div class="filtercontent">
-                                    <button class="datefilter"><i class="far fa-times-circle"></i>Last 7 days</button>
-                                    <button class="contractfilter"><i class="far fa-times-circle"></i>Contract</button>
-                                    <button class="employerfilter"><i class="far fa-times-circle"></i>Agency</button>
-                                    <button class="remotefilter"><i class="far fa-times-circle"></i>Non-Remote</button>
+                                <div id="filterbuttons" class="filtercontent">
+                                    <button style="display: none;" class="datefilter"><i
+                                            class="far fa-times-circle"></i>Last 7 days</button>
+                                    <button style="display: none;" class="contractfilter"><i
+                                            class="far fa-times-circle"></i>Contract</button>
+                                    <button style="display: none;" class="employerfilter"><i
+                                            class="far fa-times-circle"></i>Agency</button>
+                                    <button style="display: none;" class="remotefilter"><i
+                                            class="far fa-times-circle"></i>Non-Remote</button>
                                 </div>
                             </div>
                             <div class="item">
@@ -235,41 +247,41 @@
                             <div class="item">
                                 <div class="explorepanel">
                                     <p>Date Posted</p>
-                                    <ul>
-                                        <li>Last 24 hours<span class="numjobs">(45)</span></li>
+                                    <ul class="datetotals">
+                                        <!-- <li>Last 24 hours<span class="numjobs">(45)</span></li>
                                         <li>Last 7 days<span class="numjobs">(467)</span></li>
-                                        <li>Last 14 days<span class="numjobs">(1,098)</span></li>
+                                        <li>Last 14 days<span class="numjobs">(1,098)</span></li> -->
                                     </ul>
                                 </div>
                             </div>
                             <div class="item">
                                 <div class="explorepanel">
                                     <p>Recuiters</p>
-                                    <ul>
-                                        <li>Agency<span class="numjobs">(76)</span></li>
-                                        <li>Employer<span class="numjobs">(165</span></li>
+                                    <ul class="employertotals">
+                                        <!-- <li>Agency<span class="numjobs">(76)</span></li>
+                                        <li>Employer<span class="numjobs">(165</span></li> -->
                                     </ul>
                                 </div>
                             </div>
                             <div class="item">
                                 <div class="explorepanel">
                                     <p>Job Types</p>
-                                    <ul>
-                                        <li>Permanent<span class="numjobs">(76)</span></li>
-                                        <li>Contract<span class="numjobs">(165</span></li>
+                                    <ul class="jobtypetotals">
+                                        <!-- <li>Permanent<span class="numjobs">(76)</span></li>
+                                        <li>Contract<span class="numjobs">(165</span></li> -->
                                     </ul>
                                 </div>
                             </div>
                             <div class="item">
                                 <div class="explorepanel">
                                     <p>On Site Location</p>
-                                    <ul>
-                                        <li>Remote<span class="numjobs">(10,076)</span></li>
-                                        <li>Non-Remote<span class="numjobs">(12,165</span></li>
+                                    <ul class="onsitetotals">
+                                        <!-- <li>Remote<span class="numjobs">(10,076)</span></li>
+                                        <li>Non-Remote<span class="numjobs">(12,165</span></li> -->
                                     </ul>
                                 </div>
                                 <div class="explorepanel">
-                                    <p>Blockchain</p>
+                                    <p id="bcFilter">Blockchain</p>
                                     <ul class="blockchaintotals">
                                         <!-- <li>Corda<span class="numjobs">(8,073)</span></li>
                                         <li>Ethereum<span class="numjobs">(1,887)</span></li>
@@ -284,14 +296,13 @@
                             <div class="item">
                                 <div class="explorepanel">
                                     <p>Popular Employers</p>
-                                    <ul>
-                                        <li>Totaljobs Groups<span class="numjobs">(761)</span></li>
+                                    <ul class="companytotals">
+                                        <!-- <li>Totaljobs Groups<span class="numjobs">(761)</span></li>
                                         <li>IBM<span class="numjobs">(712)</span></li>
                                         <li>Adidas<span class="numjobs">(642)</span></li>
                                         <li>OneMillionYearsBC<span class="numjobs">(612)</span></li>
-                                        <li>The Fungus Factory<span class="numjobs">(543)</span></li>
+                                        <li>The Fungus Factory<span class="numjobs">(543)</span></li> -->
                                     </ul>
-                                    <!-- fill in with the "top 5" for example -->
                                 </div>
                             </div>
                         </div>
@@ -328,7 +339,7 @@
                                                 <div class="left__item">
                                                     <div class="loggy">
                                                         <i class="loggy__icon fas fa-table fa-fw"></i>
-                                                        <a id="jobcompany" class="loggy__label"
+                                                        <a id="jobcompany" class="loggy__label companylabel"
                                                             href="search.html">Revere
                                                             Digital
                                                             Recruitment</a>

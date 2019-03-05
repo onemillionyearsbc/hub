@@ -59,6 +59,7 @@ export const elements = {
     jobcompany: document.getElementById("jobcompany"),
     jobtime: document.getElementById("jobtime"),
     jobdescription: document.getElementById("jobdescription"),
+    lower: document.getElementById("lower"),
     jobcontact: document.getElementById("jobcontact"),
     jobref: document.getElementById("jobref"),
     jobid: document.getElementById("jobid"),
@@ -73,6 +74,17 @@ export const elements = {
     searchjob: document.getElementById("searchjob"),
     display: document.getElementById("display"),
     blockchainTotals: document.querySelector(".blockchaintotals"),
+    dateTotals: document.querySelector(".datetotals"),
+    employerTotals: document.querySelector(".employertotals"),
+    jobTypeTotals: document.querySelector(".jobtypetotals"),
+    onsiteTotals: document.querySelector(".onsitetotals"),
+    companyTotals: document.querySelector(".companytotals"),
+    filterButtons: document.querySelector(".filters"),
+    listItems: document.getElementsByTagName("li"),
+    categoryList: document.querySelector(".category"),
+    companyLabelList:  document.querySelector(".companylabel"),
+    filterContent: document.getElementById("filterbuttons"),
+    filterTitle: document.querySelector(".filters"),
 };
 
 export const dbelements = {
@@ -138,6 +150,12 @@ export const strings = {
     getAllJobPostingsUrl: `http://${ipAddress}:3000/api/${getAllJobPostingsTransaction}`,
     beginningOfTime: "1970-01-01T15:11:47.728Z",
     endOfTime: "3070-01-01T15:11:47.728Z",
+    blockchainFilter: 'blockchaintotals',
+    companyFilter: 'companytotals',
+    dateFilter: 'datetotals',
+    employerTypeFilter: 'employertotals',
+    jobTypeFilter: 'jobtypetotals',
+    onSiteFilter: 'onsiteTotals'
 };
 
 export const elementConsts = {
@@ -188,6 +206,13 @@ export const renderLoader = parent => {
 export const renderLoaderEnd = parent => {
     const loader = `
         <div style="top:65%"class="${strings.loader}"></div>
+    `;
+    parent.insertAdjacentHTML('beforeend', loader); // beforeend means insert before the end of the parent element
+};
+
+export const renderLoaderFromBottom = (parent, percent) => {
+    const loader = `
+        <div style="bottom:${percent}%"class="${strings.loader}"></div>
     `;
     parent.insertAdjacentHTML('beforeend', loader); // beforeend means insert before the end of the parent element
 };

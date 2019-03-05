@@ -1,5 +1,3 @@
-const crypto = require('crypto');
-const Swal = require('sweetalert2');
 
 import { elements, strings, getJobTypeFor, getJobTimeFor } from './base';
 
