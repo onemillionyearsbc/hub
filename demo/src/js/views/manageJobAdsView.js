@@ -138,14 +138,15 @@ export const populateFilterTable = (rows, bulkt) => {
     }
 
    
-    var myTH = document.getElementsByTagName("th")[1];
-    sorttable.innerSortFunction.apply(myTH, []);
+    // var myTH = document.getElementsByTagName("th")[1];
+    // sorttable.innerSortFunction.apply(myTH, []);
     var trList = table.getElementsByTagName("tr");
     for (var index = 0; index < trList.length; index++) {
         let i = index;
         trList[index].addEventListener("dblclick", function (event) {
             let rowIndex = i;
             var propValue;
+            console.log("BARK! row = " + document.getElementById("jobtable").rows.item(rowIndex).innerHTML);
             let data = rows[rowIndex-1];
             for(var propName in data) {
                 propValue = data[propName];

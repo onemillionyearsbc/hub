@@ -23,7 +23,8 @@ asset JobPosting identified by jobReference {
   o String      internalRef
   o Boolean     employer
   o String      salary optional
-  o String      location optional
+  o String      location optional // country
+  o String      city optional
   o String[]    skills
   
   o String      logohash
@@ -75,6 +76,7 @@ concept JobPostingParameters {
   o Boolean     employer
   o String      salary optional
   o String      location optional
+  o String      city optional
   o String[]    skills
   
   o String      logohash
@@ -153,6 +155,7 @@ transaction FilterJobPostingsDynamic {
   o String filterBy default=""
   o String[] filterBySkills optional 
   o String location default=""
+  o String city default=""
   o String filterType default=""
   o String dateFilter default=""
   o String employerFilter default=""

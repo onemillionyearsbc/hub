@@ -32,12 +32,22 @@
                 &--item {
                     padding-left: 5rem;
                 }
+                
                 .loggy p, i{
                     display: inline-block;
-                    margin-left: 2rem;
+                    // margin-left: 2rem;
+                    span{
+                        color: $button-orange-background;
+  
+                    }
+                    span:hover {
+                        text-decoration: underline;
+                        color: $button-orange-background;
+                        cursor: pointer;
+                    }
                 }
                 a {
-                    margin-left: 2rem;
+                    // margin-left: 2rem;
                     text-decoration: none;
                     color: $button-orange-background;
                 }
@@ -102,4 +112,3 @@
 .ql-indent-3 {
     margin-left: 240px;
 }
-

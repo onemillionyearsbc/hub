@@ -3,6 +3,7 @@ require('./scripts/fontawesome-all');
 require('./scripts/sorttable');
 const crypto = require('crypto');
 const Swal = require('sweetalert2');
+import axios from 'axios';
 
 import TransactionProcessor from './models/TransactionProcessor';
 import * as registerView from './views/registerView';
@@ -13,14 +14,14 @@ import * as manageJobAdsView from './views/manageJobAdsView';
 
 
 
-import { getFormFor, clearError, elements, dbelements, elementConsts, inputType, renderLoader, renderLoaderEnd, renderLoaderEndByNumber, renderLoaderFromBottom, clearLoader, navBarSetLoggedIn, setLoggedIn, strings, enableCreateJobButton } from './views/base';
+import { getFormFor, clearError, elements, dbelements, elementConsts, inputType, renderLoader, renderLoaderEnd, renderLoaderEndByNumber, clearLoader, navBarSetLoggedIn, setLoggedIn, strings, enableCreateJobButton, autocomplete, jobTitles, countriesArray } from './views/base';
 import { setCompanyName, setContactName, getJobAdsData, setJobAdsData, setJobCreditsRemaining } from './views/recruiterDashboardView';
 import { setJobAdsNumber, setTotalJobPrice, restyle, adjustSlider, getBuyJobCreditsData } from './views/jobCreditsView';
 import DatabaseProcessor from './models/DatabaseProcessor';
 import ImageLoader from './models/ImageLoader';
 import { populateFilterTable, populatePostedBy, setJobStats } from './views/manageJobAdsView';
 import { setJobFields, setJobLogo, getExpireJobData } from './views/displayJobView';
-import { renderResults, handleNext, handlePrev, applyFilter } from './views/searchView';
+import { renderResults, setTotalJobsBucket, handleNext, handlePrev, applyFilter, filterByWhere, filterByWhat } from './views/searchView';
 
 const state = {};
 var quill;
@@ -157,6 +158,7 @@ const searchJobsHandler = async () => {
     if (cachedData != null) {
         cachedData = JSON.parse(cachedData);
         renderResults(cachedData);
+        setTotalJobsBucket(cachedData);
     } else {
         var data = {
             $class: strings.getAllJobPostingsTransaction,
@@ -175,33 +177,34 @@ const searchJobsHandler = async () => {
             let id;
             try {
                 let results = await imageLoader.getAllImagesFromDatabase();
-              
+
                 console.log("NUMBER OF ROWS RETURNED = " + results.length);
-             
+
                 for (var i = 0; i < rows.length; i++) {
-                  
+
                     // console.log("BLOCKCHAIN HASH FOR ROW " + i + " = " + rows[i].logohash);
                     id = rows[i].jobReference;
-                  
+
                     let rowfound = Array.from(results).find(row => row.id === id);
-                  
+
                     // console.log("CHECKING HASH FOR IMAGE " + id + "; image = " + rowfound.image);
                     // console.log("DB HASH " + i + " = " + rowfound.hash);
-                   
-                //     // TODO I would say move this into a crypto class (CryptoProcessor)
+
+                    //     // TODO I would say move this into a crypto class (CryptoProcessor)
                     await imageLoader.checkHash(id, rowfound.image, rowfound.hash, rows[i].logohash);
                     // console.log("id: " + id + " => HASHES EQUAL!");
                     rows[i].logo = rowfound.image;
-                   
+
                 }
+                state.label = undefined;
                 renderResults(rows);
                 let cdata = JSON.stringify(rows);
                 sessionStorage.setItem("jobs", cdata);
-               
+
             } catch (error) {
                 await Swal({
                     title: 'ERROR RETRIEVING IMAGES!',
-                    text: error + " jobreference = " + id, 
+                    text: error + " jobreference = " + id,
                     type: 'error',
                     confirmButtonText: 'OK',
                     confirmButtonColor: '#cc6d14',
@@ -212,9 +215,20 @@ const searchJobsHandler = async () => {
     }
     let what = sessionStorage.getItem("what");
     if (what != null && what != "") {
-        console.log("OOOOOOOOOOOOOOOOOOOH! what = " + what);
-        applyFilter(strings.companyFilter, what);
+        console.log("WHAT = " + what);
+        let filterItem = { filter: strings.whatFilter, item: "", name: what };
+        state.filters = [];
+        state.filters.push(filterItem);
+        applyFilter(strings.whatFilter, what, "");
     }
+    let where = sessionStorage.getItem("where");
+    if (where != null && where != "") {
+        let filterItem = { filter: strings.locationFilter, item: "", name: where };
+        state.filters = [];
+        state.filters.push(filterItem);
+        applyFilter(strings.locationFilter, where, "");
+    }
+
     clearLoader();
 }
 
@@ -294,6 +308,7 @@ const getJobAdsHandler = async () => {
 const createJobAdHandler = async (transaction, ins) => {
     var myemail = sessionStorage.getItem('email');
     const formData = createJobAdView.getFormData(myemail, quill.root.innerHTML, transaction);
+
     const error = createJobAdView.validateData(formData.params);
 
     if (error) {
@@ -450,6 +465,7 @@ if (document.URL.includes("managejobads")) {
 
 // VIEW JOB
 if (document.URL.includes("displayjob")) {
+  
     displayJobHandler();
     elements.amendjobbutton.addEventListener('click', e => {
         e.preventDefault();
@@ -473,7 +489,7 @@ if (document.URL.includes("displayjob")) {
 // SEARCH JOBS
 if (document.URL.includes("search")) {
     searchJobsHandler();
-    
+
     let nextb = document.getElementById("next");
     nextb.addEventListener('click', handleNext);
     let prevb = document.getElementById("previous");
@@ -485,6 +501,7 @@ if (document.URL.includes("search")) {
     for (let ci of chainItems) {
         ci.addEventListener("click", (e) => {
             sessionStorage.setItem("what", "");
+            sessionStorage.setItem("where", "");
             window.location = "search.html";
             // apply each filter in chain up to and including selected item
         });
@@ -504,8 +521,34 @@ if (document.URL.includes("search")) {
             window.location = "search.html";
         });
     }
+
+    let wherebtn = document.getElementById("where-btn");
+    wherebtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        let where = document.getElementById("where").value;
+        sessionStorage.setItem("where", where);
+        doWhereSearch();
+    });
+
+    let whatbtn = document.getElementById("what-btn");
+    whatbtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        let what = document.getElementById("what").value;
+        sessionStorage.setItem("what", what);
+        doWhatSearch();
+    });
+
+  
+    // autocomplete(document.getElementById("where"), countriesArray);
 }
 
+function doWhatSearch() {
+    filterByWhat(sessionStorage.getItem("what"));
+}
+
+function doWhereSearch() {
+    filterByWhere(sessionStorage.getItem("where"));
+}
 
 if (document.URL.includes("createjobad")) {
 
@@ -580,6 +623,8 @@ if (document.URL.includes("createjobad")) {
             // TODO display popup? 
         }
     });
+
+    autocomplete(document.getElementById("jobtitle"), jobTitles);
 }
 
 
@@ -629,14 +674,15 @@ if (document.URL.includes("recruiter-dashboard")) {
 if (document.URL.includes("index")) {
     var searchBtn = elements.searchBtn;
 
+
     searchBtn.addEventListener("click", (e) => {
         e.preventDefault();
         let what = document.getElementById("job");
-
-        sessionStorage.setItem("what", ""); // for now just to reload the page
+        let where = document.getElementById("location");
+        sessionStorage.setItem("what", what.value); 
+        sessionStorage.setItem("where", where.value); 
         window.location = "search.html";
     });
-
 }
 
 if (document.URL.includes("register")) {

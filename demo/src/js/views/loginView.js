@@ -10,8 +10,6 @@ export const getFormData = (form, transaction) => {
         myData[id] = value;
     };
 
-    // TODO get the right formData object for recruiter or jobseeker
-    // TODO possibly this should be moved into the model
     var formData = {
         $class: transaction,
         email: myData["email"],

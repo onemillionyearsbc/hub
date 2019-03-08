@@ -7,12 +7,22 @@ export const setJobFields = () => {
 
     
     let location = sessionStorage.getItem("location");
-   
+ 
     if (sessionStorage.getItem("remote") === "true") {
         elements.joblocation.innerHTML = "REMOTE";
         elements.joblocation.style.color = "red";
     } else {
-        elements.joblocation.innerHTML = location;
+        let loc = "";
+        let city = sessionStorage.getItem("city");
+        if (location.length != 0) {
+            loc = `<p id="joblocation" class="loggy__label"><span>${location}</span></p>`
+            if (city != null && city.length != 0) {
+                loc = `<p id="joblocation" class="loggy__label"><span>${city}</span>, <span>${location}</span></p>`;
+            }
+            elements.joblocation.innerHTML = loc;
+        } else if (city.length != 0) {
+            elements.joblocation.innerHTML = city;
+        }  
     }
    
     let title = sessionStorage.getItem("jobTitle");

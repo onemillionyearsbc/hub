@@ -133,6 +133,7 @@
                         padding-top: 0;
                         border-bottom: 1px ridge $color-grey-light-2;
                         padding-bottom: 1rem;
+                        z-index: -1;
                         p {
                             margin-top: 0.5rem;                    
                             font-size: 1.5rem;
@@ -154,14 +155,19 @@
                                 color: $color-grey-light-2;
                                 margin-left: 0.5rem;
                             }
-                            
+                            .numjobs:hover {
+                                text-decoration: none;
+                                color: $color-grey-light-2;
+                            }
                         }
-                        li:hover{
+                        .namespan:hover{
                             cursor: pointer;
                             color: $button-orange-background-darker;
                             text-decoration: underline;
                             font-weight: 600;
+                            
                         }
+                      
                         .toggle {
                             padding-left: 0;
                             margin-left: 1.0rem;
@@ -177,11 +183,8 @@
                         .blob:hover {
                             cursor: pointer;
                             text-decoration: line-through;
-                            color: black;
                         }
-                        .numjobs:hover {
-                            text-decoration: none;
-                        }
+                       
                         .fa-times-circle {
                             margin-left: 0.5rem;
                          

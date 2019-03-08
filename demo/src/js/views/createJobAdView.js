@@ -79,6 +79,14 @@ export const setAmendFields = () => {
     let location = sessionStorage.getItem("location");
     elements.location.value = location;
 
+    // city
+    let city = sessionStorage.getItem("city");
+    if (city != null && city != undefined && city.length > 0) {
+        console.log("City = " + city)
+        elements.city.value = city;
+    }
+  
+
     // description
     let htmlToInsert = sessionStorage.getItem("description");
     var editor = document.getElementsByClassName('ql-editor')
@@ -113,9 +121,11 @@ export const getFormData = (email, html, transaction) => {
             employer: getEmployer(),
             salary: myData["salary"],
             location: myData["location"],
+            city: myData["city"],
             skills: getSkills(myData["skills"])
         }
     };
+
     if (document.querySelector("#imgs").getAttribute('src') === "") {
         sessionStorage.setItem("logohash", "");
     }
@@ -140,11 +150,8 @@ function getSkills(skills) {
     for (var i = 0; i < skillsArr.length; i++) {
         if (skillsArr[i].charAt(0) === '"' && skillsArr[i].charAt(skillsArr[i].length - 1) === '"') {
             skillsArr[i] = skillsArr[i].substr(1, skillsArr[i].length - 2);
-        } else {
-            console.log(i + " -> MOOO!");
-        }
+        } 
     }
-    console.log("Skills list = " + skillsArr + "; length = " + skillsArr.length);
     return skillsArr;
 }
 
@@ -152,7 +159,8 @@ function calculateJobReference() {
     if (sessionStorage.getItem("amend") === "true") {
         return sessionStorage.getItem("jobReference");
     }
-    return new Date().getTime().toString().substr(-8);
+    // generate a timestamp identifier
+    return new Date().getTime().toString().substr(-8); 
 }
 
 export const clearValidationErrorMessages = () => {
@@ -226,10 +234,11 @@ export const validateData = (data) => {
         var x = document.getElementById("internalref-error");
         checkStyle(x);
     }
-    console.log("PARP ! data.remote = " + data.remote);
-    if (data.location.length === 0 && data.remote === "false") {
+    if (data.location.length === 0 && data.city.length && data.remote === "false") {
         error = true;
         var x = document.getElementById("location-error");
+        checkStyle(x);
+        var x = document.getElementById("city-error");
         checkStyle(x);
     }
     for (var i = 0; i < data.skills.length; i++) {

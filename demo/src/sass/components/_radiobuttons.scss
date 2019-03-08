@@ -39,8 +39,8 @@
 		flex: 0 0 50%; display: flex; justify-content: center; align-items: center;
 		/* ----- */
 		
-		&:first-of-type {border-radius: 6px 0 0 6px; border-right: none;}
-		&:last-of-type {border-radius: 0 6px 6px 0; border-left: none;}
+		&:first-of-type {border-radius: 6px 0 0 6px;}
+		&:last-of-type {border-radius: 0 6px 6px 0;}
 	}
 	input:hover + label {border-color: $darkNavy;}
 	input:checked + label {

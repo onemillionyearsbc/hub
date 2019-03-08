@@ -16,6 +16,34 @@ export default class FilterProcessor {
         return bcTotals;
     }
 
+    getCityTotals(location) {
+        let jobs = this.jobs.filter(posting => posting.location === location && posting.city != undefined);
+        const cityTotals = jobs.reduce((total, bc) => {
+            
+            total[bc.city] = total[bc.city] || 0;
+
+            if (bc.city != "") {
+                total[bc.city] += 1;
+            }
+    
+            return total;
+        }, {});
+        return cityTotals;
+    }
+
+    getLocationTotals() {
+        const locationTotals = this.jobs.reduce((total, bc) => {
+            total[bc.location] = total[bc.location] || 0;
+
+            if (bc.location != "") {
+                total[bc.location] += 1;
+            }
+    
+            return total;
+        }, {});
+        return locationTotals;
+    }
+
     // return sorted list of size num -> this is the top [num] companies by volume of jobs posted
     getCompanyTotals(num) {
         const bcTotals = this.jobs.reduce((total, bc) => {
@@ -24,14 +52,33 @@ export default class FilterProcessor {
             return total;
         }, {});
 
-        let keys = this.sortedKeys(bcTotals);
+        // let keys = this.sortedKeys(bcTotals);
+        // let sortedTotals = [];
+        // let numToReturn = Math.min(num, keys.length);
+
+        // for (var i = 0; i < numToReturn; i++) {
+        //     let obj = {};
+        //     let key = keys[i];
+        //     let val = bcTotals[keys[i]];
+        //     obj[key] = val;
+        //     sortedTotals.push(obj);
+        // }
+        // return sortedTotals;
+        return this.sort(bcTotals, num);
+    }
+
+    sort(arrayToSort, num=0) {
+        if (num === 0) {
+            num = arrayToSort.length;
+        }
+        let keys = this.sortedKeys(arrayToSort);
         let sortedTotals = [];
         let numToReturn = Math.min(num, keys.length);
 
         for (var i = 0; i < numToReturn; i++) {
             let obj = {};
             let key = keys[i];
-            let val = bcTotals[keys[i]];
+            let val = arrayToSort[keys[i]];
             obj[key] = val;
             sortedTotals.push(obj);
         }
@@ -61,6 +108,9 @@ export default class FilterProcessor {
 
     getJobTypeTotals() {
         const bcTotals = this.jobs.reduce((total, bc) => {
+            total["FULLTIME"] = total["FULLTIME"] || 0;
+            total["CONTRACT"] = total["CONTRACT"] || 0;
+
             total[bc.jobType] = total[bc.jobType] || 0;
             total[bc.jobType] += 1;
             return total;
@@ -143,13 +193,17 @@ export default class FilterProcessor {
     }
 
     filterByCompany(item) {
+        console.log("looking for company " + item);
         return (this.jobs.filter(posting => posting.company === item));
     }
 
     filterByDate(item) {
-        console.log("item = " + item);
         const nowTime = new Date().getTime();
-        const days = parseInt(item) - 1;
+        let days = parseInt(item);
+
+        if (days == 1) {
+            days = 0;
+        }
         console.log("days = " + days);
         return (this.jobs.filter(posting => {
             const pd = new Date(posting.datePosted);
@@ -157,6 +211,35 @@ export default class FilterProcessor {
             timeDiff = Math.round(timeDiff / this.DAY);
             return timeDiff <= days;
         }));
+    }
+
+    filterByEmployerType(item) {
+        if (item === "EMPLOYER") {
+            return (this.jobs.filter(posting => posting.employer === true));
+        } else {
+            return (this.jobs.filter(posting => posting.employer === false));
+        }
+    }
+
+    filterByJobType(item) {
+        console.log("item type = " + typeof item);
+        return (this.jobs.filter(posting => posting.jobType === item));
+    }
+
+    filterByLocationType(item) {
+        let var1 = false;
+        if (item === "true") {
+            var1 = true;
+        }
+        return (this.jobs.filter(posting => posting.remote === var1));
+    }
+
+    filterByLocation(item) {
+        return (this.jobs.filter(posting => posting.location === item || posting.city === item));
+    }
+
+    filterByWhat(item) {
+        return (this.jobs.filter(posting => posting.blockchainName.toUpperCase().includes(item.toUpperCase()) || posting.skills.includes(item) || posting.jobTitle.includes(item) || posting.company.includes(item)));
     }
 }
 

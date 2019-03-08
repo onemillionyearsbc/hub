@@ -393,7 +393,11 @@ async function CreateJobPosting(credentials) {
   
   	// check this user has remaining job credits 
     if (user.remaining == 0) {
-      throw new Error("No job credits remaining");
+        throw new Error("No job credits remaining");
+    }
+
+    if (credentials.params.remote === true && (credentials.params.location != "" || credentials.params.city != "" )) {
+        throw new Error("location and city must be blank for remote jobs");
     }
 
     var posting = fillPosting(NSJOBS, factory, credentials.params);
@@ -521,6 +525,7 @@ function fillJobAdParams(posting, credentials) {
     posting.employer = credentials.employer;
     posting.salary = credentials.salary,
     posting.location = credentials.location;
+    posting.city = credentials.city;
 
     posting.skills = new Array();
     var i;
@@ -588,6 +593,8 @@ async function GetAllLiveJobPostings(credentials) {
     "description": "Austrian zealot required to start wars",
     "contact": "Heinrich Himmler",
     "internalRef": "HH01",
+    "location": "Germany",
+    "city": "Berlin",
     "employer": false,
     "skills": ["tanks", "politics"],
     "logohash": "0987654321",

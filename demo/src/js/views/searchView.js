@@ -4,6 +4,11 @@ import FilterProcessor from '../models/FilterProcessor';
 let state = {};
 state.filters = [];
 state.filteredjobs = [];
+let className = "blob"
+let selectedfilterclass = `class=${className}`;
+let filterclass = '';
+let crossicon = '';
+let selectedcrossicon = '<i class="far fa-times-circle"></i>'
 
 const renderJobItem = (jobItem, count) => {
 
@@ -74,8 +79,8 @@ const renderJobItem = (jobItem, count) => {
                 <div style='font-size: 1.5rem' id="jobdescription" class="texty description">
                     ${jobItem.description}
                 </div>
-                <div class="linksave">
-                    <p>${loc}</p>
+                <div id="links" class="linksave">
+                    <p class="locationbutton" data-index=${count} id="${jobItem.location}">${loc}</p>
                     <p>See All ${blockName} jobs</p>
                     <button class="saveBtn"><i class="far fa-star"></i>Save</button>
                 </div>
@@ -88,6 +93,8 @@ const renderJobItem = (jobItem, count) => {
         className: "description",
         char: 250,
     });
+
+
 }
 
 const clearResults = () => {
@@ -153,8 +160,6 @@ export const setTotalJobsBucket = (jobs) => {
 }
 
 export const renderResults = (jobs, page = 1, resPerPage = 10) => {
-
-    console.log(">>>>>>>>>> QUACK 22 rendering " + jobs.length + " jobs");
     state.filteredjobs = jobs;
     state.page = page;
 
@@ -179,8 +184,26 @@ export const renderResults = (jobs, page = 1, resPerPage = 10) => {
             window.location = "displayjob.html";
         });
     }
+    let locationlinks = document.getElementsByClassName("locationbutton");
+    for (let p of locationlinks) {
+        p.addEventListener("click", (e) => {
+            let location = pageOfJobs[p.dataset.index].location;
+            // resetPage();
+            if (location === "REMOTE") {
+                console.log("+++++++++++++ REMOTE job search")
+                let filterItem = { filter: strings.locationFilter, name: "", item: "REMOTE" };
+                state.filters = [];
+                state.filters.push(filterItem);
+               
+                applyFilter(strings.locationFilter, "", "REMOTE");
+            } else {
+                console.log("+++++++++++++ LOCATION job search, location = " + location);
+            }
+        });
 
-    elements.jobTotal.innerHTML = `${jobs.length} blockchain jobs`;
+    }
+
+    elements.jobTotal.innerHTML = `${jobs.length} live blockchain jobs`;
 
     const alertb = document.getElementById("alertbtn");
     const nojobs = document.getElementById("nojobs");
@@ -203,79 +226,114 @@ export const renderResults = (jobs, page = 1, resPerPage = 10) => {
     window.scrollTo(0, 0);
 }
 
-
-
-
 function renderBlockchainTotals(name, total) {
     let bcName = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
-    let markup = `<li id="${name}">${bcName}<span class="numjobs">(${total})</span></li>`;
+    let markup = `<li id="${name}"><span class="namespan">${bcName}</span><span class="numjobs">(${total})</span></li>`;
     elements.blockchainTotals.insertAdjacentHTML("beforeend", markup);
 }
 
+function renderCountryTotals(name, total) {
+    let markup = `<li id="${name}"><span class="namespan">${name}</span><span class="numjobs">(${total})</span></li>`;
+    elements.locationTotals.insertAdjacentHTML("beforeend", markup);
+}
+
 function renderDateTotals(dates) {
-    let filterclass = '';
-    let crossicon = '';
-    let selectedfilterclass = 'class="blob"';
-    let selectedcrossicon = '<i class="far fa-times-circle"></i>'
+
     let idToGrey;
     for (var i = 0; i < state.filters.length; i++) {
         if (state.filters[i].filter === strings.dateFilter) {
-            idToGrey=state.filters[i].item;
+            idToGrey = state.filters[i].item;
         }
     }
-    console.log("PUCKINGTON>>>> = " + idToGrey);
     elements.dateTotals.innerHTML = "";
 
-    let markup1 = `<li id="1" ${filterclass}>Last 24 hours<span class="numjobs">(${dates['ONEDAY']})</span>${crossicon}</li>`;
+    let markup1 = `<li id="1" ${filterclass}><span class="namespan">Last 24 hours</span><span class="numjobs">(${dates['ONEDAY']})</span>${crossicon}</li>`;
     if (idToGrey === "1") {
-        markup1 = `<li id="1" ${selectedfilterclass}>Last 24 hours<span class="numjobs">(${dates['ONEDAY']})</span>${selectedcrossicon}</li>`;
-    }    
+        markup1 = `<li id="1" ${selectedfilterclass}><span class="namespan2">Last 24 hours</span><span class="numjobs">(${dates['ONEDAY']})</span>${selectedcrossicon}</li>`;
+    }
     elements.dateTotals.insertAdjacentHTML("beforeend", markup1);
 
-    let markup3 = `<li id="3" ${filterclass}>Last 3 days<span class="numjobs">(${dates['THREEDAY']})</span>${crossicon}</li>`;
+    let markup3 = `<li id="3" ${filterclass}><span class="namespan">Last 3 days</span><span class="numjobs">(${dates['THREEDAY']})</span>${crossicon}</li>`;
     if (idToGrey === "3") {
-        markup3 = `<li id="3" ${selectedfilterclass}>Last 3 days<span class="numjobs">(${dates['THREEDAY']})</span>${selectedcrossicon}</li>`;
-    }    
+        markup3 = `<li id="3" ${selectedfilterclass}><span class="namespan2">Last 3 days</span><span class="numjobs">(${dates['THREEDAY']})</span>${selectedcrossicon}</li>`;
+    }
     elements.dateTotals.insertAdjacentHTML("beforeend", markup3);
 
-    let markup7 = `<li id="7" ${filterclass}>Last 7 days<span class="numjobs">(${dates['SEVENDAY']})</span>${crossicon}</li>`;
+    let markup7 = `<li id="7" ${filterclass}><span class="namespan">Last 7 days</span><span class="numjobs">(${dates['SEVENDAY']})</span>${crossicon}</li>`;
     if (idToGrey === "7") {
-        markup7 = `<li id="7" ${selectedfilterclass}>Last 7 days<span class="numjobs">(${dates['SEVENDAY']})</span>${selectedcrossicon}</li>`;
-    }    
+        markup7 = `<li id="7" ${selectedfilterclass}><span class="namespan2">Last 7 days</span><span class="numjobs">(${dates['SEVENDAY']})</span>${selectedcrossicon}</li>`;
+    }
     elements.dateTotals.insertAdjacentHTML("beforeend", markup7);
 
-    let markup14 = `<li id="14" ${filterclass}>Last 14 days<span class="numjobs">(${dates['FOURTEENDAY']})</span>${crossicon}</li>`;
+    let markup14 = `<li id="14" ${filterclass}><span class="namespan">Last 14 days</span><span class="numjobs">(${dates['FOURTEENDAY']})</span>${crossicon}</li>`;
     if (idToGrey === "14") {
-        markup14 = `<li id="14" ${selectedfilterclass}>Last 14 days<span class="numjobs">(${dates['FOURTEENDAY']})</span>${selectedcrossicon}</li>`;
-    } 
+        markup14 = `<li id="14" ${selectedfilterclass}><span class="namespan2">Last 14 days</span><span class="numjobs">(${dates['FOURTEENDAY']})</span>${selectedcrossicon}</li>`;
+    }
     elements.dateTotals.insertAdjacentHTML("beforeend", markup14);
 }
 
 function renderJobTypeTotals(types) {
     elements.jobTypeTotals.innerHTML = "";
-    let markupperm = `<li id="FULLTIME">Permanent<span class="numjobs">(${types['FULLTIME']})</span></li>`;
+    let idToGrey;
+    for (var i = 0; i < state.filters.length; i++) {
+        if (state.filters[i].filter === strings.jobTypeFilter) {
+            idToGrey = state.filters[i].item;
+        }
+    }
+    let markupperm = `<li id="FULLTIME"><span class="namespan">Permanent</span><span class="numjobs">(${types['FULLTIME']})</span></li>`;
+    if (idToGrey === "FULLTIME") {
+        markupperm = `<li id="FULLTIME" ${selectedfilterclass}><span class="namespan2">Permanent</span><span class="numjobs">(${types['FULLTIME']})</span>${selectedcrossicon}</li>`;
+    }
     elements.jobTypeTotals.insertAdjacentHTML("beforeend", markupperm);
 
-    let markupcontract = `<li id="CONTRACT">Contract<span class="numjobs">(${types['CONTRACT']})</span></li>`;
+    let markupcontract = `<li id="CONTRACT"><span class="namespan">Contract</span><span class="numjobs">(${types['CONTRACT']})</span></li>`;
+    if (idToGrey === "CONTRACT") {
+        markupcontract = `<li id="CONTRACT" ${selectedfilterclass}><span class="namespan2">Contract</span><span class="numjobs">(${types['CONTRACT']})</span>${selectedcrossicon}</li>`;
+    }
     elements.jobTypeTotals.insertAdjacentHTML("beforeend", markupcontract);
 }
 
 
 function renderEmployerTypeTotals(types) {
     elements.employerTotals.innerHTML = "";
-    let markupagency = `<li id="AGENCY">Agency<span class="numjobs">(${types['AGENCY']})</span></li>`;
+    let idToGrey;
+    for (var i = 0; i < state.filters.length; i++) {
+        if (state.filters[i].filter === strings.employerTypeFilter) {
+            idToGrey = state.filters[i].item;
+        }
+    }
+    let markupagency = `<li id="AGENCY"><span class="namespan">Agency</span><span class="numjobs">(${types['AGENCY']})</span></li>`;
+    if (idToGrey === "AGENCY") {
+        markupagency = `<li id="AGENCY" ${selectedfilterclass}><span class="namespan2">Agency</span><span class="numjobs">(${types['AGENCY']})</span>${selectedcrossicon}</li>`;
+    }
     elements.employerTotals.insertAdjacentHTML("beforeend", markupagency);
 
-    let markupemployer = `<li id="EMPLOYER">Direct Employer<span class="numjobs">(${types['EMPLOYER']})</span></li>`;
+    let markupemployer = `<li id="EMPLOYER"><span class="namespan">Direct Employer</span><span class="numjobs">(${types['EMPLOYER']})</span></li>`;
+    if (idToGrey === "EMPLOYER") {
+        markupemployer = `<li id="EMPLOYER" ${selectedfilterclass}><span class="namespan2">Direct Employer</span><span class="numjobs">(${types['EMPLOYER']})</span>${selectedcrossicon}</li>`;
+    }
     elements.employerTotals.insertAdjacentHTML("beforeend", markupemployer);
 }
 
 function renderLocationTypeTotals(types) {
     elements.onsiteTotals.innerHTML = "";
-    let markupremote = `<li id="true">Remote<span class="numjobs">(${types['REMOTE']})</span></li>`;
+    let idToGrey;
+    for (var i = 0; i < state.filters.length; i++) {
+        console.log("FILTER = " + state.filters[i].filter);
+        if (state.filters[i].filter === strings.onSiteFilter) {
+            idToGrey = state.filters[i].item;
+        }
+    }
+    let markupremote = `<li id="true"><span class="namespan">Remote</span><span class="numjobs">(${types['REMOTE']})</span></li>`;
+    if (idToGrey === "true") {
+        markupremote = `<li id="true" ${selectedfilterclass}><span class="namespan2">Remote</span><span class="numjobs">(${types['REMOTE']})</span>${selectedcrossicon}</li>`;
+    }
     elements.onsiteTotals.insertAdjacentHTML("beforeend", markupremote);
 
-    let markupnonremote = `<li id="false">Non Remote<span class="numjobs">(${types['NONREMOTE']})</span></li>`;
+    let markupnonremote = `<li id="false"><span class="namespan">Non Remote</span><span class="numjobs">(${types['NONREMOTE']})</span></li>`;
+    if (idToGrey === "false") {
+        markupnonremote = `<li id="false" ${selectedfilterclass}><span class="namespan2">Non-Remote</span><span class="numjobs">(${types['NONREMOTE']})</span>${selectedcrossicon}</li>`;
+    }
     elements.onsiteTotals.insertAdjacentHTML("beforeend", markupnonremote);
 }
 
@@ -284,50 +342,123 @@ function renderPopularCompanyTotals(companies) {
     for (var i = 0; i < companies.length; i++) {
         let company = companies[i]
         for (var prop in company) {
-            let markup = `  <li>${prop}<span class="numjobs">(${company[prop]})</span></li>`;
+            let markup = `  <li><span class="namespan">${prop}</span><span class="numjobs">(${company[prop]})</span></li>`;
             elements.companyTotals.insertAdjacentHTML("beforeend", markup);
         }
     }
 }
 
+export const filterByWhat = (item) => {
+    // let what = sessionStorage.getItem("what");    
+    applyFilter(strings.whatFilter, item, "");
+}
+
+export const filterByWhere = (location) => {
+    sessionStorage.setItem("where", location);
+    applyFilter(strings.locationFilter, location, "");
+}
+
+
+// filter = type (eg companytotals)
+// item - item to search for
+// name - label to print on the button
 export const applyFilter = (filter, item, name) => {
-    let filterItem = { filter: filter, item: item, name: name };
-    state.filters.push(filterItem);
-
+    console.log("++++++++++++++++ NOW WE ARE APPLYING A FILTER (TYPE " + filter + ")+ NAME: " + name + " ITEM: " + item);
     let fp = new FilterProcessor(state.filteredjobs);
+    let bcname = "live blockchain";
+    console.log("1 state.label = " + state.label);
+    if (state.label === undefined) {
+        state.label = "";
+    }
 
-    let bcname = "blockchain";
-    state.label = "";
     let thisFilterName = "";
+    if (filter === strings.locationFilter) {
+        console.log("item = " + item);
+        console.log("name = " + name);
+        if (name === "REMOTE") {
+            state.filteredjobs = fp.filterByLocationType("true");
+            state.label = "REMOTE";
+        } else {
+            state.filteredjobs = fp.filterByLocation(item);
+            state.loclabel = item;
+            document.getElementById("where").value = item;
+            state.location = true; 
+            displayFilterChain(item);     
+        }
+    }
+    
+    if (filter === strings.whatFilter) {
+        
+        state.filteredjobs = fp.filterByWhat(item);
+        state.label = item;
+        document.getElementById("what").value = item;
+        
+        // if (sessionStorage.getItem("where"))
+        state.location = false; 
+        displayFilterChain(item);     
+        if (document.getElementById("where").value != "") {
+            state.location = true;
+        }
+    }
     if (filter === strings.blockchainFilter) {
         state.filteredjobs = fp.filterByBlockchain(item);
         bcname = item.charAt(0).toUpperCase() + item.slice(1).toLowerCase();
-        document.getElementById("what").value += bcname;
+        if (document.getElementById("what").value.includes(bcname) === false) {
+            document.getElementById("what").value += " " + bcname;
+        }
+      
         thisFilterName = bcname;
-        state.label += bcname;
+        state.label += " " + bcname;
         // display the "filter chain" in the top panel
         displayFilterChain(thisFilterName);
     } else if (filter == strings.companyFilter) {
-        state.filteredjobs = fp.filterByCompany(item);
-        document.getElementById("what").value += item;
-        thisFilterName = item;
-        state.label += item;
-        // display the "filter chain" in the top panel
+        state.filteredjobs = fp.filterByCompany(name); // note we use name to search for
+        console.log("compnay, filteredjobs length = " + state.filteredjobs.length);
+
+        thisFilterName = name;
+        if (state.label != name) {
+            state.label += " " + name;
+            document.getElementById("what").value += " " + name;
+        }
+        location = false;
+
         displayFilterChain(thisFilterName);
     } else if (filter === strings.dateFilter) {
         state.filteredjobs = fp.filterByDate(item);
-        state.label = bcname;
+
+        if (state.label === '') {
+            state.label = bcname;
+        }
+        elements.filterButtons.style.display = "block";
+        renderFilterButton(filter, name);
+    } else if (filter === strings.employerTypeFilter) {
+        state.filteredjobs = fp.filterByEmployerType(item);
+        if (state.label === '') {
+            state.label = bcname;
+        }
+
         // display the filter label in the filter panel
         elements.filterButtons.style.display = "block";
-        renderFilterButtons(name);
-    } else if (filter === strings.employerTypeFilter) {
-        console.log("FILTER BY EMPLOYER TYPE");
-
+        renderFilterButton(filter, name);
     } else if (filter === strings.jobTypeFilter) {
-        console.log("FILTER BY JOB TYPE");
+        state.filteredjobs = fp.filterByJobType(item);
+        if (state.label === '') {
+            state.label = bcname;
+        }
 
+        // display the filter label in the filter panel
+        elements.filterButtons.style.display = "block";
+        renderFilterButton(filter, name);
     } else if (filter === strings.onSiteFilter) {
-        console.log("FILTER BY REMOTENESS");
+        state.filteredjobs = fp.filterByLocationType(item);
+        if (state.label === '') {
+            state.label = bcname;
+        }
+        // display the filter label in the filter panel - if this search is from a button not a link in the job item
+        if (name != "") {
+            elements.filterButtons.style.display = "block";
+            renderFilterButton(filter, name);
+        }
 
     }
 
@@ -335,31 +466,58 @@ export const applyFilter = (filter, item, name) => {
 
     // // display filtered job set
     renderResults(state.filteredjobs);
-
-    elements.jobTotal.innerHTML = `${state.filteredjobs.length} ${state.label} jobs`;
-
-    // change the list item to grey with a delete button etc
+    let j = "jobs";
+    if (state.filteredjobs.length === 1) {
+        j = "job";
+    }
+    if (state.location === true) {
+        elements.jobTotal.innerHTML = `${state.filteredjobs.length} ${state.label} ${j} in ${state.loclabel}`;
+    } else {
+        elements.jobTotal.innerHTML = `${state.filteredjobs.length} ${state.label} ${j}`;
+    }
 
 }
 
-function renderFilterButtons(name) {
-    let markup = `<button id="${name}" class="datefilter"><i class="far fa-times-circle"></i>${name}</button>`;
-    elements.filterContent.insertAdjacentHTML("beforeend", markup);
-    let btn = document.getElementById(name);
 
-    btn.addEventListener("click", (e) => {3
-        for (var i = state.filters.length - 1; i >= 0; --i) {
-            if (state.filters[i].name == e.target.id) {
-                state.filters.splice(i, 1);
-            }
+function removeFilterButton(filterName) {
+    let btn = document.getElementById(filterName);
+    console.log("GOT A BUTTON: " + btn.id);
+    btn.parentNode.removeChild(btn);
+}
+
+function renderFilterButton(filter, name) {
+    let ele = document.getElementById("filterbuttons");;
+    let btns = ele.getElementsByTagName("button");
+    for (let i = 0; i < btns.length; i++) {
+        console.log("btns text = " + btns[i].innerText);
+        if (btns[i].innerText === name) {
+            return;
         }
-        e.target.style.display = "none";
-        if (state.filters.length == 0) {
-            elements.filterTitle.style.display = "none";
-            resetPage();
-        } else {
-            applyRemainingFilters();
+    }
+
+    let markup = `<button id="${filter}" class="filterbtn"><i class="far fa-times-circle"></i>${name}</button>`;
+
+    elements.filterContent.insertAdjacentHTML("beforeend", markup);
+    let btn = document.getElementById(filter);
+
+    btn.addEventListener("click", (e) => {
+        
+        // 1. remove the filter button
+        removeFilterButton(e.target.id);
+
+        //  2. check if that was the last button, if so remove the panel
+        let ele = document.getElementById("filterbuttons");
+        let btns = ele.getElementsByTagName("button");
+
+        if (btns.length === 0) {
+            elements.filterButtons.style.display = "none";
         }
+
+        // 3. remove the filter from the filter list
+        removeFilter(e.target.id);
+
+        // 4. reapply remaining filters
+        reapplyRemainingFilters();
     });
 }
 
@@ -367,15 +525,15 @@ function resetPage() {
     window.location = "search.html";
 }
 
-function applyRemainingFilters() {
-
-}
-
 function displayFilterChain(name) {
     document.getElementById("filterchain").style.display = "block";
-    if (name != "") { }
+    let ele = document.getElementById("catlist");
+    let listitems = ele.getElementsByClassName(name); // make sure we don'put the same element twice into the list
+    if (listitems.length > 0) {
+        return;
+    }
     let markup = `<p>></p>
-                <li class="all">${name}</li>`;
+                <li class="${name}">${name}</li>`;
     elements.categoryList.insertAdjacentHTML("beforeend", markup);
 }
 
@@ -384,14 +542,57 @@ function renderCounts(jobs) {
     let bcTotals = fp.getBlockchainTotals();
 
     var propValue;
+
+    elements.blockchainTotals.innerHTML = "";
     if (state.filters.includes(elements.blockchainTotals)) {
         // TODO grey out the right one!
+        // not sure we need to do this as it removes all the others anyway
     } else {
         for (var propName in bcTotals) {
             propValue = bcTotals[propName]
             renderBlockchainTotals(propName, propValue);
         }
     }
+
+    let countryTotals = fp.getLocationTotals();
+
+   
+    let sortedCountries = fp.sort(countryTotals, 11);
+    sortedCountries = sortedCountries.filter(posting => posting.location != "REMOTE");
+
+    elements.locationTotals.innerHTML = "";
+
+    for (var i = 0; i < sortedCountries.length; i++) {
+
+        let country = sortedCountries[i]
+        for (var prop in country) {
+            if (prop != "REMOTE" && countryTotals[prop] > 0) {
+                renderCountryTotals(prop, countryTotals[prop]);
+            }
+            
+        }
+    }
+    // for (var propName in sortedCountries) {
+    //     propValue = sortedCountries[propName]
+
+    //     console.log(propName, propValue);
+
+    //     let total = parseInt(propValue);
+    //     if (total > 1) {
+    //         let cityTotals = fp.getCityTotals(propName);
+    //         for (var cityProp in cityTotals) {
+    //             let cityValue = cityTotals[cityProp]
+    //             // renderCountryTotals(propName, propValue);
+    //             console.log("   => " + cityProp, cityValue);
+    //         }
+
+    //         if(propName != "REMOTE" && propName != "United Kingdom") {
+    //             renderCountryTotals(propName, propValue);
+    //         }
+
+    //     }
+
+    // }
 
 
     let dateTotals = fp.getDateTotals();
@@ -416,22 +617,97 @@ const addEventHandlers = () => {
     let items = document.getElementsByTagName("li");
     for (let li of items) {
         li.addEventListener("click", (e) => {
-            if (li.parentElement.className === "results_list" || li.parentElement.className === "category") {
+            if (e.target.parentElement.id === "links" || li.parentElement.className === "results_list" || li.parentElement.className === "category") {
                 return; // hack. this list item is not part of the filtering
             }
+
             let name = li.innerText.substring(0, li.innerText.indexOf('('));
+            let filterName = li.parentElement.className;
+            console.log("filterName = " + filterName);
+            console.log("className = " + className);      
+            console.log("e.target.classList = " + e.target.classList);
+
+            if (e.target.parentElement.classList.contains(className)) {
+                // 1. remove the filter button
+                removeFilterButton(filterName);
+
+                // check if that was the last button, if so remove the panel
+                let ele = document.getElementById("filterbuttons");
+                let btns = ele.getElementsByTagName("button");
+
+                if (btns.length === 0) {
+                    elements.filterButtons.style.display = "none";
+                }
+
+                // 2. remove the filter from the filter list
+                removeFilter(filterName);
+
+                // 3. reapply remaining filters
+                reapplyRemainingFilters();
+
+                return;
+            }
+
 
             // if there is already a filter from this group remove that one and replace with this one
             if (alreadyThere(li.parentElement.className)) {
+
+                if (li.parentElement.className === strings.blockchainFilter || li.parentElement.className === strings.companyFilter) {
+                    // no need to replace company or blockchain filters as these don't have buttons
+                    return;
+                }
                 // replace old with new and reapply all filters
+                console.log("REPLACING " + li.parentElement.className + "," + li.id + ", " + name);
                 replaceFilter(li.parentElement.className, li.id, name);
-                applyAllFilters();
+
+                state.filteredjobs = state.jobs
+                for (var i = 0; i < state.filters.length; i++) {
+                    // console.log("filter.filter = " + state.filters[i].filter + "; filter.item = " + state.filters[i].item + "; filter.name = " + state.filters[i].name);
+                 
+                    applyFilter(state.filters[i].filter, state.filters[i].item, state.filters[i].name);
+                }
             } else {
-                // otherwise just apply this filter
+                // otherwise just add this filter to the list and apply it
+                let filterItem = { filter: li.parentElement.className, item: li.id, name: name };
+                state.filters.push(filterItem);
+             
                 applyFilter(li.parentElement.className, li.id, name);
+                
             }
         });
     }
+}
+
+function reapplyRemainingFilters() {
+    state.filteredjobs = state.jobs
+
+    if (state.filters.length === 0) {
+        resetPage();
+        return;
+    }
+    state.label = undefined;
+    for (var i = 0; i < state.filters.length; i++) {
+        applyFilter(state.filters[i].filter, state.filters[i].item, state.filters[i].name);
+    }
+}
+function removeFilter(filterType) {
+    for (let i = 0; i < state.filters.length; i++) {
+        console.log("FILTER " + i + " = " + state.filters[i].filter);
+    }
+    state.filters = state.filters.filter(function (e) { return e.filter != filterType; });
+    for (let i = 0; i < state.filters.length; i++) {
+        console.log("FILTER " + i + " = " + state.filters[i].filter);
+    }
+}
+
+function replaceFilter(filterType, item, name) {
+    removeFilterButton(filterType);
+
+    removeFilter(filterType);
+
+    let filterItem = { filter: filterType, item: item, name: name };
+
+    state.filters.push(filterItem);
 }
 
 function alreadyThere(filterType) {

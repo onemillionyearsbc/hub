@@ -39,7 +39,7 @@
                 <div class="main">
                     <div class="main__top">
                         <div style="display: none;" id="filterchain" class="main__top--jobfilters">
-                            <ul class="category">
+                            <ul id="catlist" class="category">
                                 <li class="filteritem">all jobs</li>
                                 <!-- <p>></p>
                                 <li class="all">Hyperledger</li> -->
@@ -86,21 +86,21 @@
                                     <p class="clear">clear all</p>
                                 </div>
                                 <div id="filterbuttons" class="filtercontent">
-                                    <button style="display: none;" class="datefilter"><i
+                                    <!-- <button style="display: none;" class="filterbtn"><i
                                             class="far fa-times-circle"></i>Last 7 days</button>
-                                    <button style="display: none;" class="contractfilter"><i
+                                    <button style="display: none;" class="filterbtn"><i
                                             class="far fa-times-circle"></i>Contract</button>
-                                    <button style="display: none;" class="employerfilter"><i
+                                    <button style="display: none;" class="filterbtn"><i
                                             class="far fa-times-circle"></i>Agency</button>
-                                    <button style="display: none;" class="remotefilter"><i
-                                            class="far fa-times-circle"></i>Non-Remote</button>
+                                    <button style="display: none;" class="filterbtn"><i
+                                            class="far fa-times-circle"></i>Non-Remote</button> -->
                                 </div>
                             </div>
                             <div class="item">
                                 <div class="explorepanel">
                                     <p>Locations</p>
                                     <div class="locationpanel">
-                                        <ul id="myUL">
+                                        <ul class="locationtotals">
                                             <li><span class="caret">UK<span class="numjobs">(6,382)</span></span>
                                                 <ul class="nested">
                                                     <li><span class="caret">London<span
@@ -307,7 +307,7 @@
                             </div>
                         </div>
 
-                        <div class="main__mid--right">
+                        <div class="animated slideInUp delay-2s main__mid--right">
                             <ul style="list-style: none;" class="results_list">
 
                                 <!-- <li>
