@@ -36,12 +36,18 @@ query selectJobAds {
 }
 
 query filterJobAdsForRecruiter {
-  description: "Returns JobAds object for the given email in the registry and the filter criteria"
+  description: "Returns JobPostings array for the given email in the registry and the filter criteria"
   	statement:
     	  SELECT io.onemillionyearsbc.hubtutorial.jobs.JobPosting
             WHERE (email == _$email AND (internalRef == _$filterBy OR jobTitle == _$filterBy OR jobReference == _$filterBy))
 }
 
+query selectJobPostingById {
+  description: "Returns job posting given its id"
+  	statement:
+    	SELECT io.onemillionyearsbc.hubtutorial.jobs.JobPosting
+        WHERE (jobReference == _$ref)
+}
 query selectAllJobPostings {
   	description: "Returns all job postings in the registry"
   	statement:

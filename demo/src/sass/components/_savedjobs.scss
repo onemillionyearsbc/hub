@@ -1,0 +1,63 @@
+.mystar{ 
+    color: white;
+    font-size: 12px;
+}
+
+.starwithnocircle {
+    margin-right: 8px;
+    font-size: 19px;
+}
+
+
+.circle-stack {
+    display: inline-block;
+    position: relative;
+}
+
+  
+// .number-in-circle {
+   
+// }
+
+
+// .number-in-circle2 {
+//     position: absolute;
+//     top: 0;
+//     left: -5px;
+// }
+
+
+.fa-circle {
+    font-size: 18px;
+    position: absolute;
+    color: red;
+    margin-left: 14px;
+    top: -20px;
+}
+
+.number-in-circle {
+    position: absolute;
+    top: 0;
+    
+    color: white;
+    font-weight: bold;
+    font-size: 10px;
+    margin-top: -18px;
+    margin-left: 22px;
+    line-height: 16px;
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+}
+
+.single {
+    left: -2px;
+}
+
+.double {
+    left: -5px;
+}
+
+a:link, a:visited, a:hover, a:active {
+    color: red;
+}

@@ -39,7 +39,10 @@
                     <li><a href="#tools">Blockchain tools</a></li>
                 </ul>
                 <ul class="navbar__right">
-                    <li><a href="#saved">Saved Jobs</a></li>
+                    <li id="emptysaved">
+                        <a href="favourites.html" class="link-icon"><i class="starwithnocircle fa fa-star"></i>Saved
+                            Jobs</a>
+                    </li>
                     <li class="signin"><a href="register.html" class="link-icon"><i class="icon far fa-user"></i>Sign
                             In</a></li>
                 </ul>
@@ -60,7 +63,8 @@
                     tabindex="0">Jobseeker
                     Sign In</label>
 
-                <div id="tab-content1" class="tab-content" role="tabpanel" aria-labelledby="jobseeker" aria-hidden="false">
+                <div id="tab-content1" class="tab-content" role="tabpanel" aria-labelledby="jobseeker"
+                    aria-hidden="false">
                     <div class="form-collection  animated fadeInUp delay-2s">
                         <form id="jl" class="myForm" top="true">
                             <div class="card elevation-3 limit-width log-in-card above ">
@@ -81,8 +85,8 @@
                                         </p>
                                     </div>
                                     <div class="input-group email">
-                                        <input id="email"  class="loginform__textfield glowing-border" type="text" placeholder="Email"
-                                            autocomplete="off" />
+                                        <input id="email" class="loginform__textfield glowing-border" type="text"
+                                            placeholder="Email" autocomplete="off" />
                                         <label for="email" class="loginform__label">Email</label>
                                     </div>
                                     <div id="email-error-js" class="loginform__error">
@@ -90,15 +94,15 @@
                                             address</p>
                                     </div>
                                     <div class="input-group password">
-                                        <input id="password"  class="loginform__textfield glowing-border" type="password" placeholder="Password"
-                                            autocomplete="off" />
+                                        <input id="password" class="loginform__textfield glowing-border" type="password"
+                                            placeholder="Password" autocomplete="off" />
                                         <label for="password" class="loginform__label">Password</label>
                                     </div>
                                     <div id="password-error-js" class="loginform__error">
                                         <p><i class="icon fas fa-exclamation-triangle"></i>Please enter a valid
                                             password (min. 6 characters)</p>
                                     </div>
-                                    
+
                                     <a href="#" class="box-btn">Forgot Password?</a>
                                 </div>
                                 <div class="card-footer">
@@ -125,8 +129,8 @@
                                         </p>
                                     </div>
                                     <div class="input-group fullname">
-                                        <input id="name"  class="loginform__textfield glowing-border" type="text" placeholder="Full Name"
-                                            autocomplete="off" />
+                                        <input id="name" class="loginform__textfield glowing-border" type="text"
+                                            placeholder="Full Name" autocomplete="off" />
                                         <label for="name" class="loginform__label">Full Name</label>
                                     </div>
                                     <div id="name-error-r-js" class="loginform__error">
@@ -134,8 +138,8 @@
                                             name</p>
                                     </div>
                                     <div class="input-group email">
-                                        <input id="email"  class="loginform__textfield glowing-border" type="email" placeholder="Email"
-                                            autocomplete="off" />
+                                        <input id="email" class="loginform__textfield glowing-border" type="email"
+                                            placeholder="Email" autocomplete="off" />
                                         <label for="email" class="loginform__label">Email</label>
                                     </div>
                                     <div id="email-error-r-js" class="loginform__error">
@@ -143,8 +147,8 @@
                                             address</p>
                                     </div>
                                     <div class="input-group password">
-                                        <input id="password"  class="loginform__textfield glowing-border" type="password" placeholder="Password"
-                                            autocomplete="off" />
+                                        <input id="password" class="loginform__textfield glowing-border" type="password"
+                                            placeholder="Password" autocomplete="off" />
                                         <label for="password" class="loginform__label">Password</label>
                                     </div>
                                     <div id="password-error-r-js" class="loginform__error">
@@ -152,8 +156,8 @@
                                             password (min. 6 characters)</p>
                                     </div>
                                     <div class="input-group location">
-                                        <input id="location"  class="loginform__textfield glowing-border" type="text" placeholder="Location"
-                                            autocomplete="off" />
+                                        <input id="location" class="loginform__textfield glowing-border" type="text"
+                                            placeholder="Location" autocomplete="off" />
                                         <label for="location" class="loginform__label">Country</label>
                                     </div>
                                     <div id="location-error-r-js" class="loginform__error">
@@ -162,7 +166,8 @@
                                     </div>
                                 </div>
                                 <div class="card-footer">
-                                    <button id="submitRegisterJobSeeker" type="submit" class="submitRegister">Register</button>
+                                    <button id="submitRegisterJobSeeker" type="submit"
+                                        class="submitRegister">Register</button>
                                 </div>
                             </div>
                         </form>
@@ -172,9 +177,11 @@
 
             <li>
                 <input class="tabInput" type="radio" name="tabs" id="tab2" />
-                <label class="tablabel" for="tab2" role="tab" aria-selected="false" aria-controls="panel2" tabindex="1">Recruiter
+                <label class="tablabel" for="tab2" role="tab" aria-selected="false" aria-controls="panel2"
+                    tabindex="1">Recruiter
                     Sign In</label>
-                <div id="tab-content2" class="tab-content" role="tabpanel" aria-labelledby="specification" aria-hidden="true">
+                <div id="tab-content2" class="tab-content" role="tabpanel" aria-labelledby="specification"
+                    aria-hidden="true">
                     <div class="form-collection  animated fadeInUp delay-2s">
                         <form id="rl" class="myForm" top="true">
                             <div class="card elevation-3 limit-width log-in-card above" top="true">
@@ -193,8 +200,8 @@
                                         </p>
                                     </div>
                                     <div class="input-group email">
-                                        <input id="email"  class="loginform__textfield glowing-border" type="text" placeholder="Email"
-                                            autocomplete="off" />
+                                        <input id="email" class="loginform__textfield glowing-border" type="text"
+                                            placeholder="Email" autocomplete="off" />
                                         <label for="email" class="loginform__label">Email</label>
                                         <div id="email-error" class="loginform__error">
                                             <p><i class="icon fas fa-exclamation-triangle"></i>Please enter your email
@@ -202,8 +209,8 @@
                                         </div>
                                     </div>
                                     <div class="input-group password">
-                                        <input id="password"  class="loginform__textfield glowing-border" type="password" placeholder="Password"
-                                            autocomplete="off" />
+                                        <input id="password" class="loginform__textfield glowing-border" type="password"
+                                            placeholder="Password" autocomplete="off" />
                                         <label for="password" class="loginform__label">Password</label>
                                         <div id="password-error" class="loginform__error">
                                             <p><i class="icon fas fa-exclamation-triangle"></i>Please enter a valid
@@ -236,8 +243,8 @@
                                         </p>
                                     </div>
                                     <div class="input-group fullname">
-                                        <input id="name" class="loginform__textfield  glowing-border" type="text" placeholder="Full Name"
-                                            autocomplete="off" />
+                                        <input id="name" class="loginform__textfield  glowing-border" type="text"
+                                            placeholder="Full Name" autocomplete="off" />
                                         <label for="name" class="loginform__label">Full Name</label>
                                         <div id="name-error-r" class="loginform__error">
                                             <p><i class="icon fas fa-exclamation-triangle"></i>Please enter your full
@@ -245,8 +252,8 @@
                                         </div>
                                     </div>
                                     <div class="input-group email">
-                                        <input id="email"  class="loginform__textfield glowing-border" type="email" placeholder="Email"
-                                            autocomplete="off" />
+                                        <input id="email" class="loginform__textfield glowing-border" type="email"
+                                            placeholder="Email" autocomplete="off" />
                                         <label for="email" class="loginform__label">Email</label>
                                         <div id="email-error-r" class="loginform__error">
                                             <p><i class="icon fas fa-exclamation-triangle"></i>Please enter your email
@@ -254,8 +261,8 @@
                                         </div>
                                     </div>
                                     <div class="input-group password">
-                                        <input id="password"  class="loginform__textfield glowing-border" type="password" placeholder="Password"
-                                            autocomplete="off" />
+                                        <input id="password" class="loginform__textfield glowing-border" type="password"
+                                            placeholder="Password" autocomplete="off" />
                                         <label for="password" class="loginform__label">Password</label>
                                         <div id="password-error-r" class="loginform__error">
                                             <p><i class="icon fas fa-exclamation-triangle"></i>Please enter a valid
@@ -263,8 +270,8 @@
                                         </div>
                                     </div>
                                     <div class="input-group company">
-                                        <input id="company"  class="loginform__textfield glowing-border" type="text" placeholder="Company"
-                                            autocomplete="off" />
+                                        <input id="company" class="loginform__textfield glowing-border" type="text"
+                                            placeholder="Company" autocomplete="off" />
                                         <label for="company" class="loginform__label">Company</label>
                                         <div id="company-error-r" class="loginform__error">
                                             <p><i class="icon fas fa-exclamation-triangle"></i>Please enter your
@@ -274,7 +281,8 @@
 
                                 </div>
                                 <div id="bum" class="card-footer">
-                                    <button id="submitRegisterRecruiter" type="button" class="submitRegister">Register</button>
+                                    <button id="submitRegisterRecruiter" type="button"
+                                        class="submitRegister">Register</button>
                                 </div>
                             </div>
                         </form>

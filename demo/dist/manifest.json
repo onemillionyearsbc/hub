@@ -1,0 +1,22 @@
+{
+    "short_name": "Hub",
+    "name": "Hub++ Blockchain Jobs",
+    "version": 1.0,
+    "manifest_version": 2.0,
+    "icons": [
+      {
+        "src": "/images/eggs.jpg",
+        "type": "image/jpg",
+        "sizes": "192x192"
+      },
+      {
+        "src": "/images/bubbles.jpg",
+        "type": "image/jpg",
+        "sizes": "512x512"
+      }
+    ],
+    "permissions": [
+        "notifications"
+    ],
+    "start_url": "http://localhost:8083/"
+}

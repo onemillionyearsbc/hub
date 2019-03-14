@@ -21,7 +21,7 @@
                 </div>
                 <div class="topright">
                     <span class="topright__banner">Are you recruiting?</span>
-                    <button type="submit" class="topright__btn btn">Advertise Now</button>
+                    <button id="advertbutton" type="submit" class="topright__btn btn">Advertise Now</button>
                 </div>
             </div>
         </header>
@@ -34,7 +34,9 @@
                     <li><a href="#tools">Blockchain tools</a></li>
                 </ul>
                 <ul class="navbar__right">
-                    <li><a href="#saved">Saved Jobs</a></li>
+                    <li id="emptysaved">
+                        <a href="favourites.html" class="link-icon"><i class="starwithnocircle fa fa-star"></i>Saved Jobs</a>
+                    </li>
                     <li class="signin"><a href="register.html" class="link-icon"><i class="icon far fa-user"></i>Sign
                             In</a></li>
                 </ul>
@@ -61,7 +63,7 @@
                                 <input type="text" class="form__textfield" placeholder="Town, city or postcode"
                                     id="location">
                                 <label for="location" class="form__label">Town, city or postcode</label>
-                            </div>                          
+                            </div>
                             <button id="mainsearchbutton" class="btn btn--orange">SEARCH</button>
                         </form>
                     </div>
@@ -101,7 +103,7 @@
                     More Options
                 </button>
             </div>
-         
+
         </div>
 </body>
 <!-- <script src="sweetalert2.all.min.js"></script> -->

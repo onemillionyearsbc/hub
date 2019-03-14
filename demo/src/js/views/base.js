@@ -1,4 +1,8 @@
+const Swal = require('sweetalert2');
 
+import TransactionProcessor from '../models/TransactionProcessor';
+
+let state = {};
 
 export const elements = {
     signins: document.getElementsByClassName('signin'),
@@ -90,7 +94,11 @@ export const elements = {
     filterTitle: document.querySelector(".filters"),
     filterTitle: document.querySelector(".filters"),
     whatBtn: document.querySelector(".what-btn"),
-    whereBtn: document.querySelector(".where-btn")
+    whereBtn: document.querySelector(".where-btn"),
+    saveBtn: document.getElementById("saveBtn"),
+    numBanner: document.querySelector(".numbanner"),
+    buttonPanel: document.getElementById("bp"),
+    advertBtn: document.getElementById("advertbutton")
 };
 
 export const dbelements = {
@@ -123,6 +131,9 @@ var updateJobAdTransaction = "io.onemillionyearsbc.hubtutorial.jobs.UpdateJobPos
 var getJobPostingsTransaction = "io.onemillionyearsbc.hubtutorial.jobs.GetJobPostingsDynamic";
 var getAllJobPostingsTransaction = "io.onemillionyearsbc.hubtutorial.jobs.GetAllLiveJobPostings";
 var expireJobAdTransaction = "io.onemillionyearsbc.hubtutorial.jobs.ExpireJobPosting";
+var addToFavouritesTransaction = "io.onemillionyearsbc.hubtutorial.jobs.AddJobToFavourites";
+var getAllFavouritesTransaction = "io.onemillionyearsbc.hubtutorial.jobs.GetFavourites";
+var removeFromFavouritesTransaction = "io.onemillionyearsbc.hubtutorial.jobs.RemoveJobFromFavourites";
 
 
 export const strings = {
@@ -142,6 +153,7 @@ export const strings = {
     expireJobAdTransaction: `${expireJobAdTransaction}`,
     getJobPostingsTransaction: `${getJobPostingsTransaction}`,
     getAllJobPostingsTransaction: `${getAllJobPostingsTransaction}`,
+    addToFavouritesTransaction: `${addToFavouritesTransaction}`,
     loginRecruiterUrl: `http://${ipAddress}:3000/api/${recruiterLoginTransaction}`,
     loginJobSeekerUrl: `http://${ipAddress}:3000/api/${jobSeekerLoginTransaction}`,
     registerRecruiterUrl: `http://${ipAddress}:3000/api/${recruiterRegisterTransaction}`,
@@ -154,6 +166,11 @@ export const strings = {
     expireJobAdUrl: `http://${ipAddress}:3000/api/${expireJobAdTransaction}`,
     getJobPostingsUrl: `http://${ipAddress}:3000/api/${getJobPostingsTransaction}`,
     getAllJobPostingsUrl: `http://${ipAddress}:3000/api/${getAllJobPostingsTransaction}`,
+    addToFavouritesUrl: `http://${ipAddress}:3000/api/${addToFavouritesTransaction}`,
+    getFavouritesTransactionUrl: `http://${ipAddress}:3000/api/${getAllFavouritesTransaction}`,
+    removeFromFavouritesUrl: `http://${ipAddress}:3000/api/${removeFromFavouritesTransaction}`,
+
+
     beginningOfTime: "1970-01-01T15:11:47.728Z",
     endOfTime: "3070-01-01T15:11:47.728Z",
     blockchainFilter: 'blockchaintotals',
@@ -265,7 +282,7 @@ export const setLoggedIn = (state, loggedIn) => {
     state.loggedIn = loggedIn;
     sessionStorage.setItem('loggedIn', loggedIn === true ? "true" : "false");
     if (loggedIn === true) {
-        sessionStorage.setItem('email', state.login.getEmail());
+        sessionStorage.setItem('myemail', state.login.getEmail());
     }
     navBarSetLoggedIn(loggedIn);
 }
@@ -473,6 +490,147 @@ export function autocomplete(inp, arr) {
         closeAllLists(e.target);
     });
 }
+
+export const addToFavouritesHandler = async (button, jobRef) => {
+
+
+    let ele = document.getElementById(jobRef);
+    renderLoaderEndByNumber(ele, 50);
+
+    var data = {
+        $class: strings.addToFavouritesTransaction,
+        email: sessionStorage.getItem('myemail'),
+        jobReference: jobRef
+    };
+    let tp = new TransactionProcessor(data, strings.addToFavouritesUrl);
+
+    var resp = await tp.transaction();
+
+    var err = null;
+    if (resp.error !== undefined) {
+        err = resp.error;
+    }
+    clearLoader();
+
+    if (err != null) {
+        displayErrorPopup('Failed to add Job to favourites: ' + err.message);
+    } else {
+        // remove the "save" button and replace with the "saved" label
+        button.style.display = "none";
+        let label = document.getElementById("p-" + jobRef);
+        label.style.display = "block";
+
+        await displaySuccessPopup('Job Added To Favourites!');
+        let favs = sessionStorage.getItem("favourites");
+        if (favs === null) {
+            favs = new Array();
+        } else {
+            favs = JSON.parse(favs);
+        }
+        let job = getJobPostingByRef(jobRef);
+
+        if (job.length === 0) {
+            // error ... we got a problem here
+        }
+      
+
+        favs.push(job[0]);
+        sessionStorage.setItem("favourites", JSON.stringify(favs));
+        if (favs.length > 0) {
+            console.log("favs length = " + favs.length);
+            updateFavouritesTotal(favs.length);
+        }
+
+        // --- DEBUG
+        favs = sessionStorage.getItem("favourites");
+        if (favs != null) {
+            favs = JSON.parse(favs);
+        }
+
+        for (let j = 0; j < favs.length; j++) {
+            console.log("CACHED FAV -> " + favs[j].jobReference);
+        }
+
+    }
+
+}
+
+export const updateFavouritesTotal = (num) => {
+    let offset = "single";
+
+    if (num > 9) {
+        offset = "double"
+    }
+    let markup = `
+        <li class="saved">
+            <span class="fa-stack fa-lg">
+                <i class="mystar fa fa-star fa-stack-2x"></i>
+                <span class="fa-stack fa-3x">
+                    <div class="circle-stack">
+                        <i class="fa fa-circle"></i>
+                        <p class="fav"><span class="number-in-circle ${offset}">${num}</span></p>
+                    </div>
+                </span>
+            </span>
+            <span class="textspan">
+                <a href="#" class="link-icon">Saved Jobs</a>
+            </span>
+        </li>`;
+    let favNavBar = document.getElementById("emptysaved");
+    favNavBar.innerHTML = markup;
+}
+
+export const addFavouritesLinkListener = () => {
+    let favNavBar = document.getElementById("emptysaved");
+    favNavBar.addEventListener("click", (e) => {
+        e.preventDefault();
+        window.location = "favourites.html";
+    });
+}
+
+export const setButtonHandlers = () => {
+    let buttons = document.getElementsByClassName("saveBtn");
+    for (let btn of buttons) {
+        btn.addEventListener("click", (e) => {
+            e.preventDefault();
+            let jobRef = e.currentTarget.dataset.id;
+
+            addToFavouritesHandler(e.currentTarget, jobRef);
+        });
+    }
+}
+
+function getJobPostingByRef(ref) {
+    if (state.jobs === null || state.jobs === undefined) {
+        console.log("LOOKING FOR JOB " + ref);
+        let cachedData = sessionStorage.getItem("jobs");
+        if (cachedData != null) {
+            state.jobs = JSON.parse(cachedData);
+        }
+
+    }
+    return state.jobs.filter(job => job.jobReference === ref);
+}
+
+export const displaySuccessPopup = async (theText) => {
+    await Swal({
+        title: 'Success!',
+        text: theText,
+        type: 'success',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#cc6d14',
+    });
+}
+
+export const displayErrorPopup = async (theText) => {
+    await Swal({
+        title: 'Blockchain Error!',
+        text: theText,
+        type: 'error',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#cc6d14',
+    });
+};
 
 export const jobTitles = ["Application Support Analyst",
     "Automation Tester",

@@ -375,6 +375,23 @@
                         text-decoration: underline;                   
                         font-weight: 600;
                     }
+                    .savedlabel {
+                        font-size: 1.2rem;
+                        color: black;
+                        background: $color-grey-light-1;  
+                        font-weight: 300;
+                        margin-right: 3rem;
+                        border: 1px solid black;
+                        border-radius: 4px;
+                        padding: 0.5rem;
+                        padding-left: 3rem;
+                        padding-right: 3rem;
+                    }
+                    .savedlabel:hover {
+                        color: black;
+                        cursor: default;
+                        text-decoration: none;           
+                    }
                 }
                 .warning {
                     width: 96.2%;

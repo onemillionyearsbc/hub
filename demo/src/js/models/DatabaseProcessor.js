@@ -1,5 +1,6 @@
 
 import { strings } from '../views/base';
+import axios from 'axios';
 
 export default class DatabaseProcessor {
     constructor(url) {
@@ -30,15 +31,8 @@ export default class DatabaseProcessor {
             if (resp != undefined) {
                 console.log(">>>>> error text = " + resp);
                 throw resp;
-            } else {
-                // everything ok: print out the JSON properties received
-                // for (var property in obj) {
-                //     console.log(property + ": " + obj[property]);
-                // }
-            }
+            } 
             return obj; // no error
-
-
         } catch (error) {
             console.log("+++++ PUT ERROR, err = " + error);
             throw error;
@@ -50,29 +44,8 @@ export default class DatabaseProcessor {
 
             console.log("FIRING DATABASE TRANSACTION (GET)...with following data");
 
-            // fetch('http://localhost:8083/api.php', {
-            //     method: 'get',
-            //     // may be some code of fetching comes here
-            // }).then(function(response) {
-            //         if (response.status >= 200 && response.status < 300) {
-            //             console.log("FUCK1");
-            //             return response.text()
-            //         }
-            //         throw new Error(response.statusText)
-            //     })
-            //     .then(function(response) {
-            //         console.log("FUCK2");
-            //         console.log(response);
-            //     })
-
-            // var response = await fetch('http://localhost:8083/api.php', {
-            //     method: 'get'
-            // });
-            // may be some code of fetching comes here
-
             var resp = await fetch('http://localhost:8083/api.php', { method: "get", })
             var text = await resp.text();
-            console.log("FUCKETY WUCKETY DOODAH response = " + text);
             return resp;
 
         } catch (error) {

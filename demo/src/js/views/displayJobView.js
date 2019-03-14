@@ -58,11 +58,17 @@ export const setJobFields = () => {
 
 }
 export const setJobLogo = (image) => {
-    console.log("IMAGE ->>>>" + image);
     sessionStorage.setItem("logo", image);
     elements.joblogo.setAttribute('src', image);
 }
 
+export const isExpired = () => {
+    let expiryDate = sessionStorage.getItem("expiryDate");
+    let postedDate = sessionStorage.getItem("datePosted");
+
+    let jtime = getJobTimeFor(expiryDate, postedDate);
+    return (jtime === "EXPIRED");
+}
 
 export const getExpireJobData = (mail, ref) => {
     var expireJobData = {

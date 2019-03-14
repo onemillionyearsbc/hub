@@ -129,24 +129,6 @@ async function CreateJobSeekerAccount(accountData) {
 
 
 
-/**
- * Return HubAccount according to email and password
- * @param {io.onemillionyearsbc.hubtutorial.GetHubAccount} credentials
- * @returns {io.onemillionyearsbc.hubtutorial.HubAccount} The account
- * @transaction
- */
-async function GetHubAccount(credentials) {
-     let results = await query('selectHubAccountByUserAndPassword', {
-     	"email": `${credentials.email}`,
-     	"password": `${credentials.password}`,
-     });
-    
-    if (results.length == 1) {
-        return results[0];
-    } 
-  	return null;
-}
-
 // TODO GetHubUser: this should call GetHubAccount and, if successful, should then use the email id to get 
 // the HubUser record.
 
@@ -378,6 +360,106 @@ async function FilterJobPostingsDynamic(filterCriteria) {
   	return results;
   		
 }
+
+
+
+
+/**
+ * Return HubAccount according to email and password
+ * @param {io.onemillionyearsbc.hubtutorial.GetHubAccount} credentials
+ * @returns {io.onemillionyearsbc.hubtutorial.HubAccount} The account
+ * @transaction
+ */
+async function GetHubAccount(credentials) {
+     let results = await query('selectHubAccountByUserAndPassword', {
+     	"email": `${credentials.email}`,
+     	"password": `${credentials.password}`,
+     });
+    
+    if (results.length == 1) {
+        return results[0];
+    } 
+  	return null;
+}
+
+/**
+ * Return JobPosting array of records according to email and list of jobfavourites 
+ * @param {io.onemillionyearsbc.hubtutorial.jobs.GetFavourites} credentials
+ * @returns {io.onemillionyearsbc.hubtutorial.jobs.JobPosting[]} The favourites list of JobPosting records for this user
+ * @transaction
+ */
+async function GetFavourites(credentials) {
+    let results = await query('selectAllJobPostings', {
+    });
+
+    var NS = 'io.onemillionyearsbc.hubtutorial';
+      
+    const participantRegistry = await getParticipantRegistry(NS + '.HubRecruiter');
+
+    var recruiter = await participantRegistry.get(credentials.email);
+   
+    if (recruiter.favourites === undefined) {
+        return [];
+    }
+    results = results.filter(e => recruiter.favourites.includes(e.jobReference)  === true);
+    return results;
+}
+
+
+
+/**
+ * Add the job reference to the list of favourites for the recruiter
+ * @param {io.onemillionyearsbc.hubtutorial.jobs.AddJobToFavourites} credentials
+ * @transaction
+ */
+async function AddJobToFavourites(credentials) {
+    var NS = 'io.onemillionyearsbc.hubtutorial';
+    var NSJOBS = 'io.onemillionyearsbc.hubtutorial.jobs';
+ 
+    const participantRegistry = await getParticipantRegistry(NS + '.HubRecruiter');
+
+    var recruiter = await participantRegistry.get(credentials.email);
+
+    let results = await query('selectJobPostingById', {
+        "ref": credentials.jobReference
+    });
+    
+    if (results.length === 0) {
+        throw new Error("Job Reference " + credentials.jobReference  + " not found in registry");
+    }
+    
+    if (recruiter.favourites == undefined) {
+        recruiter.favourites = new Array();
+        recruiter.favourites[0] = credentials.jobReference;
+    } else {
+        if (recruiter.favourites.includes(credentials.jobReference) === true) {
+            throw new Error("Job Reference " + credentials.jobReference  + " already in registry for " + credentials.email);
+        }
+        recruiter.favourites.push(credentials.jobReference);
+    }
+    participantRegistry.update(recruiter);
+}
+
+/**
+ * Remove the job reference from the list of favourites for the recruiter
+ * @param {io.onemillionyearsbc.hubtutorial.jobs.RemoveJobFromFavourites} credentials
+ * @transaction
+ */
+async function RemoveJobFromFavourites(credentials) {
+    var NS = 'io.onemillionyearsbc.hubtutorial';
+ 
+    const participantRegistry = await getParticipantRegistry(NS + '.HubRecruiter');
+
+    var recruiter = await participantRegistry.get(credentials.email);
+
+    if (recruiter.favourites.includes(credentials.jobReference) === false) {
+        throw new Error("Job Reference " + credentials.jobReference  + " not found in registry for " + credentials.email);
+    }
+    recruiter.favourites = recruiter.favourites.filter(e => e !== credentials.jobReference);
+    
+    participantRegistry.update(recruiter);
+}
+
 /**
  * Return HubUser according to email and password
  * @param {io.onemillionyearsbc.hubtutorial.jobs.CreateJobPosting} credentials
@@ -526,6 +608,8 @@ function fillJobAdParams(posting, credentials) {
     posting.salary = credentials.salary,
     posting.location = credentials.location;
     posting.city = credentials.city;
+    posting.longitude = credentials.longitude;
+    posting.latitude = credentials.latitude;
 
     posting.skills = new Array();
     var i;
@@ -580,25 +664,27 @@ async function GetAllLiveJobPostings(credentials) {
   }
 
   {
-  "$class": "io.onemillionyearsbc.hubtutorial.jobs.CreateJobPosting",
-  "params": {
-    "$class": "io.onemillionyearsbc.hubtutorial.jobs.JobPostingParameters",
-    "jobReference": "123457",
-    "email": "a.hitler@nazis.com",
-    "company": "Nazi Party",
-    "jobType": "FULLTIME",
-    "remote": false,
-    "jobTitle": "Dictator",
-    "blockchainName": "ETHEREUM",
-    "description": "Austrian zealot required to start wars",
-    "contact": "Heinrich Himmler",
-    "internalRef": "HH01",
-    "location": "Germany",
-    "city": "Berlin",
-    "employer": false,
-    "skills": ["tanks", "politics"],
-    "logohash": "0987654321",
-    "testData": false
+    "$class": "io.onemillionyearsbc.hubtutorial.jobs.CreateJobPosting",
+    "params": {
+        "$class": "io.onemillionyearsbc.hubtutorial.jobs.JobPostingParameters",
+        "jobReference": "990",
+        "email": "a.hitler@nazis.com",
+        "company": "Nazi Party",
+        "jobType": "FULLTIME",
+        "remote": false,
+        "jobTitle": "Dictator",
+        "blockchainName": "ETHEREUM",
+        "description": "Austrian zealot required to start wars",
+        "contact": "Heinrich Himmler",
+        "internalRef": "HH01",
+        "location": "Germany",
+        "city": "Berlin",
+        "longitude": -1.7797176,
+        "latitude": 51.55577390000001,
+        "employer": false,
+        "skills": ["tanks", "politics"],
+        "logohash": "0987654321",
+        "testData": false
+        }
   }
-}
   */

@@ -1,0 +1,113 @@
+.savedjobspage {
+    height: 100%; // this makes the panel span down with the whole image
+    padding-bottom: 5rem;
+}
+
+.favourites {
+    font-family: inherit;
+    padding-top: 3rem;
+    min-height: 50rem;
+    height: 100%;
+    .main {
+        margin-left: $site-global-margin;
+        margin-right: $site-global-margin;
+        background: white;
+       
+        margin-top: 0.5rem;
+        color: black;
+
+        padding-bottom: 2rem;
+        &__title1 {
+            display: flex; 
+            justify-content: space-between;
+            margin-top: 0.5rem;
+            margin-bottom: 3rem;
+            color: black;
+            padding-top: 2rem;
+            margin-left: 5rem;
+            margin-right: 5rem;
+            padding-bottom: 1rem;
+            font-size: 2rem;
+            font-weight: 900;
+            border-bottom: 2px solid $dashboard-border;
+        }
+        &__title2 {
+            margin-left: 5rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+      
+    }
+    .items {
+        margin-left: 5rem;
+        margin-right: 5rem;
+        margin-top: 2rem;
+        font-size: 1.7rem;
+        font-weight: 700;
+        &__title{
+            display: flex;
+            justify-content: space-between;
+            &--left {
+                display: flex;
+                .numbanner {
+                    margin-left: 1rem;
+                }
+            }
+        }
+        .item-job {
+            position:relative;
+            padding-top: 1.5rem;
+            margin: 1.5rem;
+            padding-bottom: 1rem;
+            background: rgb(231, 230, 230);
+            border-radius: 0.5rem;
+            border-color: #b3adad;
+            box-shadow: 0 0 10px #b3adad;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+        }
+        .bpanel {
+            position: absolute;
+            bottom: 1rem;
+            right: 3rem;
+            display: flex;
+            .abtn {
+                margin-right: 1rem;
+            }
+            .expiredlabel {
+                margin-right: 2.5rem;
+                margin-top: 0.7rem;
+                color: $color-grey-dark-1;
+            }
+        }
+       
+        .title {
+            // padding-top: 0.5rem;
+            margin-left: 2rem;
+            margin-bottom: 0.5rem;
+            font-size: 2rem;
+            color: $button-orange-background;
+            font-weight: 600;
+        }
+       
+        .title:hover{
+            cursor: pointer;
+            color: $button-orange-background-darker;
+            text-decoration: underline;                   
+            font-weight: 600;
+        }
+        .loggy {
+            padding-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            font-size: 1.2rem;
+            margin-left: 1.5rem;                
+        }
+        
+    }
+  
+    
+}

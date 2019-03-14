@@ -8,6 +8,21 @@ const mysql = require('mysql');
 const crypto = require('crypto');
 const fs = require('fs');
 const bnUtil = require('../bn-connection-util');
+const axios = require('axios');
+const fetch = require('node-fetch');
+
+let ukdata = false; // true = generates jobs in Swindon, Wiltshire area of UK
+
+
+async function getGithubData(location) {
+    let data = await fetch(`https://www.distance24.org/route.json?stops=${location}`);
+    let main = await data.json();
+
+    let long1 = main.stops[0].longitude;
+    let lat1 = main.stops[0].latitude;
+    console.log("Longitude & Latitude for " + location + " => " + long1, lat1);
+    return {longitude: long1, latitude: lat1};
+}
 
 const participantNamespace = 'io.onemillionyearsbc.hubtutorial';
 const recruiterResourceName = 'HubRecruiter';
@@ -38,10 +53,6 @@ var con = mysql.createConnection({
 
 
 con.connect();
-
-
-
-
 
 // Callback function passed to the BN Connection utility
 // Error has value if there was an error in connect()
@@ -108,7 +119,7 @@ async function main() {
 
 
 
-    for (var i = 0; i < 40; i++) {
+    for (var i = 0; i < 35; i++) {
 
         let accountIndex = getRandomIndex(0, recruiters.length - 1);
         if (randEmail === true) {
@@ -140,51 +151,66 @@ async function main() {
         }
         var location = "";
         var city = "";
-        if (remote === false) {
-            let j = getRandomIndex(0, 1);
-            let uk = false;
-            if (j == 0) {
-                location = getRandomArrayElement(countriesArray);
-            } else {
+      
+        if (ukdata) {
+            if (remote === false) {
                 location = "United Kingdom";
-                uk = true;
+                city = getRandomArrayElement(uk_towns);
             }
-            while (city_states[location] === undefined) {
-                console.log("UNDEFINED COUNTRY: " + location);
+        } else {
+            if (remote === false) {
                 let j = getRandomIndex(0, 1);
+                let uk = false;
                 if (j == 0) {
                     location = getRandomArrayElement(countriesArray);
                 } else {
                     location = "United Kingdom";
+                    uk = true;
                 }
-            }
-            let cities = city_states[location].split("|");
-            if (uk) {
-                let k = getRandomIndex(0, 2);
-                if (k === 0) {
-                    city = "London";
+                while (city_states[location] === undefined) {
+                    console.log("UNDEFINED COUNTRY: " + location);
+                    let j = getRandomIndex(0, 1);
+                    if (j == 0) {
+                        location = getRandomArrayElement(countriesArray);
+                    } else {
+                        location = "United Kingdom";
+                    }
+                }
+                let cities = city_states[location].split("|");
+                if (uk) {
+                    let k = getRandomIndex(0, 2);
+                    if (k === 0) {
+                        city = "London";
+                    } else {
+    
+                        city = getRandomArrayElement(cities);
+                    }
                 } else {
-                  
                     city = getRandomArrayElement(cities);
                 }
-            } else {
-                city = getRandomArrayElement(cities);
-            }
-           
+    
+            }    
         }
-
-
+       
         var numSkills = Math.floor(Math.random() * (5)) + 2;
         var skills = [];
         skills = getUniqueRandomArrayElements(skillsArray, numSkills);
         // var logohash = "6c631acfc202d6fbc37b5bf7e7c06a1f853bf3a0c9f5ff61416e97f2d7e069b6"; // stool
-
+        let coords = {};
+        if (remote === false) {
+            console.log("Getting coords for " + city);
+            coords = await getGithubData(city);
+        }
+      
 
         console.log(">>> generating job posting for email: " + email);
         console.log("   => jobRef =  " + jobReference);
         console.log("   => remote =  " + remote);
         console.log("   => city =  " + city);
         console.log("   => location =  " + location);
+        console.log("   => longitude =  " + coords.longitude);
+        console.log("   => latitude =  " + coords.latitude);
+
 
         let transaction = factory.newTransaction(namespace, transactionType, "", options);
 
@@ -203,6 +229,10 @@ async function main() {
         params.salary = salary;
         params.location = location;
         params.city = city;
+        if (remote === false) {
+            params.longitude = coords.longitude;
+            params.latitude = coords.latitude;
+        }
         params.skills = skills;
 
         params.testData = false; // true to generate jobs in the past, false generates all jobs for today
@@ -365,7 +395,7 @@ var descriptionArray = ["<p><strong>Senior Blockchain Developer</strong></p><p><
 
 // var countriesArray = ["Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua & Barbuda", "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bermuda", "Bhutan", "Bolivia", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cambodia", "Cameroon", "Canada", "Cape Verde", "Chad", "Chile", "China", "Colombia", "Costa Rica", "Cote D Ivoire", "Croatia", "Cuba", "Cyprus", "Czech Republic", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Eritrea", "Estonia", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece", "Greenland", "Grenada", "Guatemala", "Guinea", "Guyana", "Haiti", "Honduras", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Macau", "Macedonia", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Mauritania", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montserrat", "Morocco", "Mozambique", "Namibia", "Nepal", "Netherlands", "Netherlands Antilles", "New Zealand", "Nicaragua", "Niger", "Nigeria", "Norway", "Oman", "Pakistan", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Romania", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Somalia", "South Africa", "Spain", "Sri Lanka", "Sudan", "Suriname", "Swaziland", "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Tunisia", "Turkey", "Turkmenistan", "Turks & Caicos", "Tuvalu", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uzbekistan", "Vatican City", "Venezuela", "Yemen", "Zambia", "Zimbabwe"];
 
-var countriesArray = [ "Belgium", "Canada", "France","Germany", "Italy", "Netherlands", "Romania", "Spain", "Sweden", "Switzerland", "United Arab Emirates", "United Kingdom", "United States"];
+var countriesArray = ["Belgium", "Canada", "France", "Germany", "Italy", "Netherlands", "Romania", "Spain", "Sweden", "Switzerland", "United Arab Emirates", "United Kingdom", "United States"];
 
 var skillsArray = ["JavaScript", "NodeJS", "Web", "C++", "Typescript", "Java", "Python", "Rust", "PHP", "Go",
     "UNIX", "Oracle", "MySQL", "NOSQL", "C#", "CSS/HTML5"]
@@ -669,6 +699,7 @@ countries['South America'] = 'Argentina|Bolivia|Brazil|Chile|Colombia|Ecuador|Gu
 ////////////////////////////////////////////////////////////////////////////
 // function
 //////////////////////////////////////////////////////////////////////
+let uk_towns = ['Melksham', 'Cirencester', 'Faringdon', 'Malmesbury', 'Chippenham', 'Purton', 'Highworth', 'Devizes', 'Swindon', 'Bristol', 'Reading', 'London'];
 
 let city_states = [];
 //Africa

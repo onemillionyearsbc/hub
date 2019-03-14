@@ -39,6 +39,7 @@ participant HubRecruiter extends HubUser {
   o String company
   --> JobAds jobAds
   --> JobPosting[] jobPostings optional
+  o String[] favourites optional
 }
 
 participant HubJobSeeker extends HubUser {

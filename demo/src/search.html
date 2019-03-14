@@ -32,10 +32,14 @@
                     <li><a href="managejobads.html">Job Ads</a></li>
                 </ul>
                 <ul class="navbar__right">
+                    <li id="emptysaved">
+                        <a href="favourites.html" class="link-icon"><i class="starwithnocircle fa fa-star"></i>Saved Jobs</a>
+                    </li>
                     <li class="signin"><a href="#" class="link-icon">Log Out</a></li>
                 </ul>
             </nav>
             <div id="searchjob" class="container searchjob">
+                <div style="top:25%" class="loader"></div>
                 <div class="main">
                     <div class="main__top">
                         <div style="display: none;" id="filterchain" class="main__top--jobfilters">

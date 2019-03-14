@@ -1,3 +1,4 @@
+import DistanceProcessor from './DistanceProcessor';
 import { strings } from '../views/base';
 
 export default class FilterProcessor {
@@ -52,18 +53,6 @@ export default class FilterProcessor {
             return total;
         }, {});
 
-        // let keys = this.sortedKeys(bcTotals);
-        // let sortedTotals = [];
-        // let numToReturn = Math.min(num, keys.length);
-
-        // for (var i = 0; i < numToReturn; i++) {
-        //     let obj = {};
-        //     let key = keys[i];
-        //     let val = bcTotals[keys[i]];
-        //     obj[key] = val;
-        //     sortedTotals.push(obj);
-        // }
-        // return sortedTotals;
         return this.sort(bcTotals, num);
     }
 
@@ -238,8 +227,55 @@ export default class FilterProcessor {
         return (this.jobs.filter(posting => posting.location === item || posting.city === item));
     }
 
+    async filterByLocationAndDistance(item, distance) {
+        let jobsWithinDistance = [];
+        let dp = new DistanceProcessor();
+        console.log("Getting coords for " + item);
+        let itemCoords = await dp.getCoords(item);
+        console.log("itemCoords = " + itemCoords);
+        for (let i = 0; i < this.jobs.length; i++) {
+            if (this.jobs[i].location === item || this.jobs[i].city === item){
+                jobsWithinDistance.push(this.jobs[i]);
+                continue;
+            }
+            // console.log("Job id: " + this.jobs[i].jobReference + "; longitude = " + this.jobs[i].longitude + "; latitude = " + this.jobs[i].latitude);
+            if (this.jobs[i].longitude != undefined && this.jobs[i].latitude != undefined) {
+                let dist = this.getDistance(itemCoords.longitude, itemCoords.latitude,this.jobs[i].longitude, this.jobs[i].latitude);
+                console.log("distance between" + item + " and " + this.jobs[i].city + " is " + dist + " miles."); 
+                if (dist < distance) {
+                    jobsWithinDistance.push(this.jobs[i]);
+                }
+            }
+
+        }
+        console.log("RETURNING A JOB ARRAY WITH LEN = " + jobsWithinDistance.length);
+        return jobsWithinDistance;
+    }
+
     filterByWhat(item) {
         return (this.jobs.filter(posting => posting.blockchainName.toUpperCase().includes(item.toUpperCase()) || posting.skills.includes(item) || posting.jobTitle.includes(item) || posting.company.includes(item)));
+    }
+
+    getDistance(lat1, lon1, lat2, lon2, unit) {
+        if ((lat1 == lat2) && (lon1 == lon2)) {
+            return 0;
+        }
+        else {
+            var radlat1 = Math.PI * lat1 / 180;
+            var radlat2 = Math.PI * lat2 / 180;
+            var theta = lon1 - lon2;
+            var radtheta = Math.PI * theta / 180;
+            var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+            if (dist > 1) {
+                dist = 1;
+            }
+            dist = Math.acos(dist);
+            dist = dist * 180 / Math.PI;
+            dist = dist * 60 * 1.1515;
+            if (unit == "K") { dist = dist * 1.609344 }
+            if (unit == "N") { dist = dist * 0.8684 }
+            return dist;
+        }
     }
 }
 

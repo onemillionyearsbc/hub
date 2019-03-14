@@ -84,6 +84,14 @@ module.exports = {
             filename: 'search.html',
             template: './src/search.html'
         }),
+        new HtmlWebpackPlugin({
+            filename: 'favourites.html',
+            template: './src/favourites.html'
+        }),
+        new HtmlWebpackPlugin({
+            filename: 'advert.html',
+            template: './src/advert.html'
+        }),
         new CopyWebpackPlugin([{
             from: 'src/img',
             to: 'img',

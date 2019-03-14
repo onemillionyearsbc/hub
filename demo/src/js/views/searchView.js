@@ -1,5 +1,6 @@
-import { elements, strings, getJobTypeFor, getJobTimeFor, getDaySincePosted } from './base';
+import { elements, strings, getJobTypeFor, getJobTimeFor, getDaySincePosted, renderLoader, clearLoader, setButtonHandlers } from './base';
 import FilterProcessor from '../models/FilterProcessor';
+
 
 let state = {};
 state.filters = [];
@@ -8,14 +9,24 @@ let className = "blob"
 let selectedfilterclass = `class=${className}`;
 let filterclass = '';
 let crossicon = '';
-let selectedcrossicon = '<i class="far fa-times-circle"></i>'
+let selectedcrossicon = '<i class="far fa-times-circle"></i>';
 
 const renderJobItem = (jobItem, count) => {
 
     let loc = "See all blockchain jobs in " + jobItem.location;
+    let cityloc = "";
+
+
     if (jobItem.remote === true) {
         loc = "See all remote blockchain jobs";
-        jobItem.location = "REMOTE";
+        cityloc = "REMOTE";
+    } else {
+        if (jobItem.city != undefined && jobItem.city != "") {
+            cityloc = jobItem.city + ", ";
+        }
+        if (jobItem.location != undefined && jobItem.location != "") {
+            cityloc += jobItem.location;
+        }
     }
     // display the corner "NEW" element if posted in last 5 days
     let newbox = "none";
@@ -29,6 +40,17 @@ const renderJobItem = (jobItem, count) => {
         blockName = "blockchain";
     }
 
+    let bdisp = "block";
+    let pdisp = "none";
+
+    if (isInFavourites(jobItem.jobReference)) {
+        bdisp = "none";
+        pdisp = "block";
+    }
+    
+    let savedItemB = `<button style="display: ${bdisp};" id="savefavouritesbutton" data-id=${jobItem.jobReference} class="saveBtn"><i class="far fa-star"></i>Save</button>`;
+    let savedItemP = `<p id="p-${jobItem.jobReference}" style="display: ${pdisp};" class="savedlabel">Saved</>`;
+
     const markup = `
         <li>
             <div class="item-job">
@@ -41,7 +63,7 @@ const renderJobItem = (jobItem, count) => {
                         <div class="left__item">
                             <div class="loggy">
                                 <i class="loggy__icon fas fa-map-marker-alt fa-fw"></i>
-                                <p id="joblocation" class="loggy__label">${jobItem.location}</p>
+                                <p id="joblocation" class="loggy__label">${cityloc}</p>
                             </div>
                         </div>
                         <div class="left__item">
@@ -79,13 +101,16 @@ const renderJobItem = (jobItem, count) => {
                 <div style='font-size: 1.5rem' id="jobdescription" class="texty description">
                     ${jobItem.description}
                 </div>
-                <div id="links" class="linksave">
+              
+                <div id="${jobItem.jobReference}" class="linksave">
+                  
                     <p class="locationbutton" data-index=${count} id="${jobItem.location}">${loc}</p>
                     <p>See All ${blockName} jobs</p>
-                    <button class="saveBtn"><i class="far fa-star"></i>Save</button>
+                    ${savedItemB} ${savedItemP}
                 </div>
             </div>
         </li>`;
+
     elements.searchResList.insertAdjacentHTML("beforeend", markup);
     var imgElement = document.getElementById("joblogo-" + count);
     imgElement.setAttribute("src", jobItem.logo)
@@ -101,6 +126,10 @@ const clearResults = () => {
     elements.searchResList.innerHTML = '';
 };
 
+
+function isInFavourites(ref) {
+    return (state.favourites.filter(e => e.jobReference === ref).length > 0);
+}
 
 function truncate(obj) {
     let trunc = {};
@@ -168,6 +197,12 @@ export const renderResults = (jobs, page = 1, resPerPage = 10) => {
 
     const pageOfJobs = jobs.slice(start, end);
 
+    let favs = sessionStorage.getItem("favourites");
+    if (favs != null) {
+        favs = JSON.parse(favs);
+        state.favourites = favs;
+    }
+
     for (var i = 0; i < pageOfJobs.length; i++) {
         renderJobItem(pageOfJobs[i], i);
     }
@@ -184,17 +219,17 @@ export const renderResults = (jobs, page = 1, resPerPage = 10) => {
             window.location = "displayjob.html";
         });
     }
+
     let locationlinks = document.getElementsByClassName("locationbutton");
     for (let p of locationlinks) {
         p.addEventListener("click", (e) => {
             let location = pageOfJobs[p.dataset.index].location;
             // resetPage();
             if (location === "REMOTE") {
-                console.log("+++++++++++++ REMOTE job search")
                 let filterItem = { filter: strings.locationFilter, name: "", item: "REMOTE" };
                 state.filters = [];
                 state.filters.push(filterItem);
-               
+
                 applyFilter(strings.locationFilter, "", "REMOTE");
             } else {
                 console.log("+++++++++++++ LOCATION job search, location = " + location);
@@ -221,7 +256,7 @@ export const renderResults = (jobs, page = 1, resPerPage = 10) => {
     } else {
         pagebtns.style.display = "none";
     }
-
+    setButtonHandlers();
     renderCounts(jobs);
     window.scrollTo(0, 0);
 }
@@ -349,20 +384,27 @@ function renderPopularCompanyTotals(companies) {
 }
 
 export const filterByWhat = (item) => {
-    // let what = sessionStorage.getItem("what");    
+    // let what = sessionStorage.getItem("what");   
+    state.filteredjobs = state.jobs;
     applyFilter(strings.whatFilter, item, "");
 }
 
 export const filterByWhere = (location) => {
+    state.filteredjobs = state.jobs;
     sessionStorage.setItem("where", location);
-    applyFilter(strings.locationFilter, location, "");
+    let distance = document.querySelector('input[name="miles"]:checked').value;
+    console.log("SEARCH FOR " + location + " PLUS " + distance + " MILES");
+    applyFilter(strings.locationFilter, location, distance);
 }
 
 
 // filter = type (eg companytotals)
 // item - item to search for
 // name - label to print on the button
-export const applyFilter = (filter, item, name) => {
+export const applyFilter = async (filter, item, name) => {
+    renderLoader(elements.searchjob);
+
+    // export async const applyFilter = (filter, item, name) => {
     console.log("++++++++++++++++ NOW WE ARE APPLYING A FILTER (TYPE " + filter + ")+ NAME: " + name + " ITEM: " + item);
     let fp = new FilterProcessor(state.filteredjobs);
     let bcname = "live blockchain";
@@ -370,7 +412,7 @@ export const applyFilter = (filter, item, name) => {
     if (state.label === undefined) {
         state.label = "";
     }
-
+    let plusdistance = "";
     let thisFilterName = "";
     if (filter === strings.locationFilter) {
         console.log("item = " + item);
@@ -379,23 +421,34 @@ export const applyFilter = (filter, item, name) => {
             state.filteredjobs = fp.filterByLocationType("true");
             state.label = "REMOTE";
         } else {
-            state.filteredjobs = fp.filterByLocation(item);
+            if (name != "") {
+                let distance = parseInt(name);
+                state.filteredjobs = await fp.filterByLocationAndDistance(item, distance);
+                console.log("distance = " + distance + ": num rows = " + state.filteredjobs);
+                if (distance > 0) {
+                    plusdistance = " + " + distance + " miles";
+                }
+
+            } else {
+                state.filteredjobs = fp.filterByLocation(item);
+            }
+
             state.loclabel = item;
             document.getElementById("where").value = item;
-            state.location = true; 
-            displayFilterChain(item);     
+            state.location = true;
+            displayFilterChain(item);
         }
     }
-    
+
     if (filter === strings.whatFilter) {
-        
+
         state.filteredjobs = fp.filterByWhat(item);
         state.label = item;
         document.getElementById("what").value = item;
-        
+
         // if (sessionStorage.getItem("where"))
-        state.location = false; 
-        displayFilterChain(item);     
+        state.location = false;
+        displayFilterChain(item);
         if (document.getElementById("where").value != "") {
             state.location = true;
         }
@@ -406,12 +459,13 @@ export const applyFilter = (filter, item, name) => {
         if (document.getElementById("what").value.includes(bcname) === false) {
             document.getElementById("what").value += " " + bcname;
         }
-      
+
         thisFilterName = bcname;
         state.label += " " + bcname;
         // display the "filter chain" in the top panel
         displayFilterChain(thisFilterName);
     } else if (filter == strings.companyFilter) {
+        console.log("QUACKINGTON 98 filtering by " + name);
         state.filteredjobs = fp.filterByCompany(name); // note we use name to search for
         console.log("compnay, filteredjobs length = " + state.filteredjobs.length);
 
@@ -420,7 +474,7 @@ export const applyFilter = (filter, item, name) => {
             state.label += " " + name;
             document.getElementById("what").value += " " + name;
         }
-        location = false;
+        state.location = false;
 
         displayFilterChain(thisFilterName);
     } else if (filter === strings.dateFilter) {
@@ -471,17 +525,16 @@ export const applyFilter = (filter, item, name) => {
         j = "job";
     }
     if (state.location === true) {
-        elements.jobTotal.innerHTML = `${state.filteredjobs.length} ${state.label} ${j} in ${state.loclabel}`;
+        elements.jobTotal.innerHTML = `${state.filteredjobs.length} ${state.label} ${j} in ${state.loclabel} ${plusdistance}`;
     } else {
         elements.jobTotal.innerHTML = `${state.filteredjobs.length} ${state.label} ${j}`;
     }
-
+    clearLoader();
 }
 
 
 function removeFilterButton(filterName) {
     let btn = document.getElementById(filterName);
-    console.log("GOT A BUTTON: " + btn.id);
     btn.parentNode.removeChild(btn);
 }
 
@@ -501,7 +554,7 @@ function renderFilterButton(filter, name) {
     let btn = document.getElementById(filter);
 
     btn.addEventListener("click", (e) => {
-        
+
         // 1. remove the filter button
         removeFilterButton(e.target.id);
 
@@ -556,7 +609,7 @@ function renderCounts(jobs) {
 
     let countryTotals = fp.getLocationTotals();
 
-   
+
     let sortedCountries = fp.sort(countryTotals, 11);
     sortedCountries = sortedCountries.filter(posting => posting.location != "REMOTE");
 
@@ -569,7 +622,7 @@ function renderCounts(jobs) {
             if (prop != "REMOTE" && countryTotals[prop] > 0) {
                 renderCountryTotals(prop, countryTotals[prop]);
             }
-            
+
         }
     }
     // for (var propName in sortedCountries) {
@@ -617,14 +670,17 @@ const addEventHandlers = () => {
     let items = document.getElementsByTagName("li");
     for (let li of items) {
         li.addEventListener("click", (e) => {
-            if (e.target.parentElement.id === "links" || li.parentElement.className === "results_list" || li.parentElement.className === "category") {
+            if (li.parentElement.className === "navbar__right") {
+                window.location = "favourites.html";
+            }
+            if (e.target.parentElement.id === "links" || li.parentElement.className === "results_list" || li.parentElement.className === "category" || li.parentElement.className === "navbar__right") {
                 return; // hack. this list item is not part of the filtering
             }
 
             let name = li.innerText.substring(0, li.innerText.indexOf('('));
             let filterName = li.parentElement.className;
             console.log("filterName = " + filterName);
-            console.log("className = " + className);      
+            console.log("className = " + className);
             console.log("e.target.classList = " + e.target.classList);
 
             if (e.target.parentElement.classList.contains(className)) {
@@ -663,16 +719,16 @@ const addEventHandlers = () => {
                 state.filteredjobs = state.jobs
                 for (var i = 0; i < state.filters.length; i++) {
                     // console.log("filter.filter = " + state.filters[i].filter + "; filter.item = " + state.filters[i].item + "; filter.name = " + state.filters[i].name);
-                 
+
                     applyFilter(state.filters[i].filter, state.filters[i].item, state.filters[i].name);
                 }
             } else {
                 // otherwise just add this filter to the list and apply it
                 let filterItem = { filter: li.parentElement.className, item: li.id, name: name };
                 state.filters.push(filterItem);
-             
+
                 applyFilter(li.parentElement.className, li.id, name);
-                
+
             }
         });
     }
@@ -717,6 +773,7 @@ function alreadyThere(filterType) {
 
 export const handleNext = () => {
     clearResults();
+    console.log("state.page = " + state.page);
     renderResults(state.filteredjobs, state.page + 1);
 }
 export const handlePrev = () => {

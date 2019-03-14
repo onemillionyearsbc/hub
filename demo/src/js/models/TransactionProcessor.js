@@ -14,7 +14,7 @@ export default class TransactionProcessor {
             const myData = this.data;
             console.log("FIRING TRANSACTION...with following data");
             console.log(myData);
-            console.log("BARKINGTON: URL = " + this.url);
+            console.log("URL = " + this.url);
             var response = await fetch(this.url,
                 {
                     method: 'post',
@@ -25,7 +25,6 @@ export default class TransactionProcessor {
             var resp = await response.json();
 
             return resp;
-
         } catch (error) {
             var response = {};
             response.error = error;

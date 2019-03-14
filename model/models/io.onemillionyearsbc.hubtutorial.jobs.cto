@@ -25,6 +25,8 @@ asset JobPosting identified by jobReference {
   o String      salary optional
   o String      location optional // country
   o String      city optional
+  o Double      longitude optional
+  o Double      latitude optional
   o String[]    skills
   
   o String      logohash
@@ -77,6 +79,8 @@ concept JobPostingParameters {
   o String      salary optional
   o String      location optional
   o String      city optional
+  o Double      longitude optional
+  o Double      latitude optional
   o String[]    skills
   
   o String      logohash
@@ -85,6 +89,16 @@ concept JobPostingParameters {
 }
 transaction CreateJobPosting {
   o JobPostingParameters params
+}
+
+transaction AddJobToFavourites {
+  o String email
+  o String jobReference
+}
+
+transaction RemoveJobFromFavourites {
+  o String email
+  o String jobReference
 }
 
 transaction UpdateJobPosting {
@@ -135,6 +149,12 @@ transaction GetJobAds {
 transaction GetJobPostings {
   o String email
   o String filterBy
+}
+
+@commit(false)
+@returns(JobPosting[])
+transaction GetFavourites {
+  o String email
 }
 
 @commit(false)
