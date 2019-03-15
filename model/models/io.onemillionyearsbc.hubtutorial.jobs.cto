@@ -91,6 +91,17 @@ transaction CreateJobPosting {
   o JobPostingParameters params
 }
 
+// Q: do we need to store who has viewed or applied for a job?
+
+transaction IncrementViews {
+  o String jobReference
+}
+
+transaction IncrementApplications {
+  o String jobReference
+}
+
+
 transaction AddJobToFavourites {
   o String email
   o String jobReference
@@ -99,6 +110,10 @@ transaction AddJobToFavourites {
 transaction RemoveJobFromFavourites {
   o String email
   o String jobReference
+}
+
+transaction RemoveAllFavourites {
+  o String email
 }
 
 transaction UpdateJobPosting {

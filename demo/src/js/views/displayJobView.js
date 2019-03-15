@@ -56,6 +56,9 @@ export const setJobFields = () => {
     let id = sessionStorage.getItem("jobReference");
     elements.jobid.innerHTML = "<span>Job Id:</span>" + id;
 
+    let jobviews = sessionStorage.getItem("views");
+    elements.jobviews.innerHTML = "<span>Views: </span>" + jobviews;
+
 }
 export const setJobLogo = (image) => {
     sessionStorage.setItem("logo", image);

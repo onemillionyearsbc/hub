@@ -98,7 +98,15 @@ export const elements = {
     saveBtn: document.getElementById("saveBtn"),
     numBanner: document.querySelector(".numbanner"),
     buttonPanel: document.getElementById("bp"),
-    advertBtn: document.getElementById("advertbutton")
+    advertBtn: document.getElementById("advertbutton"),
+    removeAllBtn: document.getElementById("removeallbutton"),
+    savedJobs:  document.getElementById("savedjobs"),
+    abtn: document.getElementById("abtn"),
+    bbtn: document.getElementById("bbtn"),
+    price1: document.getElementById("p1"),
+    price2: document.getElementById("p2"),
+    jobadviews: document.getElementById("jobadviews"),
+    jobviews: document.getElementById("jobviews"),
 };
 
 export const dbelements = {
@@ -134,6 +142,9 @@ var expireJobAdTransaction = "io.onemillionyearsbc.hubtutorial.jobs.ExpireJobPos
 var addToFavouritesTransaction = "io.onemillionyearsbc.hubtutorial.jobs.AddJobToFavourites";
 var getAllFavouritesTransaction = "io.onemillionyearsbc.hubtutorial.jobs.GetFavourites";
 var removeFromFavouritesTransaction = "io.onemillionyearsbc.hubtutorial.jobs.RemoveJobFromFavourites";
+var removeAllFavouritesTransaction = "io.onemillionyearsbc.hubtutorial.jobs.RemoveAllFavourites";
+var incrementViewsTransaction = "io.onemillionyearsbc.hubtutorial.jobs.IncrementViews";
+var incrementApplicationsTransaction = "io.onemillionyearsbc.hubtutorial.jobs.IncrementApplications";
 
 
 export const strings = {
@@ -154,6 +165,10 @@ export const strings = {
     getJobPostingsTransaction: `${getJobPostingsTransaction}`,
     getAllJobPostingsTransaction: `${getAllJobPostingsTransaction}`,
     addToFavouritesTransaction: `${addToFavouritesTransaction}`,
+    removeFromFavouritesTransaction: `${removeFromFavouritesTransaction}`,
+    removeAllFavouritesTransaction: `${removeAllFavouritesTransaction}`,
+    incrementApplicationsTransaction: `${incrementApplicationsTransaction}`,
+    incrementViewsTransaction: `${incrementViewsTransaction}`,
     loginRecruiterUrl: `http://${ipAddress}:3000/api/${recruiterLoginTransaction}`,
     loginJobSeekerUrl: `http://${ipAddress}:3000/api/${jobSeekerLoginTransaction}`,
     registerRecruiterUrl: `http://${ipAddress}:3000/api/${recruiterRegisterTransaction}`,
@@ -169,7 +184,9 @@ export const strings = {
     addToFavouritesUrl: `http://${ipAddress}:3000/api/${addToFavouritesTransaction}`,
     getFavouritesTransactionUrl: `http://${ipAddress}:3000/api/${getAllFavouritesTransaction}`,
     removeFromFavouritesUrl: `http://${ipAddress}:3000/api/${removeFromFavouritesTransaction}`,
-
+    removeAllFavouritesUrl: `http://${ipAddress}:3000/api/${removeAllFavouritesTransaction}`,
+    incrementViewsUrl: `http://${ipAddress}:3000/api/${incrementViewsTransaction}`,
+    incrementApplicationsUrl: `http://${ipAddress}:3000/api/${incrementApplicationsTransaction}`,
 
     beginningOfTime: "1970-01-01T15:11:47.728Z",
     endOfTime: "3070-01-01T15:11:47.728Z",
@@ -196,7 +213,9 @@ export const elementConsts = {
     JOBADPRICE: 99,
     JOBDISCOUNT: 10,
     JOBMINPRICE: 49,
-    MAXJOBS: 10
+    MAXJOBS: 10,
+    STANDARDPRICE: 99,
+    PREMIUMPRICE: 199
 }
 
 export const jobTypeConsts = {
@@ -492,10 +511,8 @@ export function autocomplete(inp, arr) {
 }
 
 export const addToFavouritesHandler = async (button, jobRef) => {
-
-
-    let ele = document.getElementById(jobRef);
-    renderLoaderEndByNumber(ele, 50);
+    // let ele = document.getElementById(jobRef);
+    // renderLoaderEndByNumber(ele, 50);
 
     var data = {
         $class: strings.addToFavouritesTransaction,
@@ -504,23 +521,23 @@ export const addToFavouritesHandler = async (button, jobRef) => {
     };
     let tp = new TransactionProcessor(data, strings.addToFavouritesUrl);
 
-    var resp = await tp.transaction();
+    var resp = tp.transaction(); //note no await...let it run in background
 
     var err = null;
     if (resp.error !== undefined) {
         err = resp.error;
     }
-    clearLoader();
+    // clearLoader();
 
     if (err != null) {
-        displayErrorPopup('Failed to add Job to favourites: ' + err.message);
+        // displayErrorPopup('Failed to add Job to favourites: ' + err.message);
     } else {
         // remove the "save" button and replace with the "saved" label
         button.style.display = "none";
         let label = document.getElementById("p-" + jobRef);
         label.style.display = "block";
 
-        await displaySuccessPopup('Job Added To Favourites!');
+        // await displaySuccessPopup('Job Added To Favourites!');
         let favs = sessionStorage.getItem("favourites");
         if (favs === null) {
             favs = new Array();
@@ -555,6 +572,7 @@ export const addToFavouritesHandler = async (button, jobRef) => {
 
 }
 
+
 export const updateFavouritesTotal = (num) => {
     let offset = "single";
 
@@ -576,12 +594,19 @@ export const updateFavouritesTotal = (num) => {
                 <a href="#" class="link-icon">Saved Jobs</a>
             </span>
         </li>`;
-    let favNavBar = document.getElementById("emptysaved");
+    if (num === 0) {
+        markup = `
+        <li id="saved">
+            <a href="favourites.html" class="link-icon"><i class="starwithnocircle fa fa-star"></i>Saved Jobs</a>
+        </li>
+        `
+    }
+    let favNavBar = document.getElementById("saved");
     favNavBar.innerHTML = markup;
 }
 
 export const addFavouritesLinkListener = () => {
-    let favNavBar = document.getElementById("emptysaved");
+    let favNavBar = document.getElementById("saved");
     favNavBar.addEventListener("click", (e) => {
         e.preventDefault();
         window.location = "favourites.html";

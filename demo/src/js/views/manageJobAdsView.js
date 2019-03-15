@@ -49,8 +49,8 @@ export const setJobStats = (rows) => {
         } else {
             nonremotejobads++;
         }
-        jobadviews = rows[i].views;
-        jobadapplications = rows[i].applications;
+        jobadviews += rows[i].views;
+        jobadapplications += rows[i].applications;
 
         const expDate = new Date(rows[i].expiryDate);
 

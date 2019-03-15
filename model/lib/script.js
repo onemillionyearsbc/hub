@@ -440,6 +440,58 @@ async function AddJobToFavourites(credentials) {
     participantRegistry.update(recruiter);
 }
 
+
+/**
+ * Remove all job reference favourites for the recruiter
+ * @param {io.onemillionyearsbc.hubtutorial.jobs.RemoveAllFavourites} credentials
+ * @transaction
+ */
+async function RemoveAllFavourites(credentials) {
+    var NS = 'io.onemillionyearsbc.hubtutorial';
+ 
+    const participantRegistry = await getParticipantRegistry(NS + '.HubRecruiter');
+
+    var recruiter = await participantRegistry.get(credentials.email);
+
+    recruiter.favourites = new Array();
+    
+    participantRegistry.update(recruiter);
+}
+
+/**
+ * Incerement the number of views for a job reference 
+ * @param {io.onemillionyearsbc.hubtutorial.jobs.IncrementViews} credentials
+ * @transaction
+ */
+async function IncrementViews(credentials) {
+    var NSJOBS = 'io.onemillionyearsbc.hubtutorial.jobs';
+ 
+    const jobPostingRegistry = await getAssetRegistry(NSJOBS + '.JobPosting');
+
+    var jobPosting = await jobPostingRegistry.get(credentials.jobReference);
+
+    jobPosting.views++;
+
+    await jobPostingRegistry.update(jobPosting);
+}
+
+/**
+ * Incerement the number of applications for a job reference 
+ * @param {io.onemillionyearsbc.hubtutorial.jobs.IncrementApplications} credentials
+ * @transaction
+ */
+async function IncrementApplications(credentials) {
+    var NSJOBS = 'io.onemillionyearsbc.hubtutorial.jobs';
+ 
+    const jobPostingRegistry = await getAssetRegistry(NSJOBS + '.JobPosting');
+
+    var jobPosting = await jobPostingRegistry.get(credentials.jobReference);
+
+    jobPosting.applications++;
+
+    await jobPostingRegistry.update(jobPosting);
+}
+
 /**
  * Remove the job reference from the list of favourites for the recruiter
  * @param {io.onemillionyearsbc.hubtutorial.jobs.RemoveJobFromFavourites} credentials

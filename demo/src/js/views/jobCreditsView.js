@@ -11,7 +11,8 @@ export const setTotalJobPrice = (num) => {
    var jobprice = elements.jobPrice;
    var savingLabel = elements.savingLabel;
    // for example...job costs 10 less than the one before down to min price of 49
-   var price = elementConsts.JOBADPRICE;
+
+   var price = getBasePrice();
    var totalPrice = price;
    for (var i = 1; i < num; i++) {
       price = price - elementConsts.JOBDISCOUNT;
@@ -21,13 +22,22 @@ export const setTotalJobPrice = (num) => {
       totalPrice += price;
    }
    jobprice.innerHTML = `£${totalPrice}`;
-   saving = (elementConsts.JOBADPRICE * num) - totalPrice;
+   saving = (getBasePrice() * num) - totalPrice;
    if (num > 1) {
       savingLabel.innerHTML = `(saving £${saving})`;
       savingLabel.style.display = "block";
    } else {
       savingLabel.style.display = "none";
    }
+}
+
+function getBasePrice() {
+   let price = sessionStorage.getItem("price");
+   console.log("MEOW! price = " + price);
+   if (price === null) {
+      price = elementConsts.JOBADPRICE;
+   }
+   return parseInt(price);
 }
 
 export const adjustSlider = (delta) => {
