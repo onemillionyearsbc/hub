@@ -1,0 +1,59 @@
+.profileparent {
+    padding-left: $site-global-margin;
+    padding-right: $site-global-margin;
+    padding-top: 2rem;
+    min-height: 100vh;
+    min-width: 100vw;
+    // padding-bottom: 20rem;
+   
+    color:black;
+    text-align: left;
+    
+    &__top {
+        background: white;
+        .title {
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+            margin-left: 5rem;
+            margin-right: 5rem;
+            font-size: 2rem;
+            font-weight: 900;
+            border-bottom: 2px solid $dashboard-border;
+        }
+        .instructions {
+            margin-top: 1rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-left: 5rem;
+            padding-bottom: 2rem;
+        }
+    }
+    
+    &__bottom {
+        
+        margin-bottom: 2rem;
+        // background: $color-grey-light-1;
+     
+        
+        .myForm {
+            .profiletitle {
+                color: black;
+                padding-top: 2rem;
+                font-size: 2rem;
+                font-weight: 900;
+                padding-bottom: 2rem;
+                margin-left: 5rem;
+                margin-right: 5rem;
+                padding-bottom: 1rem;
+                border-bottom: 1px solid black;
+               
+            }
+            padding-left: 5rem;
+            padding-right: 5rem;
+        }
+    }
+    input[type="text"]:disabled {
+        color: grey;
+        border: none
+      }
+}

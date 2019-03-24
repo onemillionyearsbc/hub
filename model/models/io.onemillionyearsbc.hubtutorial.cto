@@ -5,6 +5,7 @@ namespace io.onemillionyearsbc.hubtutorial
 
 import io.onemillionyearsbc.hubtutorial.jobs.JobAds
 import io.onemillionyearsbc.hubtutorial.jobs.JobPosting
+import io.onemillionyearsbc.hubtutorial.tokens.ERC20Token
 
 /**
   Six types of resource definitions
@@ -18,20 +19,14 @@ import io.onemillionyearsbc.hubtutorial.jobs.JobPosting
 
 /* <class name> <name> <identified by <field>> */
 
-/* New Stuff 
-	1. Added dateCreated DateTime field to HubAccount
-  2. Added hubTokenBalance to HubUser
-  3. Added concepts: Name and Address
-	4. Added accountId to abstract transaction 
-  5. Added a concept HubJobSeekerParameters to be used by the HubJobSeeker participant 
-   	  and CreateJobSeekerAccount transaction
-*/
-
 /* Class Definitions */
+
+/* TODO move favourites to HubUser and change type to JobPosting[] */
 
 abstract participant HubUser identified by email {
   o String      email 
-  o Double      hubTokenBalance default=0.0 optional
+  o Double      hubTokenBalance default=0.0 optional /* Integrate with ERC20 Token Implementation */
+  --> ERC20Token hubToken optional
 }
 
 participant HubRecruiter extends HubUser {
@@ -82,33 +77,19 @@ asset HubAccount identified by email {
 }
 
 
-
-// Testing only; should only be called via CreateAccount
-// transaction CreateHubUserRecruiter {
-//   o String email 
-//   o String name
-//   o String company
-//   o Double hubTokenBalance default=0.0 
-// }
-
-// Testing only; should only be called via CreateAccount
-// transaction CreateHubUserJobSeeker {
-//   o String email 
-//   o HubJobSeekerParameters parameters optional
-//   o Double hubTokenBalance default=0.0 optional
-// }
-
 abstract transaction CreateAccount {
   o String      email 
   o String      password
   o Double      hubTokenBalance optional
+  o Double     balance default=0.0
+  o Double     allowance default=0.0
 }
 
 // TODO UpdateAccount and RemoveAccount
 
 transaction CreateRecruiterAccount extends CreateAccount {
   o String name
-  o String company //TODO replace with HubRecruiterParameters once we decide what these are
+  o String company 
   o String image optional
   o AccountType accountType default="RECRUITER"
 }

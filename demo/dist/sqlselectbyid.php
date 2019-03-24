@@ -1,13 +1,15 @@
 <?php
     include("sql.php");
 
-   
     xdebug_disable();
     error_reporting(0);
    
     $contentType = isset($_SERVER["CONTENT_TYPE"]) ? trim($_SERVER["CONTENT_TYPE"]) : '';
 
-   
+    // echo "Hey there";
+
+    $contentType = "application/json";
+
     if ($contentType === "application/json") {
         //Receive the RAW post data.
         $content = trim(file_get_contents("php://input"));

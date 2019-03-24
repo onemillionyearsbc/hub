@@ -9,16 +9,19 @@ async function CreateRecruiterAccount(accountData) {
     var factory = getFactory();
     var NS = 'io.onemillionyearsbc.hubtutorial';
     var NSJOBS = 'io.onemillionyearsbc.hubtutorial.jobs';
+    var NSTOK = 'io.onemillionyearsbc.hubtutorial.tokens';
 
    // Create a JobAds object to attach the the (HubRecruiter) user object
     var jobAds = factory.newResource(NSJOBS, 'JobAds',accountData.email);
-
+    var token = factory.newResource(NSTOK, 'ERC20Token',accountData.email);
+    
     // Create the HubRecruiter
     var recruiter = factory.newResource(NS, 'HubRecruiter', accountData.email);
     recruiter.company = accountData.company;
     recruiter.name = accountData.name;
-  	recruiter.hubTokenBalance = accountData.hubTokenBalance;
+    recruiter.hubTokenBalance = accountData.hubTokenBalance;
     recruiter.jobAds = factory.newRelationship(NSJOBS, 'JobAds', accountData.email);
+    recruiter.hubToken = factory.newRelationship(NSTOK, 'ERC20Token', accountData.email);
   
     // Create a Hub Account for the recruiter
     var recruiterAccount = factory.newResource(NS, 'HubAccount', accountData.email);
@@ -26,6 +29,14 @@ async function CreateRecruiterAccount(accountData) {
     recruiterAccount.accountType = "RECRUITER";
     recruiterAccount.dateCreated = new Date();
     recruiterAccount.password = accountData.password;
+
+    // Set ERC20 Token initial attributes
+    if (accountData.balance > accountData.allowance) {
+        throw Error("balance cannot be greater than allowance");
+    }
+    
+    token.balance = accountData.balance;
+    token.allowance = accountData.allowance;
 
     // usually it will be ...get registry, add new object
     // 2. Get the HubUser participant
@@ -49,6 +60,10 @@ async function CreateRecruiterAccount(accountData) {
     const jobAdsRegistry = await getAssetRegistry(NSJOBS + '.JobAds');
 
     await jobAdsRegistry.addAll([jobAds]);
+
+    const erc20Registry = await getAssetRegistry(NSTOK + '.ERC20Token');
+
+    await erc20Registry.addAll([token]);
 
     const accountRegistry = await getAssetRegistry(NS + '.HubAccount');
 
@@ -381,6 +396,12 @@ async function GetHubAccount(credentials) {
     } 
   	return null;
 }
+
+
+// TODO store jobpostings rather than strings
+// ie we have a reference to a jobposting object
+
+// TODO we will need a separate getfavourites function for recruiters and jobseekers
 
 /**
  * Return JobPosting array of records according to email and list of jobfavourites 

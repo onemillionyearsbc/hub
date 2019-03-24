@@ -16,7 +16,7 @@ const renderJobItem = (jobItem, count) => {
 
     let exp = getJobTimeFor(jobItem.expiryDate, jobItem.datePosted);
 
-    let applybtnmarkup = `<button data-id=${jobItem.jobReference} id="applyBtn" class="abtn btn btn--orange">Apply</button>`;
+    let applybtnmarkup = `<button data-id="apply-${jobItem.jobReference}" id="applyBtn" class="abtn btn btn--orange">Apply</button>`;
     if (exp === "EXPIRED") {
         applybtnmarkup = `<p class="expiredlabel">EXPIRED</p>`;
     } 

@@ -132,6 +132,7 @@ const signOutHandler = async (e) => {
         setLoggedIn(loginView, false);
         await displaySuccessPopup('You have signed out');
         state.loggedIn = false;
+        sessionStorage.clear();
         sessionStorage.setItem('loggedIn', false);
         window.location = "register.html";
     } else {
@@ -275,20 +276,23 @@ const getFavourites = async () => {
     };
     let tp = new TransactionProcessor(data, strings.getFavouritesTransactionUrl);
 
-    var favourites = tp.transaction();
+    var favourites = await tp.transaction();
 
     var err = null;
     if (favourites.error !== undefined) {
         err = favourites.error;
     }
-
+    console.log("SUSHI !!! ");
     if (err != null) {
-        // displayErrorPopup('Failed to get favourites: ' + err.message);
+        displayErrorPopup('Failed to get favourites: ' + err.message);
     } else {
         console.log("received favoruties = " + favourites);
+
+
         sessionStorage.setItem("favourites", JSON.stringify(favourites));
 
         if (favourites.length > 0) {
+
             updateFavouritesTotal(favourites.length);
         }
     }
@@ -901,9 +905,6 @@ if (document.URL.includes("jobcredits")) {
 
 if (document.URL.includes("recruiter-dashboard")) {
     state.page = elementConsts.DASHBOARDPAGE;
-
-    let favs = sessionStorage.getItem("favourites");
-    console.log(">>>>>>>>>>>>>>>>>>>>>> BARK 22 favs = " + favs);
 
     setCompanyName(sessionStorage.getItem('mycompany'));
     setContactName(sessionStorage.getItem('name'));

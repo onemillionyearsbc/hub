@@ -2,7 +2,7 @@ import { elements, strings, checkStyle, clearError, getSelectedOption } from './
 
 
 export const setEmail = (email) => {
-    var emailElement = document.getElementById("myemail");
+    var emailElement = document.getElementById("email");
     emailElement.value = email;
     emailElement.readOnly = true;
     emailElement.style.color = "#aaa";

@@ -1,0 +1,62 @@
+namespace io.onemillionyearsbc.hubtutorial.tokens
+
+/* ERC20 Compliant Token For the Hub */
+
+asset ERC20TokenSupply identified by tokenName {
+  o String tokenName default = "hub"
+  o Double supply
+}
+
+asset ERC20Token identified by email {
+  o String email
+  o Double balance default=0.0
+  o Double allowance default=0.0
+}
+ 
+transaction GetTotalSupply {
+  o String tokenName
+}
+
+transaction SetTotalSupply {
+  o String tokenName default = "hub"
+  o Double amount
+}
+
+/* add to the total supply */
+transaction Mint {
+  o String tokenName default = "hub"
+  o Double amount
+}
+
+transaction GetBalance {
+  o String email
+}
+
+transaction SetBalance {
+  o String email
+  o Double balance
+}
+
+/* transfer from the token supply to the owner */
+transaction TransferTo {
+  o String email
+  o Double amount
+}
+
+transaction GetAllowance {
+  o String email
+}
+
+transaction SetAllowance {
+  o String email
+  o Double allowance
+}
+
+transaction Transfer {
+  o String emailFrom
+  o String emailTo
+  o Double amount
+}
+
+
+

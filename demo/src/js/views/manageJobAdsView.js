@@ -146,7 +146,6 @@ export const populateFilterTable = (rows, bulkt) => {
         trList[index].addEventListener("dblclick", function (event) {
             let rowIndex = i;
             var propValue;
-            console.log("BARK! row = " + document.getElementById("jobtable").rows.item(rowIndex).innerHTML);
             let data = rows[rowIndex-1];
             for(var propName in data) {
                 propValue = data[propName];
