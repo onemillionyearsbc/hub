@@ -107,6 +107,9 @@ export const elements = {
     price2: document.getElementById("p2"),
     jobadviews: document.getElementById("jobadviews"),
     jobviews: document.getElementById("jobviews"),
+    profilePage: document.getElementById("profilepage"),
+    createprofilebutton: document.getElementById("createprofilebutton"),
+    
 };
 
 export const dbelements = {
@@ -210,6 +213,7 @@ export const elementConsts = {
     CREATEJOBADPAGE: 5,
     MANAGEJOBSPAGE: 6,
     DISPLAYJOBPAGE: 7,
+    PROFILEPAGE: 8,
     JOBADPRICE: 99,
     JOBDISCOUNT: 10,
     JOBMINPRICE: 49,

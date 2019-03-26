@@ -3,7 +3,7 @@
  * Create Recruiter Account Transaction. Create new participants and assets automtically.
  * @param {io.onemillionyearsbc.hubtutorial.CreateRecruiterAccount} accountData
  * @transaction
- */ 
+ */
 async function CreateRecruiterAccount(accountData) {
 
     var factory = getFactory();
@@ -11,18 +11,17 @@ async function CreateRecruiterAccount(accountData) {
     var NSJOBS = 'io.onemillionyearsbc.hubtutorial.jobs';
     var NSTOK = 'io.onemillionyearsbc.hubtutorial.tokens';
 
-   // Create a JobAds object to attach the the (HubRecruiter) user object
-    var jobAds = factory.newResource(NSJOBS, 'JobAds',accountData.email);
-    var token = factory.newResource(NSTOK, 'ERC20Token',accountData.email);
-    
+    // Create a JobAds object to attach the the (HubRecruiter) user object
+    var jobAds = factory.newResource(NSJOBS, 'JobAds', accountData.email);
+    var token = factory.newResource(NSTOK, 'ERC20Token', accountData.email);
+
     // Create the HubRecruiter
     var recruiter = factory.newResource(NS, 'HubRecruiter', accountData.email);
     recruiter.company = accountData.company;
     recruiter.name = accountData.name;
-    recruiter.hubTokenBalance = accountData.hubTokenBalance;
     recruiter.jobAds = factory.newRelationship(NSJOBS, 'JobAds', accountData.email);
     recruiter.hubToken = factory.newRelationship(NSTOK, 'ERC20Token', accountData.email);
-  
+
     // Create a Hub Account for the recruiter
     var recruiterAccount = factory.newResource(NS, 'HubAccount', accountData.email);
     recruiterAccount.owner = factory.newRelationship(NS, 'HubUser', accountData.email);
@@ -34,7 +33,7 @@ async function CreateRecruiterAccount(accountData) {
     if (accountData.balance > accountData.allowance) {
         throw Error("balance cannot be greater than allowance");
     }
-    
+
     token.balance = accountData.balance;
     token.allowance = accountData.allowance;
 
@@ -85,53 +84,49 @@ async function CreateJobSeekerAccount(accountData) {
     var NS = 'io.onemillionyearsbc.hubtutorial';
 
     var email = accountData.email;
-	var seekerParams = factory.newConcept(NS, 'HubJobSeekerParameters');
-  
+    var seekerParams = factory.newConcept(NS, 'HubJobSeekerParameters');
+
     // 1. create the HubJobSeeker
     console.log("Creating User Account with user name " + email);
     var seeker = factory.newResource(NS, 'HubJobSeeker', email);
-   
 
-    // 2 create address concept
-    var seekerAddress = factory.newConcept(NS, 'Address');
-    seekerAddress.street = accountData.params.address.street;
-    seekerAddress.city =  accountData.params.address.city;
-    seekerAddress.postCode =  accountData.params.address.postCode;
-    seekerAddress.country =  accountData.params.address.country;
+    seeker.params = seekerParams;
 
-  	seeker.params = seekerParams;
-    seeker.params.address = seekerAddress;
-   
+    // 2 copy params
+    seeker.params.city = accountData.params.city;
+    seeker.params.phone = accountData.params.phone;
+    seeker.params.country = accountData.params.country;
+
+    seeker.params.cvhash = accountData.params.cvhash;
+    seeker.params.weblink = accountData.params.weblink;
+    seeker.params.itexperience = accountData.params.itexperience;
+
+    seeker.params.skills = accountData.params.skills;
+    seeker.params.blockchainUsed = accountData.params.blockchainUsed;
+    seeker.params.blockexperience = accountData.params.blockexperience;
+    seeker.params.newjobsummary = accountData.params.newjobsummary;
+    seeker.params.newjobtitle = accountData.params.newjobtitle;
+    seeker.params.newjobremote = accountData.params.newjobremote;
+    seeker.params.newjobtype = accountData.params.newjobtype;
+    seeker.params.visibility = accountData.params.visibility;
 
     // 3 create name concept
     var seekerName = factory.newConcept(NS, 'Name');
-    seekerName.title =  accountData.params.name.title;
+    seekerName.title = accountData.params.name.title;
     seekerName.firstName = accountData.params.name.firstName;
     seekerName.lastName = accountData.params.name.lastName;
 
     seeker.params.name = seekerName;
 
     // 4 Create a HubAccount for the job seeker
-  
+
     var seekerAccount = factory.newResource(NS, 'HubAccount', accountData.email);
-    seekerAccount.owner = factory.newRelationship(NS, 'HubUser',email);
+    seekerAccount.owner = factory.newRelationship(NS, 'HubUser', email);
     seekerAccount.accountType = "JOBSEEKER";
     seekerAccount.dateCreated = new Date();
     seekerAccount.password = accountData.password;
 
-    // usually it will be ...get registry, add new object
     // 5 Wire in the HubUser participant and HubAccount asset
-
-    // return getParticipantRegistry(NS + '.HubJobSeeker')
-    //     .then(function(participantRegistry){
-    //         return participantRegistry.addAll([seeker])
-    //     })
-    //     .then(function(){
-    //         return getAssetRegistry(NS + '.HubAccount');
-    //     })
-    //     .then(function(accountRegistry) {
-    //         accountRegistry.addAll([seekerAccount]);
-    //     });
 
     const participantRegistry = await getParticipantRegistry(NS + '.HubJobSeeker');
 
@@ -143,9 +138,45 @@ async function CreateJobSeekerAccount(accountData) {
 };
 
 
+/**
+ * Remove HubUser according to email and password (does not remove account)
+ * @param {io.onemillionyearsbc.hubtutorial.RemoveHubUser} credentials
+ * @transaction
+ */
+async function RemoveHubUser(credentials) {
+    var NS = 'io.onemillionyearsbc.hubtutorial';
 
-// TODO GetHubUser: this should call GetHubAccount and, if successful, should then use the email id to get 
-// the HubUser record.
+    var accountType = '.HubRecruiter';
+
+    if (credentials.accountType === 'JOBSEEKER') {
+        accountType = '.HubJobSeeker';
+    }
+    // 1 get the registry
+    const participantRegistry = await getParticipantRegistry(NS + accountType);
+
+    // 2 remove user from registry
+    await participantRegistry.remove(credentials.email);
+}
+/* TODO RemoveAccountAndHubTokensAndUser */
+/* For full implementation we would need to return the user's tokens to the supply 
+    then remove the user then remove the account */
+ 
+/* Alternatively just have separate functions and call them one at a time from the client */
+
+/**
+ * Remove HubAccount according to email 
+ * @param {io.onemillionyearsbc.hubtutorial.RemoveHubAccount} credentials
+ * @transaction
+ */
+async function RemoveHubAccount(credentials) {
+    var NS = 'io.onemillionyearsbc.hubtutorial';
+
+    // 1 get the registry
+    const assetRegistry = await getAssetRegistry(NS + '.HubAccount');
+
+    // 2 remove account from registry
+    await assetRegistry.remove(credentials.email);
+}
 
 /**
  * Return HubUser according to email and password
@@ -160,7 +191,7 @@ async function GetHubRecruiter(credentials) {
         "email": credentials.email,
         "password": credentials.password
     });
-   
+
     if (results.length == 1) {
         account = results[0];
         let user = await query('selectHubRecruiterByEmail', {
@@ -168,11 +199,11 @@ async function GetHubRecruiter(credentials) {
         });
         if (user.length == 1) {
             credentials.loggedIn = true;
-          	await SetLoggedIn(credentials);
+            await SetLoggedIn(credentials);
             return user[0];
         }
     };
-    
+
     return undefined;
 }
 
@@ -188,7 +219,7 @@ async function GetHubJobSeeker(credentials) {
         "email": credentials.email,
         "password": credentials.password,
     });
-   
+
     if (results.length == 1) {
         account = results[0];
         let user = await query('selectHubJobSeekerByEmail', {
@@ -200,7 +231,7 @@ async function GetHubJobSeeker(credentials) {
             return user[0];
         }
     };
-      
+
     return undefined;
 }
 
@@ -251,11 +282,11 @@ async function GetJobAds(credentials) {
     let results = await query('selectJobAds', {
         "email": credentials.email
     });
-   
+
     if (results.length == 1) {
         return results[0];
     }
-      
+
     return undefined;
 }
 
@@ -270,12 +301,12 @@ async function GetJobPostings(filterCriteria) {
         "email": filterCriteria.email,
         "filterBy": filterCriteria.filterBy
     });
-      
+
     return results;
 }
 
 function addDays(date, days) {
-    return new Date(date.getTime() + days*24*60*60*1000);
+    return new Date(date.getTime() + days * 24 * 60 * 60 * 1000);
 }
 /**
  * Return JobPosting array of records according to email and filter critereia 
@@ -284,28 +315,28 @@ function addDays(date, days) {
  * @transaction
  */
 async function GetJobPostingsDynamic(filterCriteria) {
-    
-      
-    var and="";
+
+
+    var and = "";
     var filter = {};
     filter.email = filterCriteria.email;
 
-  	if (filterCriteria.filterBy != "") {
+    if (filterCriteria.filterBy != "") {
         and += " AND (internalRef == _$filterBy OR jobTitle == _$filterBy OR jobReference == _$filterBy)";
         filter.filterBy = filterCriteria.filterBy;
-    } 
+    }
     if (filterCriteria.dateFrom != "") {
         and += " AND (datePosted > _$dateFrom)";
         filter.dateFrom = filterCriteria.dateFrom;
-    } 
+    }
     if (filterCriteria.dateTo != "") {
         and += " AND (datePosted < _$dateTo)";
         filter.dateTo = filterCriteria.dateTo;
-    } 
+    }
     if (filterCriteria.user != "") {
         and += " AND (contact == _$user)";
         filter.user = filterCriteria.user;
-    } 
+    }
     if (filterCriteria.filterType != "" && filterCriteria.filterType != "ALL") {
         const today = new Date();
         // 1. if LIVE get all jobs where expiryDate > now
@@ -326,18 +357,18 @@ async function GetJobPostingsDynamic(filterCriteria) {
             filter.today = today;
         }
     }
-    
+
     var statement = `SELECT io.onemillionyearsbc.hubtutorial.jobs.JobPosting WHERE (email == _$email${and})`;
-    
-  	
-  	// Build a query.
-	let qry = buildQuery(statement);
+
+
+    // Build a query.
+    let qry = buildQuery(statement);
     // Execute the query
-  
-	let results = await query(qry, filter);
-  
-  	return results;
-  		
+
+    let results = await query(qry, filter);
+
+    return results;
+
 }
 
 /**
@@ -347,33 +378,33 @@ async function GetJobPostingsDynamic(filterCriteria) {
  * @transaction
  */
 async function FilterJobPostingsDynamic(filterCriteria) {
-    
-    var predicate="";
+
+    var predicate = "";
     var filter = {};
-    var nextWord="WHERE";
-	
-  	if (filterCriteria.filterBy != "") {
-      	predicate += ` ${nextWord} ((company == _$filterBy OR internalRef == _$filterBy 
+    var nextWord = "WHERE";
+
+    if (filterCriteria.filterBy != "") {
+        predicate += ` ${nextWord} ((company == _$filterBy OR internalRef == _$filterBy 
               OR jobTitle == _$filterBy OR jobReference== _$filterBy) OR (skills CONTAINS _$filterBySkills))`;
-          
-      	filter.filterBy = filterCriteria.filterBy;
-      	filter.filterBySkills = filterCriteria.filterBySkills;
-        nextWord="AND";
-    } 
-    
-    if (nextWord=="WHERE") {
-        predicate="LIMIT 1000";
+
+        filter.filterBy = filterCriteria.filterBy;
+        filter.filterBySkills = filterCriteria.filterBySkills;
+        nextWord = "AND";
+    }
+
+    if (nextWord == "WHERE") {
+        predicate = "LIMIT 1000";
     }
     var statement = `SELECT io.onemillionyearsbc.hubtutorial.jobs.JobPosting ${predicate}`;
-  
-  	// Build a query.
+
+    // Build a query.
     let qry = buildQuery(statement);
-    
+
     // Execute the query
     let results = await query(qry, filter);
-  
-  	return results;
-  		
+
+    return results;
+
 }
 
 
@@ -386,23 +417,24 @@ async function FilterJobPostingsDynamic(filterCriteria) {
  * @transaction
  */
 async function GetHubAccount(credentials) {
-     let results = await query('selectHubAccountByUserAndPassword', {
-     	"email": `${credentials.email}`,
-     	"password": `${credentials.password}`,
-     });
-    
+    let results = await query('selectHubAccountByUserAndPassword', {
+        "email": `${credentials.email}`,
+        "password": `${credentials.password}`,
+    });
+
     if (results.length == 1) {
         return results[0];
-    } 
-  	return null;
+    }
+    return null;
 }
 
 
 // TODO store jobpostings rather than strings
 // ie we have a reference to a jobposting object
 
-// TODO we will need a separate getfavourites function for recruiters and jobseekers
 
+/* TODO REWORK THIS...FAVOURITES SHOULD BE STORED AS ARRAY OF JOB POSTINGS IN USER ACCOUNT
+NOT ARRAY OF STRINGS */
 /**
  * Return JobPosting array of records according to email and list of jobfavourites 
  * @param {io.onemillionyearsbc.hubtutorial.jobs.GetFavourites} credentials
@@ -413,16 +445,22 @@ async function GetFavourites(credentials) {
     let results = await query('selectAllJobPostings', {
     });
 
-    var NS = 'io.onemillionyearsbc.hubtutorial';
-      
-    const participantRegistry = await getParticipantRegistry(NS + '.HubRecruiter');
+    var accountType = '.HubRecruiter';
 
-    var recruiter = await participantRegistry.get(credentials.email);
-   
-    if (recruiter.favourites === undefined) {
+    if (credentials.accountType === 'JOBSEEKER') {
+        accountType = '.HubJobSeeker';
+    }
+
+    var NS = 'io.onemillionyearsbc.hubtutorial';
+
+    const participantRegistry = await getParticipantRegistry(NS + accountType);
+
+    var user = await participantRegistry.get(credentials.email);
+
+    if (user.favourites === undefined) {
         return [];
     }
-    results = results.filter(e => recruiter.favourites.includes(e.jobReference)  === true);
+    results = results.filter(e => user.favourites.includes(e.jobReference) === true);
     return results;
 }
 
@@ -435,30 +473,33 @@ async function GetFavourites(credentials) {
  */
 async function AddJobToFavourites(credentials) {
     var NS = 'io.onemillionyearsbc.hubtutorial';
-    var NSJOBS = 'io.onemillionyearsbc.hubtutorial.jobs';
- 
-    const participantRegistry = await getParticipantRegistry(NS + '.HubRecruiter');
+    var accountType = '.HubRecruiter';
 
-    var recruiter = await participantRegistry.get(credentials.email);
+    if (credentials.accountType === 'JOBSEEKER') {
+        accountType = '.HubJobSeeker';
+    }
+    const participantRegistry = await getParticipantRegistry(NS + accountType);
+
+    var user = await participantRegistry.get(credentials.email);
 
     let results = await query('selectJobPostingById', {
         "ref": credentials.jobReference
     });
-    
+
     if (results.length === 0) {
-        throw new Error("Job Reference " + credentials.jobReference  + " not found in registry");
+        throw new Error("Job Reference " + credentials.jobReference + " not found in registry");
     }
-    
-    if (recruiter.favourites == undefined) {
-        recruiter.favourites = new Array();
-        recruiter.favourites[0] = credentials.jobReference;
+
+    if (user.favourites == undefined) {
+        user.favourites = new Array();
+        user.favourites[0] = credentials.jobReference;
     } else {
-        if (recruiter.favourites.includes(credentials.jobReference) === true) {
-            throw new Error("Job Reference " + credentials.jobReference  + " already in registry for " + credentials.email);
+        if (user.favourites.includes(credentials.jobReference) === true) {
+            throw new Error("Job Reference " + credentials.jobReference + " already in registry for " + credentials.email);
         }
-        recruiter.favourites.push(credentials.jobReference);
+        user.favourites.push(credentials.jobReference);
     }
-    participantRegistry.update(recruiter);
+    participantRegistry.update(user);
 }
 
 
@@ -469,13 +510,13 @@ async function AddJobToFavourites(credentials) {
  */
 async function RemoveAllFavourites(credentials) {
     var NS = 'io.onemillionyearsbc.hubtutorial';
- 
+
     const participantRegistry = await getParticipantRegistry(NS + '.HubRecruiter');
 
     var recruiter = await participantRegistry.get(credentials.email);
 
     recruiter.favourites = new Array();
-    
+
     participantRegistry.update(recruiter);
 }
 
@@ -486,7 +527,7 @@ async function RemoveAllFavourites(credentials) {
  */
 async function IncrementViews(credentials) {
     var NSJOBS = 'io.onemillionyearsbc.hubtutorial.jobs';
- 
+
     const jobPostingRegistry = await getAssetRegistry(NSJOBS + '.JobPosting');
 
     var jobPosting = await jobPostingRegistry.get(credentials.jobReference);
@@ -503,7 +544,7 @@ async function IncrementViews(credentials) {
  */
 async function IncrementApplications(credentials) {
     var NSJOBS = 'io.onemillionyearsbc.hubtutorial.jobs';
- 
+
     const jobPostingRegistry = await getAssetRegistry(NSJOBS + '.JobPosting');
 
     var jobPosting = await jobPostingRegistry.get(credentials.jobReference);
@@ -520,16 +561,16 @@ async function IncrementApplications(credentials) {
  */
 async function RemoveJobFromFavourites(credentials) {
     var NS = 'io.onemillionyearsbc.hubtutorial';
- 
+
     const participantRegistry = await getParticipantRegistry(NS + '.HubRecruiter');
 
     var recruiter = await participantRegistry.get(credentials.email);
 
     if (recruiter.favourites.includes(credentials.jobReference) === false) {
-        throw new Error("Job Reference " + credentials.jobReference  + " not found in registry for " + credentials.email);
+        throw new Error("Job Reference " + credentials.jobReference + " not found in registry for " + credentials.email);
     }
     recruiter.favourites = recruiter.favourites.filter(e => e !== credentials.jobReference);
-    
+
     participantRegistry.update(recruiter);
 }
 
@@ -542,27 +583,27 @@ async function CreateJobPosting(credentials) {
     var NS = 'io.onemillionyearsbc.hubtutorial';
     var NSJOBS = 'io.onemillionyearsbc.hubtutorial.jobs';
     var factory = getFactory();
- 	var jobAdsRegistry = await getAssetRegistry(NSJOBS + '.JobAds');
+    var jobAdsRegistry = await getAssetRegistry(NSJOBS + '.JobAds');
 
     var user = await jobAdsRegistry.get(credentials.params.email);
-  
-  	// check this user has remaining job credits 
+
+    // check this user has remaining job credits 
     if (user.remaining == 0) {
         throw new Error("No job credits remaining");
     }
 
-    if (credentials.params.remote === true && (credentials.params.location != "" || credentials.params.city != "" )) {
+    if (credentials.params.remote === true && (credentials.params.location != "" || credentials.params.city != "")) {
         throw new Error("location and city must be blank for remote jobs");
     }
 
     var posting = fillPosting(NSJOBS, factory, credentials.params);
-  	
-  	// TODO set JobAds data
+
+    // TODO set JobAds data
 
     const assetRegistry = await getAssetRegistry(NSJOBS + '.JobPosting');
 
     await assetRegistry.addAll([posting]);
-  
+
     const participantRegistry = await getParticipantRegistry(NS + '.HubRecruiter');
 
     var recruiter = await participantRegistry.get(credentials.params.email);
@@ -574,15 +615,15 @@ async function CreateJobPosting(credentials) {
         recruiter.jobPostings.push(posting);
     }
     participantRegistry.update(recruiter);
-  
+
     // Update JobAds stats object
     if (credentials.params.testData === true) {
-    // if datePosted > today -1 month
+        // if datePosted > today -1 month
         user.live += 1;
     } else {
         user.live += 1;
     }
-  	user.posted += 1;
+    user.posted += 1;
     user.remaining -= 1;
 
     // Update the asset in the asset registry.
@@ -597,14 +638,14 @@ async function CreateJobPosting(credentials) {
 async function ExpireJobPosting(credentials) {
     var NSJOBS = 'io.onemillionyearsbc.hubtutorial.jobs';
 
- 	var jobAdsRegistry = await getAssetRegistry(NSJOBS + '.JobAds');
+    var jobAdsRegistry = await getAssetRegistry(NSJOBS + '.JobAds');
 
     var user = await jobAdsRegistry.get(credentials.email);
 
     const jobPostingRegistry = await getAssetRegistry(NSJOBS + '.JobPosting');
 
     var jobPosting = await jobPostingRegistry.get(credentials.jobReference);
-  
+
     // check the expiryDate...if already expired throw error
     const now = new Date();
     if (jobPosting.expiryDate < now) {
@@ -640,28 +681,28 @@ async function UpdateJobPosting(credentials) {
 
 function fillPosting(NSJOBS, factory, credentials) {
     var posting = factory.newResource(NSJOBS, 'JobPosting', credentials.jobReference);
-   
+
     fillJobAdParams(posting, credentials);
 
-  	// The calculated stuff...
+    // The calculated stuff...
     var d = new Date();
-      
+
     if (credentials.testData === true) {
         var min = 1;
 
         var max = 60;
         // set date to random number of days in the past between 1 and 60
         var days = Math.round(Math.random() * (max - min)) + min;
-        d = new Date(d.getTime() - days*24*60*60*1000);
+        d = new Date(d.getTime() - days * 24 * 60 * 60 * 1000);
     }
-  	posting.datePosted = d;
-  
-  	var dplus1Month = new Date(d.getFullYear(), d.getMonth() +1, d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds(),d.getMilliseconds());
-  	posting.expiryDate = dplus1Month;
-  
-  	posting.views = 0;
+    posting.datePosted = d;
+
+    var dplus1Month = new Date(d.getFullYear(), d.getMonth() + 1, d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds(), d.getMilliseconds());
+    posting.expiryDate = dplus1Month;
+
+    posting.views = 0;
     posting.applications = 0;
-      
+
     return posting;
 }
 
@@ -673,13 +714,13 @@ function fillJobAdParams(posting, credentials) {
     posting.remote = credentials.remote;
     posting.jobTitle = credentials.jobTitle;
     posting.blockchainName = credentials.blockchainName;
-    posting.description = credentials.description;  
+    posting.description = credentials.description;
 
     posting.contact = credentials.contact;
     posting.internalRef = credentials.internalRef;
     posting.employer = credentials.employer;
     posting.salary = credentials.salary,
-    posting.location = credentials.location;
+        posting.location = credentials.location;
     posting.city = credentials.city;
     posting.longitude = credentials.longitude;
     posting.latitude = credentials.latitude;
@@ -690,7 +731,7 @@ function fillJobAdParams(posting, credentials) {
         posting.skills.push(credentials.skills[i]);
     }
 
-  	posting.logohash = credentials.logohash;
+    posting.logohash = credentials.logohash;
     return posting;
 }
 
@@ -702,12 +743,12 @@ function fillJobAdParams(posting, credentials) {
  */
 async function GetAllLiveJobPostings(credentials) {
     let results = await query('selectAllJobPostings', {
-        
+
     });
     const today = new Date();
-    
+
     const liveJobs = results.filter(posting => posting.expiryDate > today);
-   
+
     return liveJobs;
 }
 
@@ -760,4 +801,36 @@ async function GetAllLiveJobPostings(credentials) {
         "testData": false
         }
   }
+
+  {
+  "$class": "io.onemillionyearsbc.hubtutorial.CreateJobSeekerAccount",
+  "params": {
+    "$class": "io.onemillionyearsbc.hubtutorial.HubJobSeekerParameters",
+    "name": {
+      "$class": "io.onemillionyearsbc.hubtutorial.Name",
+      "title": "MR",
+      "firstName": "Heinz",
+      "lastName": "Guderian"
+    },
+    "phone": "+32494639815",
+    "country": "Germany",
+    "city": "Frankfurt",
+    "cvhash": "ddffeffefefe",
+    "weblink": "http://tanks.de",
+    "itexperience": 1,
+    "skills": "Tanks Are MEEEEEE",
+    "blockchainUsed": "CORDA",
+    "blockexperience": 1,
+    "newjobsummary": "BIG TANKS AND ARTILLERY",
+    "newjobtitle": "Inspector",
+    "newjobremote": false,
+    "newjobtype": "FULLTIME",
+    "visibility": false
+  },
+  "accountType": "JOBSEEKER",
+  "email": "h.guderian@wehrmacht.de",
+  "password": "fluffy",
+  "balance": 10,
+  "allowance": 10
+}
   */

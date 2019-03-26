@@ -22,6 +22,8 @@ import { setJobFields, setJobLogo, getExpireJobData, isExpired } from './views/d
 import { renderResults, setTotalJobsBucket, handleNext, handlePrev, applyFilter, filterByWhere, filterByWhat } from './views/searchView';
 import { renderFavouriteResults } from './views/favouritesView';
 import { setPrices } from './views/advertView';
+import { setJobSeekerEmail } from './views/profileView';
+
 
 
 
@@ -116,6 +118,8 @@ const signOutHandler = async (e) => {
             renderLoader(elements.madForm);
         } else if (state.page === elementConsts.DISPLAYJOBPAGE) {
             renderLoader(elements.viewJob);
+        } else if (state.page === elementConsts.PROFILEPAGE) {
+            renderLoaderEndByNumber(elements.profilePage, 5);
         }
     }
 
@@ -854,6 +858,27 @@ if (document.URL.includes("createjobad")) {
     });
 
     autocomplete(document.getElementById("jobtitle"), jobTitles);
+}
+
+// JOBSEEKER PROFILE CONTROLLER 
+if (document.URL.includes("jobseeker-dashboard.html")) {
+    state.page = elementConsts.PROFILEPAGE;
+    autocomplete(document.getElementById("desiredjobtitle"), jobTitles);
+    var email = sessionStorage.getItem('myemail');
+    var submitProfileBtn = elements.createprofilebutton;
+    if (email != null && email != undefined) {
+        setJobSeekerEmail(email);
+    }
+    submitProfileBtn.addEventListener('click', e => {
+        e.preventDefault();
+        let transaction = strings.createProfileTransaction;
+        let insert = true;
+        if (sessionStorage.getItem("amend") === "true") {
+            transaction = strings.updateProfileTransaction;
+            insert = false;
+        }
+        createProfileHandler(transaction, insert);
+    });
 }
 
 // ADVERTS CONTROLLER

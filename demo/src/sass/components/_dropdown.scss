@@ -17,6 +17,12 @@
     position: relative;
   }
   
+.search_categories:focus-within {
+    outline: none;
+    border-color: #9ecaed;
+    box-shadow: 0 0 10px #9ecaed;
+}
+
 .search_categories .select{
     width: 92%;
     background:url('../img/arrow.png') no-repeat;
@@ -38,7 +44,7 @@
 
 select.sizeable-opt option
 {
-font-size: 95%;
+    font-size: 95%;
 }
 
 // placeholder

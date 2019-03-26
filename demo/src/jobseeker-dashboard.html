@@ -54,7 +54,7 @@
                 </div>
                 <div class="profileparent__bottom">
 
-                    <div id="jobad" class="createjobad__parent">
+                    <div id="profilepage" class="createjobad__parent">
                         <form autocomplete="off" id="adform" class="myForm" top="false">
                             <p class="profiletitle">My Details</p>
                             <div class="loginform bollocksform">
@@ -71,7 +71,7 @@
                                     </p>
                                 </div>
                                 <div class="search_categories">
-                                    <div class="select">
+                                    <div class="select myselect">
                                         <select class="dropdown"
                                             onchange="document.getElementById('title').style.color = 'black'"
                                             name="search_categories2" id="title">
@@ -89,41 +89,26 @@
                                 <p id="bollocks1" class="mybollocks">Title</p>
 
                                 <div class="createjobad__parent--form-item">
-                                    <input id="first" class="loginform__textfield glowing-border" type="text"
-                                        placeholder="*First Name" autocomplete="off" />
+                                    <input id="first" class="loginform__textfield form-control glowing-border" required
+                                        type="text" placeholder="*First Name" autocomplete="off" />
                                     <label for="first" class="loginform__label">First Name</label>
                                 </div>
                                 <div class="createjobad__parent--form-item">
-                                    <input id="last" class="loginform__textfield glowing-border" type="text"
-                                        placeholder="*Last Name" autocomplete="off" />
+                                    <input id="last" class="loginform__textfield form-control glowing-border" required
+                                        type="text" placeholder="*Last Name" autocomplete="off" />
                                     <label for="last" class="loginform__label">Last Name</label>
                                 </div>
 
                                 <div class="createjobad__parent--form-item">
-                                    <input id="phone" class="loginform__textfield texty glowing-border" required
-                                        type="text" placeholder="*Mobile Phone" autocomplete="off" />
+                                    <input id="phone" class="loginform__textfield form-control texty glowing-border"
+                                        required type="text" placeholder="Mobile Phone" autocomplete="off" />
                                     <label for="phone" class="loginform__label">Mobile Phone</label>
                                 </div>
                                 <div id="phonetype-error" class="phone-error loginform__error">
                                     <p><i class="icon fas fa-exclamation-triangle"></i>Please enter your phone number
                                     </p>
                                 </div>
-                                <!-- <div class="search_categories">
-                                    <div class="select">
-                                        <select class="dropdown"
-                                            onchange="document.getElementById('title').style.color = 'black'"
-                                            name="search_categories2" id="title">
-                                            <option selected disabled hidden>Title</option>
-                                            <option value="MR" style="color:black">Mr</option>
-                                            <option value="MRS" style="color:black">Mrs</option>
-                                            <option value="MISS" style="color:black">Miss</option>
-                                            <option value="MS" style="color:black">Ms</option>
-                                            <option value="DR" style="color:black">Dr</option>
-                                            <option value="PROF" style="color:black">Prof</option>
-
-                                        </select>
-                                    </div>
-                                </div> -->
+                              
                                 <div class="search_categories">
                                     <div class="select">
                                         <select class="dropdown"
@@ -135,14 +120,14 @@
                                     </div>
                                 </div>
                                 <div class="createjobad__parent--form-item">
-                                    <input id="postcode" class="loginform__textfield " type="text"
+                                    <input id="postcode" class="loginform__textfield form-control glowing-border" type="text"
                                         placeholder="Home Postcode" autocomplete="off" />
                                     <label for="postcode" class="loginform__label">Home Postcode</label>
                                 </div>
                                 <!-- data-multiple-caption="{count} files selected" onchange="imgchange(this)"  -->
                                 <div class="createjobad__parent--form-item">
-                                    <input id="email" class="loginform__textfield " type="email" placeholder="Email"
-                                        autocomplete="off" disabled />
+                                    <input id="email" class="loginform__textfield form-control glowing-border" type="email"
+                                        placeholder="Email" autocomplete="off" disabled />
                                     <label for="email" class="loginform__label">Email</label>
                                 </div>
 
@@ -159,40 +144,40 @@
                                     </label>
                                 </div>
                                 <div class="createjobad__parent--form-item">
-                                    <input id="link1" class="loginform__textfield " type="text"
-                                        placeholder="Website Link 1 (e.g., LinkedIn, Facebook etc)" autocomplete="off" />
+                                    <input id="link1" class="loginform__textfield form-control glowing-border" type="text"
+                                        placeholder="Website Link (e.g., LinkedIn, Facebook etc)"
+                                        autocomplete="off" />
                                     <label for="link1" class="loginform__label">Website Link 1</label>
                                 </div>
-                                <div class="createjobad__parent--form-item">
-                                    <input id="link2" class="loginform__textfield " type="text"
-                                        placeholder="Website Link 2 (e.g., LinkedIn, Facebook etc)" autocomplete="off" />
-                                    <label for="link2" class="loginform__label">Website Link 2</label>
-                                </div>
-                                <!-- <div id="pbox2" style="display: none;" class="createjobad__parent--form-item box">
-                                    <span id="logotext2" class="box__logotext text">download.png</span>
-                                    <input type="file" name="file-1[]" id="file-1" class="inputfile inputfile-1"
-                                        data-multiple-caption="{count} files selected" onchange="imgchange(this)"
-                                        multiple style="display: none;" />
-                                    <label class="updatelogo" for="file-1"><svg xmlns="http://www.w3.org/2000/svg"
-                                            width="20" height="17" viewBox="0 0 20 17">
-                                            <path
-                                                d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z" />
-                                        </svg>
-                                        <span>Update Logo&hellip;</span></label>
-                                    <span id="logoimg" class="child"><img id="imgs" class="box__clipart" src=""></span>
-                                </div>
-                                <div class="toggle">
-                                    <input type="radio" name="remote" value="true" id="yesremote" checked="checked" />
-                                    <label for="yesremote">Remote</label>
-                                    <input type="radio" name="remote" value="false" id="noremote" />
-                                    <label for="noremote">Non Remote</label>
-                                </div>
+
+                                <p class="profiletitle">My Work Experience</p>
                                 <div class="search_categories">
                                     <div class="select">
                                         <select class="dropdown"
-                                            onchange="document.getElementById('blockchain').style.color = 'black'"
-                                            name="search_categories2" id="blockchain">
-                                            <option selected disabled hidden>Blockchain</option>
+                                            onchange="document.getElementById('experience').style.color = 'black'"
+                                            name="search_categories2" id="experience">
+                                            <option selected disabled hidden>Years IT Experience</option>
+                                            <option value="S" style="color:black">School Leaver</option>
+                                            <option value="G" style="color:black">Graduate</option>
+                                            <option value="1" style="color:black">1-2</option>
+                                            <option value="3" style="color:black">3-5</option>
+                                            <option value="6" style="color:black">6-10</option>
+                                            <option value="11" style="color:black">11-20</option>
+                                            <option value="20" style="color:black">Over 20</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <p id="dd1" class="mybollocks">Years IT Experience</p>
+                               
+                                <textarea id="keyskills" class="createjobad__parent--textarea glowing-border" rows="3"
+                                cols="93" placeholder="Key Skills. The text you enter into your key skills and personal summary is used to match you to keyword searches made by recruiters."></textarea>
+                                <div class="search_categories">
+                                    <div class="select">
+                                        <select class="dropdown"
+                                            onchange="document.getElementById('blockchainexp').style.color = 'black'"
+                                            name="search_categories2" id="blockchainexp">
+                                            <option selected disabled hidden>Main Blockchain Used</option>
+                                            <option value="NONE" style="color:black">None</option>
                                             <option value="CORDA" style="color:black">Corda</option>
                                             <option value="ETHEREUM" style="color:black">Ethereum</option>
                                             <option value="HYPERLEDGER" style="color:black">Hyperledger</option>
@@ -203,92 +188,75 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div id="blockchain-error" class="job-error loginform__error">
-                                    <p><i class="icon fas fa-exclamation-triangle"></i>Please enter the blockchain
-                                        name
-                                    </p>
-                                </div> -->
+                                <p id="dd2" class="mybollocks">Main Blockchain Used</p>
+                                <div class="search_categories">
+                                    <div class="select">
+                                        <select class="dropdown"
+                                            onchange="document.getElementById('yearsblock').style.color = 'black'"
+                                            name="search_categories2" id="yearsblock">
+                                            <option selected disabled hidden>Years Blockchain Experience</option>
+                                            <option value="0" style="color:black">0</option>
+                                            <option value="1" style="color:black">1</option>
+                                            <option value="2" style="color:black">2</option>
+                                            <option value="3" style="color:black">3+</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <p id="dd3" class="mybollocks">Years Blockchain Experience</p>
 
-                                <!-- <p id="bollocks2" class="mybollocks">Blockchain</p>
-                                <div class="createjobad__parent--form-item">
-                                    <input id="contact" class="loginform__textfield glowing-border" type="text"
-                                        placeholder="Contact" autocomplete="off" />
-                                    <label for="contact" class="loginform__label">Contact</label>
-                                </div>
-                                <div id="contact-error" class="job-error job-error2 loginform__error">
-                                    <p><i class="icon fas fa-exclamation-triangle"></i>Please enter the contact name
-                                    </p>
-                                </div>
-                                <div class="createjobad__parent--form-item">
-                                    <input id="internalref" class="loginform__textfield glowing-border" type="text"
-                                        placeholder="Internal Ref." autocomplete="off" />
-                                    <label for="internalref" class="loginform__label">Internal Ref.</label>
-                                </div>
-                                <div id="internalref-error" class="job-error job-error2 loginform__error">
-                                    <p><i class="icon fas fa-exclamation-triangle"></i>Please enter the internal
-                                        reference
-                                    </p>
-                                </div>
-                                <div class="createjobad__parent--form-item">
-                                    <input id="skills" class="loginform__textfield glowing-border" type="text"
-                                        placeholder="Skills" autocomplete="off" />
-                                    <label for="skills" class="loginform__label">Skills</label>
-                                </div>
-                                <div id="skills-error" class="job-error job-error2 loginform__error">
-                                    <p><i class="icon fas fa-exclamation-triangle"></i>Please enter at least one
-                                        skill
-                                        (separated by spaces)</p>
+                                <p class="profiletitle">New Job Requirements</p>
+                                <textarea id="psummary" class="createjobad__parent--textarea glowing-border" rows="3"
+                                cols="93" placeholder="Personal Summary. The text you enter into your key skills and personal summary is used to match you to keyword searches made by recruiters."></textarea>
+                               
+                                <div class="autocomplete createjobad__parent--form-item">
+                                    <input id="desiredjobtitle" class="loginform__textfield glowing-border" type="text"
+                                        placeholder="Desired Job Title" />
+                                    <label for="desiredjobtitle" class="loginform__label">Desired Job Title</label>
+                                    <div id="desiredjobtitle-error" class="job-error2 loginform__error">
+                                        <p><i class="icon fas fa-exclamation-triangle"></i>Please enter the desired job
+                                            title</p>
+                                    </div>
+
                                 </div>
                                 <div class="toggle">
-                                    <input type="radio" name="employer" onclick="handleClick(this);" value="true"
-                                        id="employer" checked="checked" />
-                                    <label for="employer">Employer</label>
-                                    <input type="radio" name="employer" onclick="handleClick(this);" value="false"
-                                        id="agency" />
-                                    <label for="agency">Agency</label>
+                                    <input type="radio" name="remote" value="true" id="yesremote" checked="checked" />
+                                    <label for="yesremote">Remote</label>
+                                    <input type="radio" name="remote" value="false" id="noremote" />
+                                    <label for="noremote">Non Remote</label>
                                 </div>
-
-                                <div class="createjobad__parent--form-item">
-                                    <input id="salary" class="loginform__textfield glowing-border" type="text"
-                                        placeholder="Salary (optional)" autocomplete="off" />
-                                    <label for="salary" class="loginform__label">Salary (optional)</label>
+                                <div class="search_categories">
+                                    <div class="select">
+                                        <select class="dropdown"
+                                            onchange="document.getElementById('jobtype').style.color = 'black'"
+                                            name="search_categories1" id="desiredjobtype">
+                                            <option selected disabled hidden>Desired Job Type</option>
+                                            <option value="FULLTIME" style="color:black">Full Time</option>
+                                            <option value="PARTTIME" style="color:black">Part Time</option>
+                                            <option value="INTERNSHIP" style="color:black">Internship</option>
+                                            <option value="CONTRACT" style="color:black">Contract</option>
+                                            <option value="OTHER" style="color:black">Other</option>
+                                        </select>
+                                    </div>
                                 </div>
-                               
-                                <div class="createjobad__parent--form-item">
-                                    <input id="location" class="loginform__textfield glowing-border" type="text"
-                                        placeholder="Country (keep blank if remote)" autocomplete="off" />
-                                    <label for="location" class="loginform__label">Country (optional)</label>
+                                <div id="jobtype-error" class="job-error loginform__error">
+                                    <p><i class="icon fas fa-exclamation-triangle"></i>Please enter the desired job type</p>
                                 </div>
-                                <div id="location-error" class="job-error job-error2 loginform__error">
-                                    <p><i class="icon fas fa-exclamation-triangle"></i>Country or City must be
-                                        entered
-                                        for
-                                        non-remote jobs</p>
+                                <p id="dd4" class="mybollocks">Desired Job Type</p>
+                                <p class="profiletitle">Visibility</p>
+                                <div class="toggle">
+                                    <input type="radio" name="share" value="true" id="yesshare" checked="checked" />
+                                    <label for="yesshare">Share My Details</label>
+                                    <input type="radio" name="share" value="false" id="noshare" />
+                                    <label for="noshare">Do Not Share My Details</label>
                                 </div>
-                                <div class="createjobad__parent--form-item">
-                                    <input id="city" class="loginform__textfield glowing-border" type="text"
-                                        placeholder="Town/City (keep blank if remote)" autocomplete="off" />
-                                    <label for="location" class="loginform__label">City (optional)</label>
-                                </div>
-                                <div id="city-error" class="job-error job-error2 loginform__error">
-                                    <p><i class="icon fas fa-exclamation-triangle"></i>Country or City must be
-                                        entered
-                                        for
-                                        non-remote jobs</p>
-                                </div> -->
-                                <p class="profiletitle">My Work Experience</p>
-
-
-                                <!-- generate random job data for upload script -->
-                                <!-- GENERAL: add footer with copyright etc. (do we need this?) -->
-                                <!-- <div class="createjobad__parent--form-item quill">
-                                    <div id="editor-container"></div>
-                                </div> -->
+                                <p class="tokentext">It is recommended you allow your details to be viewed to maximise your visibility to recruiters. </p>
+                                <p class="tokentext">Note: you will be rewarded with Hub Tokens each time your details are viewed by a recruiter. </p>
                                 <div class="createjobad__parent--buttonpanel">
-                                    <button id="createjobbutton" type="submit" class="btn btn--orange">SUBMIT</button>
+                                    <button id="createprofilebutton" type="submit" class="btn btn--orange">SAVE MY PROFILE</button>
                                 </div>
-
                             </div>
+                            
+                           
                         </form>
 
                     </div>
@@ -303,7 +271,20 @@
         if (e.target.id == "blockchain") {
             element = document.getElementById("bollocks2");
         }
+        if (e.target.id == "experience") {
+            element = document.getElementById("dd1");
+        }
+        if (e.target.id == "blockchainexp") {
+            element = document.getElementById("dd2");
+        }
+        if (e.target.id == "yearsblock") {
+            element = document.getElementById("dd3");
+        }
+        if (e.target.id == "desiredjobtype") {
+            element = document.getElementById("dd4");
+        }
         element.style.display = "block";
+        $(this).background = "pink";
     });
 </script>
 <script>

@@ -1,10 +1,10 @@
 
 /**
  * Set the total supply of an ERC20 Token
- * @param {io.onemillionyearsbc.hubtutorial.tokens.SetTotalSupply} tokenData
+ * @param {io.onemillionyearsbc.hubtutorial.tokens.SetERC20TotalSupply} tokenData
  * @transaction
  */
-async function SetTotalSupply(tokenData) {
+async function SetERC20TotalSupply(tokenData) {
     const NSTOK = 'io.onemillionyearsbc.hubtutorial.tokens';
     const tokenRegistry = await getAssetRegistry(NSTOK + '.ERC20TokenSupply');
     const token = await tokenRegistry.get(tokenData.tokenName);
@@ -17,23 +17,23 @@ async function SetTotalSupply(tokenData) {
 
 /**
  * Get the total supply of an ERC20 Token
- * @param {io.onemillionyearsbc.hubtutorial.tokens.GetTotalSupply} tokenData
+ * @param {io.onemillionyearsbc.hubtutorial.tokens.GetERC20TotalSupply} tokenData
  * @transaction
  */
-async function GetTotalSupply(tokenData) {
+async function GetERC20TotalSupply(tokenData) {
     const NSTOK = 'io.onemillionyearsbc.hubtutorial.tokens';
     const tokenRegistry = await getAssetRegistry(NSTOK + '.ERC20TokenSupply');
     const token = await tokenRegistry.get(tokenData.tokenName);
     return token.supply;
-}
+} 
 
 
 /**
  * Increase the total supply of an ERC20 Token by the specified amount
- * @param {io.onemillionyearsbc.hubtutorial.tokens.Mint} tokenData
+ * @param {io.onemillionyearsbc.hubtutorial.tokens.MintERC20} tokenData
  * @transaction
  */
-async function Mint(tokenData) {
+async function MintERC20(tokenData) {
     const NSTOK = 'io.onemillionyearsbc.hubtutorial.tokens';
     const tokenRegistry = await getAssetRegistry(NSTOK + '.ERC20TokenSupply');
     const token = await tokenRegistry.get(tokenData.tokenName);
@@ -46,10 +46,10 @@ async function Mint(tokenData) {
   
 /**
  * Get the balance for a holder of an ERC20 Token
- * @param {io.onemillionyearsbc.hubtutorial.tokens.GetBalance} credentials
+ * @param {io.onemillionyearsbc.hubtutorial.tokens.GetERC20Balance} credentials
  * @transaction
  */
-async function GetBalance(credentials) {
+async function GetERC20Balance(credentials) {
     const NSTOK = 'io.onemillionyearsbc.hubtutorial.tokens';
     const tokenRegistry = await getAssetRegistry(NSTOK + '.ERC20Token');
     const token = await tokenRegistry.get(credentials.email);
@@ -58,10 +58,10 @@ async function GetBalance(credentials) {
 
 /**
  * Set the balance for a holder of an ERC20 Token
- * @param {io.onemillionyearsbc.hubtutorial.tokens.SetBalance} credentials
+ * @param {io.onemillionyearsbc.hubtutorial.tokens.SetERC20Balance} credentials
  * @transaction
  */
-async function SetBalance(credentials) {
+async function SetERC20Balance(credentials) {
     const NSTOK = 'io.onemillionyearsbc.hubtutorial.tokens';
     const tokenRegistry = await getAssetRegistry(NSTOK + '.ERC20Token');
     const token = await tokenRegistry.get(credentials.email);
@@ -75,10 +75,10 @@ async function SetBalance(credentials) {
 
 /**
  * transfer from the token supply to the owner 
- * @param {io.onemillionyearsbc.hubtutorial.tokens.TransferTo} credentials
+ * @param {io.onemillionyearsbc.hubtutorial.tokens.TransferERC20To} credentials
  * @transaction
  */
-async function TransferTo(credentials) {
+async function TransferERC20To(credentials) {
     const NSTOK = 'io.onemillionyearsbc.hubtutorial.tokens';
     const erc20Registry = await getAssetRegistry(NSTOK + '.ERC20TokenSupply');
     const tokenRegistry = await getAssetRegistry(NSTOK + '.ERC20Token');
@@ -103,10 +103,10 @@ async function TransferTo(credentials) {
 
 /**
  * Get the allowance for a holder of an ERC20 Token
- * @param {io.onemillionyearsbc.hubtutorial.tokens.GetBalance} credentials
+ * @param {io.onemillionyearsbc.hubtutorial.tokens.GetERC20Balance} credentials
  * @transaction
  */
-async function GetAllowance(credentials) {
+async function GetERC20Allowance(credentials) {
     const NSTOK = 'io.onemillionyearsbc.hubtutorial.tokens';
     const tokenRegistry = await getAssetRegistry(NSTOK + '.ERC20Token');
     const token = await tokenRegistry.get(credentials.email);
@@ -115,10 +115,10 @@ async function GetAllowance(credentials) {
 
 /**
  * Set the allowance for a holder of an ERC20 Token
- * @param {io.onemillionyearsbc.hubtutorial.tokens.SetAllowance} credentials
+ * @param {io.onemillionyearsbc.hubtutorial.tokens.SetERC20Allowance} credentials
  * @transaction
  */
-async function SetAllowance(credentials) {
+async function SetERC20Allowance(credentials) {
     const NSTOK = 'io.onemillionyearsbc.hubtutorial.tokens';
     const tokenRegistry = await getAssetRegistry(NSTOK + '.ERC20Token');
     const token = await tokenRegistry.get(credentials.email);
@@ -131,10 +131,10 @@ async function SetAllowance(credentials) {
 
 /**
  * transfer from the token sender to the token receiver
- * @param {io.onemillionyearsbc.hubtutorial.tokens.Transfer} credentials
+ * @param {io.onemillionyearsbc.hubtutorial.tokens.TransferERC20} credentials
  * @transaction
  */
-async function Transfer(credentials) {
+async function TransferERC20(credentials) {
     const NSTOK = 'io.onemillionyearsbc.hubtutorial.tokens';
    
     const tokenRegistry = await getAssetRegistry(NSTOK + '.ERC20Token');

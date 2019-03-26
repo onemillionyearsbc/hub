@@ -4,9 +4,8 @@
     padding-right: 40rem;
     padding-left: 40rem;
 
-    // margin-right: 50rem;
     padding-top: 2rem;
-    // margin-bottom: 2rem;
+
     .title {
         margin-top: 0.5rem;
         margin-bottom: 1rem;
@@ -22,8 +21,6 @@
         border-bottom: 2px solid $dashboard-border;
     }
     &__parent {
-        // border: 1px solid $dashboard-border;
-        // border-radius: 5px;
         background: $color-white;
         color: $color-grey-light-2;
         &--form-item {

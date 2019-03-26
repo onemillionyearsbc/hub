@@ -5,6 +5,9 @@ namespace io.onemillionyearsbc.hubtutorial
 
 import io.onemillionyearsbc.hubtutorial.jobs.JobAds
 import io.onemillionyearsbc.hubtutorial.jobs.JobPosting
+import io.onemillionyearsbc.hubtutorial.jobs.BlockchainType
+import io.onemillionyearsbc.hubtutorial.jobs.AccountType
+import io.onemillionyearsbc.hubtutorial.jobs.JobType
 import io.onemillionyearsbc.hubtutorial.tokens.ERC20Token
 
 /**
@@ -25,8 +28,8 @@ import io.onemillionyearsbc.hubtutorial.tokens.ERC20Token
 
 abstract participant HubUser identified by email {
   o String      email 
-  o Double      hubTokenBalance default=0.0 optional /* Integrate with ERC20 Token Implementation */
   --> ERC20Token hubToken optional
+  o String[] favourites optional
 }
 
 participant HubRecruiter extends HubUser {
@@ -34,7 +37,6 @@ participant HubRecruiter extends HubUser {
   o String company
   --> JobAds jobAds
   --> JobPosting[] jobPostings optional
-  o String[] favourites optional
 }
 
 participant HubJobSeeker extends HubUser {
@@ -43,7 +45,20 @@ participant HubJobSeeker extends HubUser {
 
 concept HubJobSeekerParameters {
   o Name name
-  o Address address
+  o String phone optional
+  o String country 
+  o String city optional
+  o String cvhash optional
+  o String weblink optional
+  o Integer itexperience optional
+  o String skills optional
+  o BlockchainType  blockchainUsed optional
+  o Integer blockexperience optional
+  o String newjobsummary optional
+  o String newjobtitle optional
+  o Boolean newjobremote default=false
+  o JobType newjobtype default = "FULLTIME"
+  o Boolean visibility default=false
 }
   
 concept Name {
@@ -58,13 +73,7 @@ enum Title {
   o MRS
   o MISS
   o MS
-}
-
-concept Address {
-  o String street optional
-  o String city optional
-  o String postCode optional
-  o String country
+  o PROF
 }
 
 asset HubAccount identified by email {
@@ -80,7 +89,6 @@ asset HubAccount identified by email {
 abstract transaction CreateAccount {
   o String      email 
   o String      password
-  o Double      hubTokenBalance optional
   o Double     balance default=0.0
   o Double     allowance default=0.0
 }
@@ -90,7 +98,6 @@ abstract transaction CreateAccount {
 transaction CreateRecruiterAccount extends CreateAccount {
   o String name
   o String company 
-  o String image optional
   o AccountType accountType default="RECRUITER"
 }
 
@@ -99,9 +106,13 @@ transaction CreateJobSeekerAccount extends CreateAccount {
   o AccountType accountType default="JOBSEEKER"
 }
 
-enum AccountType {
-  o   JOBSEEKER
-  o   RECRUITER
+transaction RemoveHubUser {
+  o String email 
+  o AccountType accountType default="RECRUITER"
+}
+
+transaction RemoveHubAccount {
+  o String email 
 }
 
 transaction SetLoggedIn {

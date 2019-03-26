@@ -22,7 +22,7 @@
         }
         .instructions {
             margin-top: 1rem;
-            font-size: 1.2rem;
+            font-size: 1.5rem;
             font-weight: 600;
             margin-left: 5rem;
             padding-bottom: 2rem;
@@ -42,18 +42,34 @@
                 font-size: 2rem;
                 font-weight: 900;
                 padding-bottom: 2rem;
-                margin-left: 5rem;
-                margin-right: 5rem;
+                margin-left: -10rem;
+                margin-right: -10rem;
                 padding-bottom: 1rem;
                 border-bottom: 1px solid black;
                
             }
-            padding-left: 5rem;
-            padding-right: 5rem;
+            padding-left: 15rem;
+            padding-right: 15rem;
+            input:-webkit-autofill,
+            input:-webkit-autofill:hover,
+            input:-webkit-autofill:focus,
+            input:-webkit-autofill:active {
+                -webkit-transition-delay: 9999s;
+                transition-delay: 9999s;
+            }
+            .tokentext {
+                margin-left: 5rem;
+                color: black;
+                font-size: 1.5rem;
+            }
         }
     }
     input[type="text"]:disabled {
         color: grey;
         border: none
       }
+}
+
+.container {
+    min-height: 320vh;
 }

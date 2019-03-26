@@ -13,46 +13,46 @@ asset ERC20Token identified by email {
   o Double allowance default=0.0
 }
  
-transaction GetTotalSupply {
+transaction GetERC20TotalSupply {
   o String tokenName
 }
 
-transaction SetTotalSupply {
+transaction SetERC20TotalSupply {
   o String tokenName default = "hub"
   o Double amount
 }
 
 /* add to the total supply */
-transaction Mint {
+transaction MintERC20 {
   o String tokenName default = "hub"
   o Double amount
 }
 
-transaction GetBalance {
+transaction GetERC20Balance {
   o String email
 }
 
-transaction SetBalance {
+transaction SetERC20Balance {
   o String email
   o Double balance
 }
 
 /* transfer from the token supply to the owner */
-transaction TransferTo {
+transaction TransferERC20To {
   o String email
   o Double amount
 }
 
-transaction GetAllowance {
+transaction GetERC20Allowance {
   o String email
 }
 
-transaction SetAllowance {
+transaction SetERC20Allowance {
   o String email
   o Double allowance
 }
 
-transaction Transfer {
+transaction TransferERC20 {
   o String emailFrom
   o String emailTo
   o Double amount

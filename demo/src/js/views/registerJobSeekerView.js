@@ -29,7 +29,6 @@ export const getFormData = (form) => {
     myData["firstName"] = nameFields[0];
     myData["lastName"] = nameFields[len-1];
   
-    // TODO move hardwired composer object names into base.js
     var formData = {
         $class: strings.jobSeekerRegisterTransaction,
         params: {
@@ -39,10 +38,7 @@ export const getFormData = (form) => {
                 firstName: myData["firstName"],
                 lastName: myData["lastName"]
             },
-            address:{
-                $class: "io.onemillionyearsbc.hubtutorial.Address",
-                country: myData["location"]
-            }
+            country: myData["location"]
         },
         accountType: "JOBSEEKER",
         email: myData["email"],
@@ -82,7 +78,7 @@ export const validateData = (data) => {
         error = true;
         var x = document.getElementById("password-error-r-js");
         checkStyle(x);
-    } if (data.params.address.country.length === 0) {
+    } if (data.params.country.length === 0) {
         error = true;
         var x = document.getElementById("location-error-r-js");
         checkStyle(x);

@@ -9,6 +9,7 @@ const bnUtil = require('../bn-connection-util');
 const participantNamespace = 'io.onemillionyearsbc.hubtutorial';
 const recruiterResourceName = 'HubRecruiter';
 
+// TODO create tokens for new account
 
 // This creates the business network connection object
 // // and calls connect() on it. Calls the callback method 
@@ -41,13 +42,6 @@ bnUtil.connect(main);
 //----------------------------------------------------------------
 const csvFilePath = './recruiters.csv';
 const csv = require('csvtojson')
-
-csv()
-	.fromFile(csvFilePath)
-	.then((jsonObj) => {
-		
-	})
-
 
 // Callback function passed to the BN Connection utility
 // Error has value if there was an error in connect()

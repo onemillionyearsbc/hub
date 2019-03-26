@@ -10,7 +10,6 @@ const seekerResourceName = 'HubJobSeeker';
 
 // const bnUtil = require('../bn-connection-util');
 const namespace = 'io.onemillionyearsbc.hubtutorial';
-const accountResourceName = 'HubAccount';
 const transactionType = "CreateJobSeekerAccount";
 
 bnUtil.cardName='admin@hubtutorial';
@@ -52,7 +51,6 @@ async function main(){
     }
    
     const jsonArray = await csv().fromFile(csvFilePath);
-	var obj = { a: 1, b: 2 };
 	for (var key in jsonArray) {
 		if (jsonArray.hasOwnProperty(key)) {
 			var val = jsonArray[key];
@@ -64,29 +62,53 @@ async function main(){
             var params = factory.newConcept(namespace, 'HubJobSeekerParameters');
 
             var name = factory.newConcept(namespace, 'Name');
-            name.title = "MR";
+            name.title = getRandomArrayElement(titleArray);
             name.firstName = `${val.first_name}`;
             name.lastName = `${val.last_name}`;
             params.name = name;
 
-            var address = factory.newConcept(namespace, 'Address');
-            address.country = `${val.nationality}`;
-            address.street = `${val.address_street}`;
-            address.city = `${val.address_city}`;
-            address.postCode = `${val.address_postal_code}`;
-            params.address = address;
+            // var address = factory.newConcept(namespace, 'Address');
+            params.country = `${val.nationality}`;
+            params.city = `${val.address_city}`;
+            params.phone = `${val.telephone_number}`;
+            // params.address = address;
 
-    
+            // concept HubJobSeekerParameters {
+            //     o Name name
+            //     o String phone optional
+            //     o String country 
+            //     o String city optional
+            //     o String cvhash optional
+            //     o String weblink optional
+            //     o Integer itexperience optional
+            //     o String skills optional
+            //     o BlockchainType  blockchainUsed optional
+            //     o Integer blockexperience optional
+            //     o String newjobsummary optional
+            //     o String newjobtitle optional
+            //     o Boolean newjobremote default=false
+            //     o JobType newjobtype default = "FULLTIME"
+            //     o Boolean visibility default=false
+            //   }
+
+            var email = `${val.email}`;
             transaction.setPropertyValue('params',params);
 
-            transaction.setPropertyValue('email',`${val.email}`);
+            transaction.setPropertyValue('email',email);
             transaction.setPropertyValue('password', `${val.password}`);
         
             // Submit the transaction
          
+            console.log(">>> generating job seeker with id: " + email);
+            console.log("   => title =  " + params.name.title);
+            console.log("   => first name =  " + params.name.firstName);
+            console.log("   => last name  =  " + params.name.lastName);
+            console.log("   => location =  " + params.city);
+            console.log("   => phone =  " + params.phone);
+
             try {
                 await bnUtil.connection.submitTransaction(transaction);
-                console.log("Transaction processed: Account created for email " + val.email)
+                console.log("Transaction processed: Account created!");
         
             } catch (error) {
                 console.log('Account creation failed: ' + error);
@@ -99,6 +121,45 @@ async function main(){
     bnUtil.disconnect();
 
 }
+
+function getRandomArrayElement(arr) {
+    //Minimum value is set to 0 because array indexes start at 0.
+    var min = 0;
+    //Get the maximum value my getting the size of the
+    //array and subtracting by 1.
+    var max = (arr.length - 1);
+    //Get a random integer between the min and max value.
+    var randIndex = Math.round(Math.random() * (max - min)) + min;
+    //Return random value.
+    return arr[randIndex];
+}
+
+var titleArray = new Array(
+    'DR',
+    'MR',
+    'MRS',
+    'MISS',
+    'MS',
+    'PROF'
+);
+
+var jobTypeArray = new Array(
+    "FULLTIME",
+    "CONTRACT",
+    "PARTTIME",
+    "INTERNSHIP",
+    "OTHER"
+);
+
+var blockchainArray = [
+    "ETHEREUM",
+    "HYPERLEDGER",
+    "NEO",
+    "CORDA",
+    "QUOROM",
+    "RIPPLE",
+    "OTHER"
+];
 // JSON to call transaction using REST API
 
 // {

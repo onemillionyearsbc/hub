@@ -57,6 +57,11 @@ enum BlockchainType {
   o OTHER
 }
 
+enum AccountType {
+  o   JOBSEEKER
+  o   RECRUITER
+}
+
 transaction BuyJobCredits {
   o String    email 
   o Integer		credits
@@ -105,6 +110,7 @@ transaction IncrementApplications {
 transaction AddJobToFavourites {
   o String email
   o String jobReference
+  o AccountType accountType default="RECRUITER"
 }
 
 transaction RemoveJobFromFavourites {
@@ -170,6 +176,7 @@ transaction GetJobPostings {
 @returns(JobPosting[])
 transaction GetFavourites {
   o String email
+  o AccountType accountType default="RECRUITER"
 }
 
 @commit(false)
