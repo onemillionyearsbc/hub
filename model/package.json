@@ -3,7 +3,7 @@
     "composer": "^0.20.1"
   },
   "name": "hubtutorial",
-  "version": "0.0.27",
+  "version": "0.0.29",
   "description": "An example Composer Business Network for use in the series of tutorials ",
   "scripts": {
     "prepublish": "mkdirp ./dist && composer archive create --sourceType dir --sourceName . -a ./dist/hubtutorial.bna",

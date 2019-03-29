@@ -49,6 +49,7 @@ concept HubJobSeekerParameters {
   o String country 
   o String city optional
   o String cvhash optional
+  o String cvfiledate optional
   o String weblink optional
   o Integer itexperience optional
   o String skills optional
