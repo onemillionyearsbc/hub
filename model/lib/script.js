@@ -82,6 +82,10 @@ async function CreateRecruiterAccount(accountData) {
 async function CreateJobSeekerAccount(accountData) {
     var factory = getFactory();
     var NS = 'io.onemillionyearsbc.hubtutorial';
+    var NSTOK = 'io.onemillionyearsbc.hubtutorial.tokens';
+
+    // Create an ERC20 token object to attach the the user object
+    var token = factory.newResource(NSTOK, 'ERC20Token', accountData.email);
 
     var email = accountData.email;
     var seekerParams = factory.newConcept(NS, 'HubJobSeekerParameters');
@@ -98,7 +102,6 @@ async function CreateJobSeekerAccount(accountData) {
     seeker.params.country = accountData.params.country;
 
     seeker.params.cvhash = accountData.params.cvhash;
-    seeker.params.cvfiledate = accountData.params.cvfiledate;
     seeker.params.weblink = accountData.params.weblink;
     seeker.params.itexperience = accountData.params.itexperience;
 
@@ -127,7 +130,16 @@ async function CreateJobSeekerAccount(accountData) {
     seekerAccount.dateCreated = new Date();
     seekerAccount.password = accountData.password;
 
-    // 5 Wire in the HubUser participant and HubAccount asset
+    // 5 Set ERC20 Token initial attributes
+      if (accountData.balance > accountData.allowance) {
+        throw Error("balance cannot be greater than allowance");
+    }
+
+    token.balance = accountData.balance;
+    token.allowance = accountData.allowance;
+
+    
+    // 6  Wire in the HubUser participant and HubAccount and ERC20 assets
 
     const participantRegistry = await getParticipantRegistry(NS + '.HubJobSeeker');
 
@@ -136,6 +148,11 @@ async function CreateJobSeekerAccount(accountData) {
     const accountRegistry = await getAssetRegistry(NS + '.HubAccount');
 
     await accountRegistry.addAll([seekerAccount]);
+
+    const erc20Registry = await getAssetRegistry(NSTOK + '.ERC20Token');
+
+    await erc20Registry.addAll([token]);
+
 };
 
 
