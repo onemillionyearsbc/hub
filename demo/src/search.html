@@ -33,9 +33,28 @@
                 </ul>
                 <ul class="navbar__right">
                     <li id="saved">
-                        <a href="favourites.html" class="link-icon"><i class="starwithnocircle fa fa-star"></i>Saved Jobs</a>
+                        <a href="favourites.html" class="link-icon"><i class="starwithnocircle fa fa-star"></i>Saved
+                            Jobs</a>
                     </li>
-                    <li class="signin"><a href="#" class="link-icon">Log Out</a></li>
+                    <li id="allsignin" class="signin" style="display: none;"><a href="register.html"
+                            class="link-icon"><i class="icon far fa-user"></i>Sign
+                            In</a>
+                    </li>
+                    <li id="recruiterlogout" class="signin"><a href="#" class="link-icon">Log Out</a>
+                    </li>
+
+                    <div id="accountmenu" class="dropdownnavbar" style="display: none;">
+                        <button id="accountmenubtn" class="dropbtn">NOB's account
+                            <i class="left-icon icon far fa-user"></i>
+                            <i class="right-icon fa fa-caret-down"></i>
+                        </button>
+                        <div class="dropdownnavbar-content">
+                            <a href="#">Account</a>
+                            <a href="jobseeker-dashboard.html">Profile</a>
+                            <a href="#">Applications</a>
+                            <a id="signoutlink" href="#">Sign Out</a>
+                        </div>
+                    </div>
                 </ul>
             </nav>
             <div id="searchjob" class="container searchjob">

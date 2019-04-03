@@ -25,7 +25,7 @@
             </div>
         </div>
         <div>
-            <nav class="navbar animated slideInRight delay-2s">
+            <nav class="navbar">
                 <ul class="navbar__left">
                     <li class="item-1"><a href="#jobs">Dashboard</a></li>
                     <li><a href="#companies">Job Ads</a></li>
@@ -38,11 +38,36 @@
                     </li>
                     <li class="signin"><a href="register.html" class="link-icon"><i class="icon far fa-user"></i>Sign
                             In</a></li>
-                    <li class="account"><a href="#" class="link-icon">My Account</a></li>
+                    <div id="accountmenu" class="dropdownnavbar" style="display: none;">
+                        <button id="accountmenubtn" class="dropbtn">NOB's account
+                            <i class="left-icon icon far fa-user"></i>
+                            <i class="right-icon fa fa-caret-down"></i>
+                        </button>
+                        <div class="dropdownnavbar-content">
+                            <a href="#">Account</a>
+                            <a href="jobseeker-dashboard.html">Profile</a>
+                            <a href="#">Applications</a>
+                            <a id="signoutlink" href="#">Sign Out</a>
+                        </div>
+                    </div>
+
+                    </li>
+                    <div id="accountmenu" class="dropdown" style="display: none;">
+                        <button id="accountmenubtn" class="dropbtn">NOB's account
+                            <i class="left-icon icon far fa-user"></i>
+                            <i class="right-icon fa fa-caret-down"></i>
+                        </button>
+                        <div class="dropdown-content">
+                            <a href="#">Account</a>
+                            <a href="jobseeker-dashboard.html">Profile</a>
+                            <a href="#">Applications</a>
+                            <a id="signoutlink" href="#">Sign Out</a>
+                        </div>
+                    </div>
                 </ul>
             </nav>
-            <div class="animated slideInUp delay-2s container profileparent">
-                <div class="profileparent__top">
+            <div class="container profileparent">
+                <div class="profileparent__top animated zoomIn delay-2s">
                     <p class="title">My Profile</p>
                     <p class="instructions">Improve your chances of getting the job you want.<br>
                         Creating a profile only takes a couple of minutes and makes you visible to potential employers.
@@ -52,7 +77,7 @@
 
 
                 </div>
-                <div class="profileparent__bottom">
+                <div class="profileparent__bottom animated zoomIn delay-2s">
 
                     <div id="profilepage" class="createjobad__parent">
                         <form autocomplete="off" id="adform" class="myForm" top="false">
@@ -108,7 +133,7 @@
                                     <p><i class="icon fas fa-exclamation-triangle"></i>Please enter your phone number
                                     </p>
                                 </div>
-                              
+
                                 <div class="search_categories">
                                     <div class="select">
                                         <select class="dropdown"
@@ -119,15 +144,16 @@
                                         </select>
                                     </div>
                                 </div>
+                                <p id="dd5" class="mybollocks">Country of Residence</p>
                                 <div class="createjobad__parent--form-item">
-                                    <input id="postcode" class="loginform__textfield form-control glowing-border" type="text"
-                                        placeholder="Home Postcode" autocomplete="off" />
-                                    <label for="postcode" class="loginform__label">Home Postcode</label>
+                                    <input id="postcode" class="loginform__textfield form-control glowing-border"
+                                        type="text" placeholder="City of Residence" autocomplete="off" />
+                                    <label for="postcode" class="loginform__label">City of Residence</label>
                                 </div>
                                 <!-- data-multiple-caption="{count} files selected" onchange="imgchange(this)"  -->
                                 <div class="createjobad__parent--form-item">
-                                    <input id="email" class="loginform__textfield form-control glowing-border" type="email"
-                                        placeholder="Email" autocomplete="off" disabled />
+                                    <input id="email" class="loginform__textfield form-control glowing-border"
+                                        type="email" placeholder="Email" autocomplete="off" disabled />
                                     <label for="email" class="loginform__label">Email</label>
                                 </div>
 
@@ -144,8 +170,8 @@
                                     </label>
                                 </div>
                                 <div class="createjobad__parent--form-item">
-                                    <input id="link1" class="loginform__textfield form-control glowing-border" type="text"
-                                        placeholder="Website Link (e.g., LinkedIn, Facebook etc)"
+                                    <input id="link1" class="loginform__textfield form-control glowing-border"
+                                        type="text" placeholder="Website Link (e.g., LinkedIn, Facebook etc)"
                                         autocomplete="off" />
                                     <label for="link1" class="loginform__label">Website Link 1</label>
                                 </div>
@@ -157,8 +183,7 @@
                                             onchange="document.getElementById('experience').style.color = 'black'"
                                             name="search_categories2" id="experience">
                                             <option selected disabled hidden>Years IT Experience</option>
-                                            <option value="S" style="color:black">School Leaver</option>
-                                            <option value="G" style="color:black">Graduate</option>
+                                            <option value="0" style="color:black">Graduate</option>
                                             <option value="1" style="color:black">1-2</option>
                                             <option value="3" style="color:black">3-5</option>
                                             <option value="6" style="color:black">6-10</option>
@@ -168,14 +193,15 @@
                                     </div>
                                 </div>
                                 <p id="dd1" class="mybollocks">Years IT Experience</p>
-                               
-                                <textarea id="keyskills" class="createjobad__parent--textarea glowing-border" rows="3"
-                                cols="93" placeholder="Key Skills. The text you enter into your key skills and personal summary is used to match you to keyword searches made by recruiters."></textarea>
+
+                                <textarea id="keyskills" class="createjobad__parent--textarea glowing-border" rows="5"
+                                    cols="93"
+                                    placeholder="Key Skills. The text you enter into your key skills and personal summary is used to match you to keyword searches made by recruiters."></textarea>
                                 <div class="search_categories">
                                     <div class="select">
                                         <select class="dropdown"
-                                            onchange="document.getElementById('blockchainexp').style.color = 'black'"
-                                            name="search_categories2" id="blockchainexp">
+                                            onchange="document.getElementById('blockchainused').style.color = 'black'"
+                                            name="search_categories2" id="blockchainused">
                                             <option selected disabled hidden>Main Blockchain Used</option>
                                             <option value="NONE" style="color:black">None</option>
                                             <option value="CORDA" style="color:black">Corda</option>
@@ -205,9 +231,10 @@
                                 <p id="dd3" class="mybollocks">Years Blockchain Experience</p>
 
                                 <p class="profiletitle">New Job Requirements</p>
-                                <textarea id="psummary" class="createjobad__parent--textarea glowing-border" rows="3"
-                                cols="93" placeholder="Personal Summary. The text you enter into your key skills and personal summary is used to match you to keyword searches made by recruiters."></textarea>
-                               
+                                <textarea id="psummary" class="createjobad__parent--textarea glowing-border" rows="5"
+                                    cols="93"
+                                    placeholder="Personal Summary. The text you enter into your key skills and personal summary is used to match you to keyword searches made by recruiters."></textarea>
+
                                 <div class="autocomplete createjobad__parent--form-item">
                                     <input id="desiredjobtitle" class="loginform__textfield glowing-border" type="text"
                                         placeholder="Desired Job Title" />
@@ -239,7 +266,8 @@
                                     </div>
                                 </div>
                                 <div id="jobtype-error" class="job-error loginform__error">
-                                    <p><i class="icon fas fa-exclamation-triangle"></i>Please enter the desired job type</p>
+                                    <p><i class="icon fas fa-exclamation-triangle"></i>Please enter the desired job type
+                                    </p>
                                 </div>
                                 <p id="dd4" class="mybollocks">Desired Job Type</p>
                                 <p class="profiletitle">Visibility</p>
@@ -249,14 +277,15 @@
                                     <input type="radio" name="share" value="false" id="noshare" />
                                     <label for="noshare">Do Not Share My Details</label>
                                 </div>
-                                <p class="tokentext">It is recommended you allow your details to be viewed to maximise your visibility to recruiters. </p>
-                                <p class="tokentext">Note: you will be rewarded with Hub Tokens each time your details are viewed by a recruiter. </p>
+                                <p class="tokentext">It is recommended you allow your details to be viewed to maximise
+                                    your visibility to recruiters. </p>
+                                <p class="tokentext">Note: you will be rewarded with Hub Tokens each time your details
+                                    are viewed by a recruiter. </p>
                                 <div class="createjobad__parent--buttonpanel">
-                                    <button id="createprofilebutton" type="submit" class="btn btn--orange">SAVE MY PROFILE</button>
+                                    <button id="createprofilebutton" type="submit" class="btn btn--orange">SAVE MY
+                                        PROFILE</button>
                                 </div>
                             </div>
-                            
-                           
                         </form>
 
                     </div>
@@ -274,7 +303,7 @@
         if (e.target.id == "experience") {
             element = document.getElementById("dd1");
         }
-        if (e.target.id == "blockchainexp") {
+        if (e.target.id == "blockchainused") {
             element = document.getElementById("dd2");
         }
         if (e.target.id == "yearsblock") {
@@ -283,25 +312,25 @@
         if (e.target.id == "desiredjobtype") {
             element = document.getElementById("dd4");
         }
+        if (e.target.id == "country") {
+            element = document.getElementById("dd5");
+        }
         element.style.display = "block";
-        $(this).background = "pink";
     });
 </script>
 <script>
-    var countries = ["Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua & Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bermuda", "Bhutan", "Bolivia", "Bosnia & Herzegovina", "Botswana", "Brazil", "British Virgin Islands", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cambodia", "Cameroon", "Canada", "Cape Verde", "Cayman Islands", "Central Arfrican Republic", "Chad", "Chile", "China", "Colombia", "Congo", "Cook Islands", "Costa Rica", "Cote D Ivoire", "Croatia", "Cuba", "Curacao", "Cyprus", "Czech Republic", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Ethiopia", "Falkland Islands", "Faroe Islands", "Fiji", "Finland", "France", "French Polynesia", "French West Indies", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Gibraltar", "Greece", "Greenland", "Grenada", "Guam", "Guatemala", "Guernsey", "Guinea", "Guinea Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Isle of Man", "Israel", "Italy", "Jamaica", "Japan", "Jersey", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Kosovo", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Macau", "Macedonia", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauro", "Nepal", "Netherlands", "Netherlands Antilles", "New Caledonia", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Korea", "Norway", "Oman", "Pakistan", "Palau", "Palestine", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Reunion", "Romania", "Russia", "Rwanda", "Saint Pierre & Miquelon", "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Korea", "South Sudan", "Spain", "Sri Lanka", "St Kitts & Nevis", "St Lucia", "St Vincent", "Sudan", "Suriname", "Swaziland", "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Timor L'Este", "Togo", "Tonga", "Trinidad & Tobago", "Tunisia", "Turkey", "Turkmenistan", "Turks & Caicos", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States of America", "Uruguay", "Uzbekistan", "Vanuatu", "Vatican City", "Venezuela", "Vietnam", "Virgin Islands (US)", "Yemen", "Zambia", "Zimbabwe"];
-    var select = document.getElementById("country");
+    // var countries = ["Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua & Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bermuda", "Bhutan", "Bolivia", "Bosnia & Herzegovina", "Botswana", "Brazil", "British Virgin Islands", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cambodia", "Cameroon", "Canada", "Cape Verde", "Cayman Islands", "Central Arfrican Republic", "Chad", "Chile", "China", "Colombia", "Congo", "Cook Islands", "Costa Rica", "Cote D Ivoire", "Croatia", "Cuba", "Curacao", "Cyprus", "Czech Republic", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Ethiopia", "Falkland Islands", "Faroe Islands", "Fiji", "Finland", "France", "French Polynesia", "French West Indies", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Gibraltar", "Greece", "Greenland", "Grenada", "Guam", "Guatemala", "Guernsey", "Guinea", "Guinea Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Isle of Man", "Israel", "Italy", "Jamaica", "Japan", "Jersey", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Kosovo", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Macau", "Macedonia", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauro", "Nepal", "Netherlands", "Netherlands Antilles", "New Caledonia", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Korea", "Norway", "Oman", "Pakistan", "Palau", "Palestine", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Reunion", "Romania", "Russia", "Rwanda", "Saint Pierre & Miquelon", "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Korea", "South Sudan", "Spain", "Sri Lanka", "St Kitts & Nevis", "St Lucia", "St Vincent", "Sudan", "Suriname", "Swaziland", "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Timor L'Este", "Togo", "Tonga", "Trinidad & Tobago", "Tunisia", "Turkey", "Turkmenistan", "Turks & Caicos", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States of America", "Uruguay", "Uzbekistan", "Vanuatu", "Vatican City", "Venezuela", "Vietnam", "Virgin Islands (US)", "Yemen", "Zambia", "Zimbabwe"];
+    // var select = document.getElementById("country");
 
-    // Populate list with options:
-    for (var i = 0; i < countries.length; i++) {
-        var opt = countries[i];
-        select.innerHTML += "<option value=\"" + opt + "\" style=\"color:black\">" + opt + "</option>";
-    }
+    // // Populate list with options:
+    // for (var i = 0; i < countriesArray.length; i++) {
+    //     var opt = countriesArray[i];
+    //     select.innerHTML += "<option value=\"" + opt + "\" style=\"color:black\">" + opt + "</option>";
+    // }
 </script>
 <script>
     var currentValue = "true";
     function handleClick(myRadio) {
-        console.log('Old value: ' + currentValue);
-        console.log('New value: ' + myRadio.value);
         currentValue = myRadio.value;
     }
 </script>

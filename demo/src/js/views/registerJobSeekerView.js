@@ -135,5 +135,3 @@ export const validateField = (element) => {
 
     x.style.display = "none";
 }
-
-

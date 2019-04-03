@@ -17,7 +17,11 @@
         <header class="header animated slideInLeft delay-2s">
             <div class="header__topbar">
                 <div class="topleft">
-                    <img src="img/logo-small.png" alt="1MYBC">
+                    <div class="logo">
+                        <img src="img/logo-small.png" alt="1MYBC">
+                        <p class="handmemo">We value your data</p>
+                    </div>
+
                 </div>
                 <div class="topright">
                     <span class="topright__banner">Are you recruiting?</span>
@@ -27,7 +31,7 @@
         </header>
 
         <div class="content">
-            <nav class="navbar animated slideInRight delay-2s">
+            <nav class="navbar">
                 <ul class="navbar__left">
                     <li class="item-1"><a href="#jobs">IT Jobs</a></li>
                     <li><a href="#companies">Companies Hiring</a></li>
@@ -35,10 +39,27 @@
                 </ul>
                 <ul class="navbar__right">
                     <li id="saved">
-                        <a href="favourites.html" class="link-icon"><i class="starwithnocircle fa fa-star"></i>Saved Jobs</a>
+                        <a href="favourites.html" class="link-icon"><i class="starwithnocircle fa fa-star"></i>Saved
+                            Jobs</a>
                     </li>
-                    <li class="signin"><a href="register.html" class="link-icon"><i class="icon far fa-user"></i>Sign
-                            In</a></li>
+                    <li id="allsignin" class="signin" style="display: none;"><a href="register.html" class="link-icon"><i class="icon far fa-user"></i>Sign
+                            In</a>
+                    </li>
+                    <li id="recruiterlogout" class="signin"><a href="#" class="link-icon">Log Out</a>
+                    </li>
+
+                    <div  id="accountmenu" class="dropdownnavbar" style="display: none;">
+                        <button id="accountmenubtn" class="dropbtn">NOB's account
+                            <i class="left-icon icon far fa-user"></i>
+                            <i class="right-icon fa fa-caret-down"></i>
+                        </button>
+                        <div class="dropdownnavbar-content">
+                            <a href="#">Account</a>
+                            <a href="jobseeker-dashboard.html">Profile</a>
+                            <a href="#">Applications</a>
+                            <a id="signoutlink" href="#">Sign Out</a>
+                        </div>
+                    </div>
                 </ul>
             </nav>
 

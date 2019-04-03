@@ -92,7 +92,6 @@ export const elements = {
     companyLabelList: document.querySelector(".companylabel"),
     filterContent: document.getElementById("filterbuttons"),
     filterTitle: document.querySelector(".filters"),
-    filterTitle: document.querySelector(".filters"),
     whatBtn: document.querySelector(".what-btn"),
     whereBtn: document.querySelector(".where-btn"),
     saveBtn: document.getElementById("saveBtn"),
@@ -100,7 +99,7 @@ export const elements = {
     buttonPanel: document.getElementById("bp"),
     advertBtn: document.getElementById("advertbutton"),
     removeAllBtn: document.getElementById("removeallbutton"),
-    savedJobs:  document.getElementById("savedjobs"),
+    savedJobs: document.getElementById("savedjobs"),
     abtn: document.getElementById("abtn"),
     bbtn: document.getElementById("bbtn"),
     price1: document.getElementById("p1"),
@@ -109,7 +108,20 @@ export const elements = {
     jobviews: document.getElementById("jobviews"),
     profilePage: document.getElementById("profilepage"),
     createprofilebutton: document.getElementById("createprofilebutton"),
-    
+    firstName: document.getElementById("first"),
+    lastName: document.getElementById("last"),
+    title: document.getElementById("title"),
+    phone: document.getElementById("phone"),
+    city: document.getElementById("postcode"),
+    country: document.getElementById("country"),
+    link1: document.getElementById("link1"),
+    experience: document.getElementById("experience"),
+    keySkills: document.getElementById("keyskills"),
+    blockchainUsed: document.getElementById("blockchainused"),
+    yearsBlock: document.getElementById("yearsblock"),
+    pSummary: document.getElementById("psummary"),
+    desiredJobTitle: document.getElementById("desiredjobtitle"),
+    desiredJobType: document.getElementById("desiredjobtype"),
 };
 
 export const dbelements = {
@@ -125,9 +137,10 @@ export const dbelements = {
 
 // Romania Hub (Linux)
 // var ipAddress = '84.117.182.193';
+var ipAddress = '192.168.0.66';
 
 // localhost (Windows)
-var ipAddress = "localhost";
+// var ipAddress = "localhost";
 //-------------------------------------------------------------------
 
 var recruiterLoginTransaction = 'io.onemillionyearsbc.hubtutorial.GetHubRecruiter';
@@ -290,24 +303,65 @@ export const getFormFor = (btn) => {
     return form;
 }
 
-export const navBarSetLoggedIn = (loggedIn) => {
+export const navBarSetLoggedIn = (loggedIn, name) => {
+
+//     <li class="signin" style="display: none;"><a href="register.html" class="link-icon"><i class="icon far fa-user"></i>Sign
+//     In</a>
+//      </li>
+//      <li id="recruiterlogout" class="signin"><a href="#" class="link-icon">Log Out</a>
+//      </li>
+
     var signins = elements.signins;
+
+    let user = sessionStorage.getItem("user");
+    let type = parseInt(user);
+
+    let dropdown = document.getElementById("accountmenu");
     for (var i = 0; i < signins.length; i++) {
+        console.log("*** loggedIn = " + loggedIn);
         if (loggedIn) {
-            signins[i].innerHTML = `<a href="#" class="link-icon"><i class="icon far fa-user"></i>Log Out</a>`;
+            if (type === elementConsts.JOBSEEKER) {
+               
+                let markup = `${name}'s account
+                    <i class="left-icon icon far fa-user"></i>
+                    <i class="right-icon fa fa-caret-down"></i>`
+                signins[i].style.display = "none";
+                let button = document.getElementById("accountmenubtn");
+                button.innerHTML = markup;
+                dropdown.style.display = "block";
+            } else {
+                let ele = document.getElementById("recruiterlogout");
+                let ele2 = document.getElementById("allsignin");
+                if (ele != null) {
+                    ele.style.display = "block";
+                }
+                if (ele2 != null) {
+                    ele2.style.display = "none";
+                }
+            }
         } else {
-            signins[i].innerHTML = `<a href="register.html" class="link-icon"><i class="icon far fa-user"></i>Sign In</a>`;
+         
+            signins[i].style.display = "block";
+            if (dropdown != null) {
+                dropdown.style.display = "none";
+            }
+            let ele = document.getElementById("recruiterlogout");
+            console.log("QUACK ele = " + ele);
+            if (ele != null) {
+                ele.style.display = "none";
+            }
         }
     }
+
 }
 
-export const setLoggedIn = (state, loggedIn) => {
+export const setLoggedIn = (state, loggedIn, name) => {
     state.loggedIn = loggedIn;
     sessionStorage.setItem('loggedIn', loggedIn === true ? "true" : "false");
     if (loggedIn === true) {
         sessionStorage.setItem('myemail', state.login.getEmail());
     }
-    navBarSetLoggedIn(loggedIn);
+    navBarSetLoggedIn(loggedIn, name);
 }
 
 
@@ -552,8 +606,9 @@ export const addToFavouritesHandler = async (button, jobRef) => {
 
         if (job.length === 0) {
             // error ... we got a problem here
+            return;
         }
-      
+
 
         favs.push(job[0]);
         sessionStorage.setItem("favourites", JSON.stringify(favs));

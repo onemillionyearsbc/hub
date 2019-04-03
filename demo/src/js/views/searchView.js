@@ -13,6 +13,9 @@ let selectedcrossicon = '<i class="far fa-times-circle"></i>';
 
 const renderJobItem = (jobItem, count) => {
 
+    for (var prop in jobItem) {
+        console.log(prop + " -> " + jobItem[prop]);
+    }
     let loc = "See all blockchain jobs in " + jobItem.location;
     let cityloc = "";
 
@@ -47,7 +50,7 @@ const renderJobItem = (jobItem, count) => {
         bdisp = "none";
         pdisp = "block";
     }
-    
+
     let savedItemB = `<button style="display: ${bdisp};" id="savefavouritesbutton" data-id=${jobItem.jobReference} class="saveBtn"><i class="far fa-star"></i>Save</button>`;
     let savedItemP = `<p id="p-${jobItem.jobReference}" style="display: ${pdisp};" class="savedlabel">Saved</>`;
 

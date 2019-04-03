@@ -12,7 +12,7 @@ import * as loginView from './views/loginView';
 import * as createJobAdView from './views/createJobAdView';
 import * as manageJobAdsView from './views/manageJobAdsView';
 
-import { getFormFor, clearError, elements, dbelements, elementConsts, inputType, renderLoader, renderLoaderEnd, renderLoaderEndByNumber, clearLoader, navBarSetLoggedIn, setLoggedIn, strings, enableCreateJobButton, autocomplete, jobTitles, setButtonHandlers, displayErrorPopup, displaySuccessPopup, updateFavouritesTotal, addFavouritesLinkListener } from './views/base';
+import { getFormFor, clearError, elements, dbelements, elementConsts, inputType, renderLoader, renderLoaderEnd, renderLoaderEndByNumber, clearLoader, navBarSetLoggedIn, setLoggedIn, strings, enableCreateJobButton, autocomplete, jobTitles, setButtonHandlers, displayErrorPopup, displaySuccessPopup, updateFavouritesTotal, addFavouritesLinkListener, countriesArray } from './views/base';
 import { setCompanyName, setContactName, getJobAdsData, setJobAdsData, setJobCreditsRemaining } from './views/recruiterDashboardView';
 import { setJobAdsNumber, setTotalJobPrice, restyle, adjustSlider, getBuyJobCreditsData } from './views/jobCreditsView';
 import DatabaseProcessor from './models/DatabaseProcessor';
@@ -22,10 +22,18 @@ import { setJobFields, setJobLogo, getExpireJobData, isExpired } from './views/d
 import { renderResults, setTotalJobsBucket, handleNext, handlePrev, applyFilter, filterByWhere, filterByWhat } from './views/searchView';
 import { renderFavouriteResults } from './views/favouritesView';
 import { setPrices } from './views/advertView';
-import { setJobSeekerEmail } from './views/profileView';
+import { setJobSeekerEmail, setProfileFields } from './views/profileView';
 
 
+loadObjectStore();
 
+
+// clear object store
+// window.indexedDB.databases().then((r) => {
+//     for (var i = 0; i < r.length; i++) window.indexedDB.deleteDatabase(r[i].name);
+// }).then(() => {
+//     alert('All data cleared.');
+// });
 
 const state = {};
 var quill;
@@ -56,7 +64,6 @@ const signInHandler = async (e, view, url, transaction) => {
             //register a new account
             var resp = await state.login.transaction();
 
-
             var err = null;
             if (resp.error !== undefined) {
                 err = resp.error;
@@ -77,18 +84,21 @@ const signInHandler = async (e, view, url, transaction) => {
                     }
                 }
             } else {
-                setLoggedIn(state, true);
 
-                console.log("QUACK 1 getting favourites...");
-                getFavourites();
-                console.log("QUACK2...tabindex = " + state.tabIndex);
                 if (state.tabIndex == elementConsts.JOBSEEKER) {
+                    setLoggedIn(state, true, resp.params.name.firstName);
+                    console.log("getting favourites...");
                     sessionStorage.setItem("user", elementConsts.JOBSEEKER);
+                    sessionStorage.setItem("userdata", JSON.stringify(resp));
+                    getFavourites();
                     window.location = "jobseeker-dashboard.html";
                 } else {
+                    setLoggedIn(state, true);
+                    console.log("getting favourites...");
                     sessionStorage.setItem("user", elementConsts.RECRUITER);
                     sessionStorage.setItem('mycompany', resp.company);
                     sessionStorage.setItem('name', resp.name);
+                    getFavourites();
                     window.location = "recruiter-dashboard.html";
                 }
             }
@@ -100,7 +110,7 @@ const signInHandler = async (e, view, url, transaction) => {
     }
 }
 // SIGNOUT CONTROLLER
-const signOutHandler = async (e) => {
+const signOutHandler = async () => {
     console.log("state.loggedIn= " + state.loggedIn);
     console.log("state.page= " + state.page);
     if (state.loggedIn === true) {
@@ -164,20 +174,19 @@ const buyJobCreditsHandler = async () => {
     clearLoader();
 }
 
-
+let cachedData;
 // SEARCH CONTROLLER
 const searchJobsHandler = async () => {
-    console.log("BULLSHIT...");
     renderLoader(elements.searchjob);
     getFavourites();
 
-    let cachedData = sessionStorage.getItem("jobs");
-
-    if (cachedData != null) {
+    // let cachedData = sessionStorage.getItem("jobs");
+    // let cachedData = getFromObjectStore("jobs");
+    if (cachedData != null && cachedData != undefined) {
+        console.log("DOING STUFF WITH CACHED DATA");
         cachedData = JSON.parse(cachedData);
         renderResults(cachedData);
         setTotalJobsBucket(cachedData);
-        console.log("BULLSHIT...2");
     } else {
         var data = {
             $class: strings.getAllJobPostingsTransaction,
@@ -216,17 +225,32 @@ const searchJobsHandler = async () => {
 
                 }
                 state.label = undefined;
+                console.log("RENDERING ROWS...LEN = " + rows.length);
                 renderResults(rows);
 
                 let cdata = JSON.stringify(rows);
 
+                console.log("+++++++++++++++ QUACKETY adding cached data to object store");
                 // TODO look at Max quota for session storage
-                sessionStorage.setItem("jobs", cdata);
+                // sessionStorage.setItem("jobs", cdata);
+
+                // save the cache date to indexed db instead of local storage
+                // var store = transaction.objectStore("jobs");
+
+                await addIndexedData(cdata);
+                // request.onerror = function (e) {
+                //     console.log("Error", e.target.error.name);
+                //     //some type of error handler
+                // }
+
+                // request.onsuccess = function (e) {
+                //     console.log("Woot! Did it, jobs saved");
+                // }
                 clearLoader();
 
             } catch (error) {
                 await Swal({
-                    title: 'ERROR RETRIEVING IMAGES!',
+                    title: 'ERROR PROCESSING JOBS!',
                     text: error + " jobreference = " + id,
                     type: 'error',
                     confirmButtonText: 'OK',
@@ -236,7 +260,7 @@ const searchJobsHandler = async () => {
 
         }
     }
-    console.log("BULLSHIT...3");
+
     let what = sessionStorage.getItem("what");
     if (what != null && what != "") {
         console.log("WHAT = " + what);
@@ -245,7 +269,6 @@ const searchJobsHandler = async () => {
         state.filters.push(filterItem);
 
         applyFilter(strings.whatFilter, what, "");
-        console.log("QUACKY!!!!");
     }
     let where = sessionStorage.getItem("where");
     if (where != null && where != "") {
@@ -255,16 +278,16 @@ const searchJobsHandler = async () => {
 
         applyFilter(strings.locationFilter, where, "");
     }
-    console.log("BULLSHIT...4");
     clearLoader();
 }
 
 const getFavourites = async () => {
-    console.log(">>>>>>>>>>>>>>> GETTING FAVOURITES...");
+
     let theEmail = sessionStorage.getItem('myemail');
     if (theEmail === null) {
         return;
     }
+    let user = sessionStorage.getItem("user");
     console.log("Getting favourites for " + theEmail);
     let favs = sessionStorage.getItem("favourites");
     if (favs != null && favs.length > 0) {
@@ -274,9 +297,15 @@ const getFavourites = async () => {
         clearLoader();
         return;
     }
+    let typeStr = "RECRUITER";
+    let type = parseInt(user);
+    if (type === elementConsts.JOBSEEKER) {
+        typeStr = "JOBSEEKER";
+    }
     var data = {
         $class: strings.getAllFavouritesTransaction,
         email: theEmail,
+        accountType: typeStr
     };
     let tp = new TransactionProcessor(data, strings.getFavouritesTransactionUrl);
 
@@ -448,7 +477,24 @@ const createJobAdHandler = async (transaction, ins) => {
         await displaySuccessPopup('Job Ad Successfully Posted!');
         window.location = "recruiter-dashboard.html";
     }
+    // TODO: UPDATE THE CACHED JOBS DATA
+    if (cachedData != null && cachedData != undefined) {
+        console.log("UPDATE CACHED DATA");
+        let data = JSON.parse(cachedData);
+        console.log("--------------------- CURRENT CACHE DATA -----------------------");
+        console.log(data);
+        console.log("--------------------- NEW FORM DATA -----------------------");
+        console.log(formData.params);
+        data.push(formData.params); // not sure uuughhh is this correct?
 
+        // THIS IS NOT CORRECT....
+
+        /// QUACK...
+        
+        let cdata = JSON.stringify(data);
+        // add job to array then call:
+        // await addIndexedData(cdata);
+    }
 }
 const displayJobHandler = async () => {
     state.page = elementConsts.DISPLAYJOBPAGE;
@@ -463,7 +509,7 @@ const displayJobHandler = async () => {
 
     incrementViews(ref);
 
-   
+
     try {
         const image = await imageLoader.getImageFromDatabase(ref, sessionStorage.getItem("logohash"));
         setJobLogo(image);
@@ -478,8 +524,8 @@ const displayJobHandler = async () => {
             confirmButtonColor: '#cc6d14',
         });
     }
-   
-   
+
+
 }
 
 const incrementViews = async (ref) => {
@@ -531,7 +577,7 @@ const manageJobAdHandler = async (displayData) => {
         }
     }
     // renderLoader(elements.madForm);
-   
+
 }
 
 const tabClickHandler = async (e) => {
@@ -626,7 +672,7 @@ function addButtonListeners() {
     }
 }
 
-const removeAllFavourites = async() => {
+const removeAllFavourites = async () => {
     let theEmail = sessionStorage.getItem('myemail');
     if (theEmail === null) {
         return;
@@ -646,7 +692,7 @@ const removeAllFavourites = async() => {
         err = resp.error;
     }
 
-   
+
     if (err != null) {
         // clearLoader();
         // displayErrorPopup('Failed to remove favourites: ' + err.message);
@@ -666,7 +712,7 @@ const removeAllFavourites = async() => {
 
 }
 
-const removeJobFromFavourites = async(ref) => {
+const removeJobFromFavourites = async (ref) => {
     let theEmail = sessionStorage.getItem('myemail');
     if (theEmail === null) {
         return;
@@ -688,7 +734,7 @@ const removeJobFromFavourites = async(ref) => {
         err = resp.error;
     }
 
-   
+
     if (err != null) {
         // clearLoader();
         // displayErrorPopup('Failed to remove favourite: ' + err.message);
@@ -717,7 +763,7 @@ const removeRef = (favorites, ref) => {
 
 // SEARCH JOBS
 
-if (document.URL.includes("search")) {
+function searchScreenController() {
     searchJobsHandler();
 
     let nextb = document.getElementById("next");
@@ -770,11 +816,7 @@ if (document.URL.includes("search")) {
         sessionStorage.setItem("what", what);
         doWhatSearch();
     });
-
-
-    // autocomplete(document.getElementById("where"), countriesArray);
 }
-
 function doWhatSearch() {
     filterByWhat(sessionStorage.getItem("what"));
 }
@@ -783,8 +825,7 @@ function doWhereSearch() {
     filterByWhere(sessionStorage.getItem("where"));
 }
 
-if (document.URL.includes("createjobad")) {
-
+function createJobController() {
     quill = new Quill('#editor-container', {
         modules: {
             toolbar: [
@@ -859,15 +900,26 @@ if (document.URL.includes("createjobad")) {
 
     autocomplete(document.getElementById("jobtitle"), jobTitles);
 }
-
 // JOBSEEKER PROFILE CONTROLLER 
 if (document.URL.includes("jobseeker-dashboard.html")) {
     state.page = elementConsts.PROFILEPAGE;
     autocomplete(document.getElementById("desiredjobtitle"), jobTitles);
     var email = sessionStorage.getItem('myemail');
     var submitProfileBtn = elements.createprofilebutton;
+    let userData = sessionStorage.getItem("userdata");
+    let data = JSON.parse(userData);
+
+    var select = document.getElementById("country");
+
+    // Populate list with options:
+    for (var i = 0; i < countriesArray.length; i++) {
+        var opt = countriesArray[i];
+        select.innerHTML += "<option value=\"" + opt + "\" style=\"color:black\">" + opt + "</option>";
+    }
+
     if (email != null && email != undefined) {
         setJobSeekerEmail(email);
+        setProfileFields(data);
     }
     submitProfileBtn.addEventListener('click', e => {
         e.preventDefault();
@@ -887,13 +939,13 @@ if (document.URL.includes("advert.html")) {
     abtn.addEventListener('click', e => {
         e.preventDefault();
         sessionStorage.setItem("price", elementConsts.STANDARDPRICE);
-        window.location="jobcredits.html";
+        window.location = "jobcredits.html";
     });
-   
+
     bbtn.addEventListener('click', e => {
         e.preventDefault();
         sessionStorage.setItem("price", elementConsts.PREMIUMPRICE);
-        window.location="jobcredits.html";
+        window.location = "jobcredits.html";
     });
 
 }
@@ -1036,18 +1088,40 @@ if (document.URL.includes("register")) {
     }
 }
 window.onload = () => {
-    navBarSetLoggedIn(state.loggedIn);
+    let user = sessionStorage.getItem("user");
+    let type = parseInt(user);
+    if (type === elementConsts.JOBSEEKER) {
+        let userData = sessionStorage.getItem("userdata");
+        let data = JSON.parse(userData);
+        navBarSetLoggedIn(state.loggedIn, data.params.name.firstName);
+    } else {
+        navBarSetLoggedIn(state.loggedIn, "Bob");
+    }
 }
 
-var signins = elements.signins;
-if (state.loggedIn === true) {
-    for (i = 0; i < signins.length; i++) {
-        signins[i].addEventListener("click", (e) => {
-            e.preventDefault();
-            signOutHandler(e);
-        });
-    }
-};
+// var signins = elements.signins;
+// if (state.loggedIn === true) {
+//     for (i = 0; i < signins.length; i++) {
+//         signins[i].addEventListener("click", (e) => {
+//             e.preventDefault();
+//             signOutHandler();
+//         });
+//     }
+// };
+
+
+var el = document.getElementById('signoutlink');
+let user = sessionStorage.getItem("user");
+let type = parseInt(user);
+if (type === elementConsts.RECRUITER) {
+    el = document.getElementById('recruiterlogout');
+}
+if (el != null) {
+    el.onclick = function () {
+        console.log("SIGN OUT CLICKED...!!");
+        signOutHandler();
+    };
+}
 
 // getImage();
 
@@ -1073,4 +1147,113 @@ if (state.loggedIn === true) {
 
 // }
 // getImage();
+var idbSupported = false;
+var db;
+var indexdbtransaction;
+var store;
 
+async function loadObjectStore() {
+    console.log("STARTING...");
+    document.addEventListener("DOMContentLoaded", async function () {
+
+        console.log("QUACK 000");
+        if ("indexedDB" in window) {
+            idbSupported = true;
+        }
+
+        if (idbSupported) {
+            console.log("QUACK 1");
+            var openRequest = await indexedDB.open("datastore", 1);
+
+            openRequest.onupgradeneeded = function (e) {
+                console.log("QUACK 2");
+                console.log("running onupgradeneeded");
+                var thisDB = e.target.result;
+
+                if (!thisDB.objectStoreNames.contains("jobs")) {
+                    console.log("Creating objectstore jobs")
+                    thisDB.createObjectStore("jobs");
+                }
+
+            }
+
+            openRequest.onsuccess = async function (e) {
+                console.log("QUACK 3");
+                console.log("ObjectStore: Success!");
+                db = e.target.result;
+                indexdbtransaction = await db.transaction(["jobs"], "readwrite");
+
+                store = await indexdbtransaction.objectStore("jobs");
+                let request = await store.get(1);
+
+                request.onsuccess = function (e) {
+                    console.log("QUACK 4");
+                    console.log("BARK ************** Found cached data!!!!!! *************** ");
+                    cachedData = e.target.result;
+                    if (cachedData != undefined) {
+                        let rows = JSON.parse(cachedData);
+                        console.log("BARK ************** we got " + rows.length + " rows");
+                    }
+                   
+                    if (document.URL.includes("search")) {
+                        searchScreenController();
+                    } else if (document.URL.includes("createjobad")) {
+                        createJobController();
+                    }
+
+                }
+
+                request.onerror = function (e) {
+                    console.log("Error");
+                    console.dir(e);
+                }
+            }
+
+            openRequest.onerror = function (e) {
+                console.log("Error");
+                console.dir(e);
+            }
+
+        }
+
+    }, false);
+    console.log("EXITING...");
+}
+
+async function addIndexedData(data) {
+    console.log("BEGIN>>>>");
+    // var request = await store.put(data, 1);
+    // console.log("END>>>>");
+    // request.onerror = function(e) {
+    //     console.log("Error",e.target.error.name);
+    //     //some type of error handler
+    // }
+
+    // request.onsuccess = function(e) {
+    //     console.log("Woot! Did it");
+    // }
+    // var key = "1";
+
+    // Open up a transaction as usual
+    var objectStore = db.transaction(['jobs'], "readwrite").objectStore('jobs');
+
+    // Create another request that inserts the item back into the database
+    var updateTitleRequest = objectStore.put(data, 1);
+
+    // Log the transaction that originated this request
+    console.log("The transaction that originated this request is " + updateTitleRequest.transaction);
+
+    // When this new request succeeds, run the displayData() function again to update the display
+    updateTitleRequest.onsuccess = function () {
+        console.log("SUCCESS!!!! WOOOHOOOO");
+    };
+}
+
+
+let A = state.loggedIn === false;
+let B = document.URL.includes("index") === false;
+let C = document.URL.includes("register") === false
+
+if (A && B && C) {
+    window.location = "register.html";
+} 

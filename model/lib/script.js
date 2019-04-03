@@ -95,32 +95,10 @@ async function CreateJobSeekerAccount(accountData) {
     var seeker = factory.newResource(NS, 'HubJobSeeker', email);
 
     seeker.params = seekerParams;
-
-    // 2 copy params
-    seeker.params.city = accountData.params.city;
-    seeker.params.phone = accountData.params.phone;
-    seeker.params.country = accountData.params.country;
-
-    seeker.params.cvhash = accountData.params.cvhash;
-    seeker.params.weblink = accountData.params.weblink;
-    seeker.params.itexperience = accountData.params.itexperience;
-
-    seeker.params.skills = accountData.params.skills;
-    seeker.params.blockchainUsed = accountData.params.blockchainUsed;
-    seeker.params.blockexperience = accountData.params.blockexperience;
-    seeker.params.newjobsummary = accountData.params.newjobsummary;
-    seeker.params.newjobtitle = accountData.params.newjobtitle;
-    seeker.params.newjobremote = accountData.params.newjobremote;
-    seeker.params.newjobtype = accountData.params.newjobtype;
-    seeker.params.visibility = accountData.params.visibility;
-
-    // 3 create name concept
     var seekerName = factory.newConcept(NS, 'Name');
-    seekerName.title = accountData.params.name.title;
-    seekerName.firstName = accountData.params.name.firstName;
-    seekerName.lastName = accountData.params.name.lastName;
-
     seeker.params.name = seekerName;
+
+    fillJobSeekerParameters(seeker, accountData);
 
     // 4 Create a HubAccount for the job seeker
 
@@ -154,6 +132,49 @@ async function CreateJobSeekerAccount(accountData) {
     await erc20Registry.addAll([token]);
 
 };
+
+function fillJobSeekerParameters(seeker, accountData) {
+     // 2 copy params
+     seeker.params.city = accountData.params.city;
+     seeker.params.phone = accountData.params.phone;
+     seeker.params.country = accountData.params.country;
+ 
+     seeker.params.cvhash = accountData.params.cvhash;
+     seeker.params.weblink = accountData.params.weblink;
+     seeker.params.itexperience = accountData.params.itexperience;
+ 
+     seeker.params.skills = accountData.params.skills;
+     seeker.params.blockchainUsed = accountData.params.blockchainUsed;
+     seeker.params.blockexperience = accountData.params.blockexperience;
+     seeker.params.newjobsummary = accountData.params.newjobsummary;
+     seeker.params.newjobtitle = accountData.params.newjobtitle;
+     seeker.params.newjobremote = accountData.params.newjobremote;
+     seeker.params.newjobtype = accountData.params.newjobtype;
+     seeker.params.visibility = accountData.params.visibility;
+ 
+     seeker.params.name.title = accountData.params.name.title;
+     seeker.params.name.firstName = accountData.params.name.firstName;
+     seeker.params.name.lastName = accountData.params.name.lastName;
+}
+
+/**
+ * Update JobSeeker User Transaction. Used for adding profile details
+ * -> Updates the HubUser (HubJobSeeker) participant
+ * @param {io.onemillionyearsbc.hubtutorial.UpdateJobSeeker} credentials
+ * @transaction
+ */
+
+async function UpdateJobSeeker(credentials) {
+    var NS = 'io.onemillionyearsbc.hubtutorial';
+    const participantRegistry = await getParticipantRegistry(NS + '.HubJobSeeker');
+
+    var seeker = await participantRegistry.get(credentials.email);
+
+    fillJobSeekerParameters(seeker, credentials);
+
+    await participantRegistry.update(seeker);
+}
+
 
 
 /**

@@ -107,6 +107,12 @@ transaction CreateJobSeekerAccount extends CreateAccount {
   o AccountType accountType default="JOBSEEKER"
 }
 
+transaction UpdateJobSeeker {
+  o String      email 
+  o HubJobSeekerParameters params
+  o AccountType accountType default="JOBSEEKER"
+}
+
 transaction RemoveHubUser {
   o String email 
   o AccountType accountType default="RECRUITER"

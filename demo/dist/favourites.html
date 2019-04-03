@@ -31,7 +31,22 @@
                     <li><a href="managejobads.html">Job Ads</a></li>
                 </ul>
                 <ul class="navbar__right">
-                    <li class="signin"><a href="#" class="link-icon">Log Out</a></li>
+                    <!-- <li class="signin"><a href="#" class="link-icon">Log Out</a></li> -->
+                    <li id="recruiterlogout" class="signin"><a href="#" class="link-icon">Log Out</a>
+                    </li>
+
+                    <div  id="accountmenu" class="dropdownnavbar" style="display: none;">
+                        <button id="accountmenubtn" class="dropbtn">NOB's account
+                            <i class="left-icon icon far fa-user"></i>
+                            <i class="right-icon fa fa-caret-down"></i>
+                        </button>
+                        <div class="dropdownnavbar-content">
+                            <a href="#">Account</a>
+                            <a href="jobseeker-dashboard.html">Profile</a>
+                            <a href="#">Applications</a>
+                            <a id="signoutlink" href="#">Sign Out</a>
+                        </div>
+                    </div>
                 </ul>
             </nav>
             <div id="savedjobs" class="container favourites">
