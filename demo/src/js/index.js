@@ -12,7 +12,7 @@ import * as loginView from './views/loginView';
 import * as createJobAdView from './views/createJobAdView';
 import * as manageJobAdsView from './views/manageJobAdsView';
 
-import { getFormFor, clearError, elements, dbelements, elementConsts, inputType, renderLoader, renderLoaderEnd, renderLoaderEndByNumber, clearLoader, navBarSetLoggedIn, setLoggedIn, strings, enableCreateJobButton, autocomplete, jobTitles, setButtonHandlers, displayErrorPopup, displaySuccessPopup, updateFavouritesTotal, addFavouritesLinkListener, countriesArray } from './views/base';
+import { getFormFor, getDate, clearError, elements, dbelements, elementConsts, inputType, renderLoader, renderLoaderEnd, renderLoaderEndByNumber, clearLoader, navBarSetLoggedIn, setLoggedIn, strings, enableCreateJobButton, autocomplete, jobTitles, setButtonHandlers, displayErrorPopup, displaySuccessPopup, updateFavouritesTotal, addFavouritesLinkListener, countriesArray } from './views/base';
 import { setCompanyName, setContactName, getJobAdsData, setJobAdsData, setJobCreditsRemaining } from './views/recruiterDashboardView';
 import { setJobAdsNumber, setTotalJobPrice, restyle, adjustSlider, getBuyJobCreditsData } from './views/jobCreditsView';
 import DatabaseProcessor from './models/DatabaseProcessor';
@@ -49,7 +49,7 @@ const signInHandler = async (e, view, url, transaction) => {
     state.form = form;
 
     if (form) {
-        const formData = view.getFormData(form, transaction);
+        let formData = view.getFormData(form, transaction);
         const error = view.validateData(formData, state.tabIndex);
 
         if (error) {
@@ -175,6 +175,7 @@ const buyJobCreditsHandler = async () => {
 }
 
 let cachedData;
+
 // SEARCH CONTROLLER
 const searchJobsHandler = async () => {
     renderLoader(elements.searchjob);
@@ -183,7 +184,6 @@ const searchJobsHandler = async () => {
     // let cachedData = sessionStorage.getItem("jobs");
     // let cachedData = getFromObjectStore("jobs");
     if (cachedData != null && cachedData != undefined) {
-        console.log("DOING STUFF WITH CACHED DATA");
         cachedData = JSON.parse(cachedData);
         renderResults(cachedData);
         setTotalJobsBucket(cachedData);
@@ -230,7 +230,6 @@ const searchJobsHandler = async () => {
 
                 let cdata = JSON.stringify(rows);
 
-                console.log("+++++++++++++++ QUACKETY adding cached data to object store");
                 // TODO look at Max quota for session storage
                 // sessionStorage.setItem("jobs", cdata);
 
@@ -399,7 +398,6 @@ const getJobAdsHandler = async () => {
     if (err != null) {
         console.log("++++++++++++++++++ ERRRORRRRRRR = " + err);
     } else {
-        console.log("=============== ROWS = " + rows);
         setJobCreditsRemaining(rows);
     }
 
@@ -407,7 +405,7 @@ const getJobAdsHandler = async () => {
 
 const createJobAdHandler = async (transaction, ins) => {
     var myemail = sessionStorage.getItem('myemail');
-    const formData = createJobAdView.getFormData(myemail, quill.root.innerHTML, transaction);
+    let formData = createJobAdView.getFormData(myemail, quill.root.innerHTML, transaction);
 
     const error = createJobAdView.validateData(formData.params);
 
@@ -436,6 +434,7 @@ const createJobAdHandler = async (transaction, ins) => {
         blob = sessionStorage.getItem("logo");
     }
 
+    let jobRef = formData.params.jobReference;
     // 3. write the job id and hash to the database with the image
 
     // This should go in a createJobModel class really
@@ -443,7 +442,7 @@ const createJobAdHandler = async (transaction, ins) => {
         database: dbelements.databaseName,
         table: dbelements.databaseTable,
         email: myemail,
-        id: formData.params.jobReference,
+        id: jobRef,
         hash: formData.params.logohash,
         image: blob,
         insert: ins
@@ -473,29 +472,121 @@ const createJobAdHandler = async (transaction, ins) => {
         clearLoader();
     } else {
         // TODO Commit Database transaction: update committed column to "true"
+
+        window.location = "recruiter-dashboard.html"; 
+
+        // UPDATE THE CACHED JOBS DATA
+        if (cachedData != null && cachedData != undefined) {
+
+            // Get the job posting just added so we can add to the cache (i could create this myself but
+            // it seemed easier to get it from the blockchain)
+            formData = {
+                $class: strings.getJobPostingsTransaction,
+                email: myemail,
+                filterBy: jobRef,
+                filterType: "ALL",
+                dateFrom: strings.beginningOfTime,
+                dateTo: strings.endOfTime,
+                user: ""
+            };
+
+            const tp = new TransactionProcessor(formData, strings.getJobPostingsUrl);
+
+            state.rows = await tp.transaction();
+            if (state.rows.error !== undefined) {
+                let err = state.rows.error;
+                displayErrorPopup('cache job failed: ' + err.message);
+                clearLoader();
+                return;
+            } else {
+                // add the new job to the cache then stringify it ready to add back into the indexedDB
+                let data = JSON.parse(cachedData);
+                state.rows[0].logo = blob;
+                data.push(state.rows[0])
+                let cdata = JSON.stringify(data);
+                await addIndexedData(cdata);
+            }
+        }
         clearLoader();
         await displaySuccessPopup('Job Ad Successfully Posted!');
-        window.location = "recruiter-dashboard.html";
-    }
-    // TODO: UPDATE THE CACHED JOBS DATA
-    if (cachedData != null && cachedData != undefined) {
-        console.log("UPDATE CACHED DATA");
-        let data = JSON.parse(cachedData);
-        console.log("--------------------- CURRENT CACHE DATA -----------------------");
-        console.log(data);
-        console.log("--------------------- NEW FORM DATA -----------------------");
-        console.log(formData.params);
-        data.push(formData.params); // not sure uuughhh is this correct?
-
-        // THIS IS NOT CORRECT....
-
-        /// QUACK...
-        
-        let cdata = JSON.stringify(data);
-        // add job to array then call:
-        // await addIndexedData(cdata);
     }
 }
+const updateProfileHandler = async (transaction) => {
+    var myemail = sessionStorage.getItem('myemail');
+    let formData = profileView.getProfileFormData(myemail, transaction);
+
+    const error = profileView.validateData(formData.params);
+
+    if (error) {
+        return error;
+    }
+    //---------------------------------------------------
+
+
+    // NEXT UP...BUILD THE BLOCKCHAIN AND DATABASE TRANSACTIONS
+    renderLoaderEnd(elements.adForm);
+
+    // add the hash to the formData here
+
+    // 1. Get the blob
+
+    // only need to calculate the hash if a new logo image has been loaded
+    // if (state.newImage === true) {
+    //     var blob = await imageLoader.getBlob();
+
+    //     // 2. calculate the hash of the blob
+    //     const myhash = crypto.createHash('sha256') // enables digest
+    //         .update(blob) // create the hash
+    //         .digest('hex'); // convert to string
+
+    //     formData.params.logohash = myhash;
+    // } else {
+    //     formData.params.logohash = sessionStorage.getItem("logohash");
+    //     blob = sessionStorage.getItem("logo");
+    // }
+
+    let jobRef = formData.params.jobReference;
+    // 3. write the job id and hash to the database with the image
+
+    // This should go in a createJobModel class really
+    // var body = JSON.stringify({
+    //     database: dbelements.databaseName,
+    //     table: dbelements.databaseTable,
+    //     email: myemail,
+    //     id: jobRef,
+    //     hash: formData.params.logohash,
+    //     image: blob,
+    //     insert: ins
+    // });
+    // const dp = new DatabaseProcessor(dbelements.databaseInsertUri);
+
+    // try {
+    //     await dp.transactionPut(body);
+    // } catch (error) {
+    //     clearLoader();
+    //     displayErrorPopup('Database put failed: ' + error);
+    //     return;
+    // }
+
+    // if database succeeds...add to the blockchain
+    state.login = new TransactionProcessor(formData, strings.updateProfileUrl);
+
+    var resp = await state.login.transaction();
+
+    var err = null;
+    if (resp.error !== undefined) {
+        err = resp.error;
+    }
+    clearLoader();
+    if (err != null) {
+        // TODO rollback database transaction: delete row
+        displayErrorPopup('Failed to update Profile: ' + err.message);
+    } else {
+        // TODO Commit Database transaction: update committed column to "true"
+        displaySuccessPopup('Job Ad Successfully Posted!');
+    }
+}
+
 const displayJobHandler = async () => {
     state.page = elementConsts.DISPLAYJOBPAGE;
     const views = sessionStorage.getItem("views");
@@ -923,13 +1014,8 @@ if (document.URL.includes("jobseeker-dashboard.html")) {
     }
     submitProfileBtn.addEventListener('click', e => {
         e.preventDefault();
-        let transaction = strings.createProfileTransaction;
-        let insert = true;
-        if (sessionStorage.getItem("amend") === "true") {
-            transaction = strings.updateProfileTransaction;
-            insert = false;
-        }
-        createProfileHandler(transaction, insert);
+        let transaction = strings.updateProfileTransaction;
+        updateProfileHandler(transaction);
     });
 }
 
@@ -1013,8 +1099,6 @@ if (document.URL.includes("index")) {
     getFavourites();
 
     addFavouritesLinkListener();
-
-
 }
 
 if (document.URL.includes("register")) {
@@ -1099,17 +1183,6 @@ window.onload = () => {
     }
 }
 
-// var signins = elements.signins;
-// if (state.loggedIn === true) {
-//     for (i = 0; i < signins.length; i++) {
-//         signins[i].addEventListener("click", (e) => {
-//             e.preventDefault();
-//             signOutHandler();
-//         });
-//     }
-// };
-
-
 var el = document.getElementById('signoutlink');
 let user = sessionStorage.getItem("user");
 let type = parseInt(user);
@@ -1156,17 +1229,14 @@ async function loadObjectStore() {
     console.log("STARTING...");
     document.addEventListener("DOMContentLoaded", async function () {
 
-        console.log("QUACK 000");
         if ("indexedDB" in window) {
             idbSupported = true;
         }
 
         if (idbSupported) {
-            console.log("QUACK 1");
             var openRequest = await indexedDB.open("datastore", 1);
 
             openRequest.onupgradeneeded = function (e) {
-                console.log("QUACK 2");
                 console.log("running onupgradeneeded");
                 var thisDB = e.target.result;
 
@@ -1174,11 +1244,9 @@ async function loadObjectStore() {
                     console.log("Creating objectstore jobs")
                     thisDB.createObjectStore("jobs");
                 }
-
             }
 
             openRequest.onsuccess = async function (e) {
-                console.log("QUACK 3");
                 console.log("ObjectStore: Success!");
                 db = e.target.result;
                 indexdbtransaction = await db.transaction(["jobs"], "readwrite");
@@ -1187,20 +1255,19 @@ async function loadObjectStore() {
                 let request = await store.get(1);
 
                 request.onsuccess = function (e) {
-                    console.log("QUACK 4");
-                    console.log("BARK ************** Found cached data!!!!!! *************** ");
                     cachedData = e.target.result;
                     if (cachedData != undefined) {
                         let rows = JSON.parse(cachedData);
-                        console.log("BARK ************** we got " + rows.length + " rows");
+                        if (rows.length > 0) {
+                            console.log("************** num rows in cache = " + rows.length);
+                        }
                     }
-                   
+
                     if (document.URL.includes("search")) {
                         searchScreenController();
                     } else if (document.URL.includes("createjobad")) {
                         createJobController();
                     }
-
                 }
 
                 request.onerror = function (e) {
@@ -1217,23 +1284,9 @@ async function loadObjectStore() {
         }
 
     }, false);
-    console.log("EXITING...");
 }
-
+// This overwrites the cache with a new cache (supplied as data)
 async function addIndexedData(data) {
-    console.log("BEGIN>>>>");
-    // var request = await store.put(data, 1);
-    // console.log("END>>>>");
-    // request.onerror = function(e) {
-    //     console.log("Error",e.target.error.name);
-    //     //some type of error handler
-    // }
-
-    // request.onsuccess = function(e) {
-    //     console.log("Woot! Did it");
-    // }
-    // var key = "1";
-
     // Open up a transaction as usual
     var objectStore = db.transaction(['jobs'], "readwrite").objectStore('jobs');
 

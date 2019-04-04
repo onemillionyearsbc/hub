@@ -83,7 +83,8 @@ export const setAmendFields = () => {
     let city = sessionStorage.getItem("city");
     if (city != null && city != undefined && city.length > 0) {
         console.log("City = " + city)
-        elements.city.value = city;
+        console.log("elements.city = " + elements.jobCity);
+        elements.jobCity.value = city;
     }
   
 
@@ -181,7 +182,6 @@ export const validateField = (element) => {
         return;
     }
     if (element.id === "location") {
-        console.log("PARP 2 ! data.remote = " + getRemote());
         if (element.value.length === 0 && getRemote() === "false") {
             var x = document.getElementById("location-error");
             checkStyle(x);

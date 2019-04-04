@@ -355,7 +355,6 @@ function addDays(date, days) {
  */
 async function GetJobPostingsDynamic(filterCriteria) {
 
-
     var and = "";
     var filter = {};
     filter.email = filterCriteria.email;

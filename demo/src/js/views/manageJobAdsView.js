@@ -1,4 +1,4 @@
-import { elements, strings, getSelectedOption } from './base';
+import { getDate, elements, strings, getSelectedOption } from './base';
 
 // TODO we need to populate the postedBy dropdown with all contact names for all postings for this email
 
@@ -25,18 +25,7 @@ export const getFormData = (email) => {
     return formData;
 }
 
-function getDate(val, defaultDate, time) {
-    if (val === "") {
-        return defaultDate;
-    } else {
-        let dd = val.substr(8, 2);
-        let mm = val.substr(5, 2);
-        let yyyy = val.substr(0, 4);
-        let date = `${yyyy}-${mm}-${dd}T${time}Z`;
-        return date;
-    }
 
-}
 
 export const setJobStats = (rows) => {
     let postedjobads, remotejobads = 0, nonremotejobads = 0, jobadviews = 0, jobadapplications = 0, livejobs = 0, expiredjobs = 0;

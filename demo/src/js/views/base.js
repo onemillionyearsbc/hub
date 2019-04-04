@@ -29,7 +29,7 @@ export const elements = {
     skills: document.getElementById("skills"),
     salary: document.getElementById("salary"),
     location: document.getElementById("location"),
-    city: document.getElementById("city"),
+    jobCity: document.getElementById("city"),
     dashboard: document.getElementById("dash"),
     createBtn: document.getElementById("createBtn"),
     mainWindow: document.getElementById("main"),
@@ -161,7 +161,7 @@ var removeFromFavouritesTransaction = "io.onemillionyearsbc.hubtutorial.jobs.Rem
 var removeAllFavouritesTransaction = "io.onemillionyearsbc.hubtutorial.jobs.RemoveAllFavourites";
 var incrementViewsTransaction = "io.onemillionyearsbc.hubtutorial.jobs.IncrementViews";
 var incrementApplicationsTransaction = "io.onemillionyearsbc.hubtutorial.jobs.IncrementApplications";
-
+var updateProfileTransaction = "io.onemillionyearsbc.hubtutorial.UpdateJobSeeker";
 
 export const strings = {
     loader: 'loader',
@@ -185,6 +185,7 @@ export const strings = {
     removeAllFavouritesTransaction: `${removeAllFavouritesTransaction}`,
     incrementApplicationsTransaction: `${incrementApplicationsTransaction}`,
     incrementViewsTransaction: `${incrementViewsTransaction}`,
+    updateProfileTransaction: `${updateProfileTransaction}`,
     loginRecruiterUrl: `http://${ipAddress}:3000/api/${recruiterLoginTransaction}`,
     loginJobSeekerUrl: `http://${ipAddress}:3000/api/${jobSeekerLoginTransaction}`,
     registerRecruiterUrl: `http://${ipAddress}:3000/api/${recruiterRegisterTransaction}`,
@@ -203,6 +204,7 @@ export const strings = {
     removeAllFavouritesUrl: `http://${ipAddress}:3000/api/${removeAllFavouritesTransaction}`,
     incrementViewsUrl: `http://${ipAddress}:3000/api/${incrementViewsTransaction}`,
     incrementApplicationsUrl: `http://${ipAddress}:3000/api/${incrementApplicationsTransaction}`,
+    updateProfileUrl: `http://${ipAddress}:3000/api/${updateProfileTransaction}`,
 
     beginningOfTime: "1970-01-01T15:11:47.728Z",
     endOfTime: "3070-01-01T15:11:47.728Z",
@@ -632,6 +634,18 @@ export const addToFavouritesHandler = async (button, jobRef) => {
 }
 
 
+export const getDate = (val, defaultDate, time) => {
+    if (val === "") {
+        return defaultDate;
+    } else {
+        let dd = val.substr(8, 2);
+        let mm = val.substr(5, 2);
+        let yyyy = val.substr(0, 4);
+        let date = `${yyyy}-${mm}-${dd}T${time}Z`;
+        return date;
+    }
+
+}
 export const updateFavouritesTotal = (num) => {
     let offset = "single";
 
@@ -672,6 +686,10 @@ export const addFavouritesLinkListener = () => {
     });
 }
 
+export const setGlobalCached = (data) => {
+    state.cachedData = data;
+}
+
 export const setButtonHandlers = () => {
     let buttons = document.getElementsByClassName("saveBtn");
     for (let btn of buttons) {
@@ -685,13 +703,9 @@ export const setButtonHandlers = () => {
 }
 
 function getJobPostingByRef(ref) {
+    console.log("BARF! cachedData = " + state.cachedData);
     if (state.jobs === null || state.jobs === undefined) {
-        console.log("LOOKING FOR JOB " + ref);
-        let cachedData = sessionStorage.getItem("jobs");
-        if (cachedData != null) {
-            state.jobs = JSON.parse(cachedData);
-        }
-
+        state.jobs = state.cachedData;
     }
     return state.jobs.filter(job => job.jobReference === ref);
 }

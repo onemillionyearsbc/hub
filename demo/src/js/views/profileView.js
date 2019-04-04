@@ -234,7 +234,7 @@ export const setProfileFields = (data) => {
 // }
 
 // TODO next up: map this to the transaction to write a profile to the blockchain
-export const getProfileFormData = (email, html, transaction) => {
+export const getProfileFormData = (email, transaction) => {
     var form = elements.adForm;
     var el = form.querySelectorAll('input');
     var myData = {};
@@ -245,31 +245,59 @@ export const getProfileFormData = (email, html, transaction) => {
         myData[id] = value;
     };
 
+    // var formData = {
+    //     $class: transaction,
+    //     params: {
+    //         $class: "io.onemillionyearsbc.hubtutorial.jobs.JobPostingParameters",
+    //         jobReference: calculateJobReference(),
+    //         email: email,
+    //         company: myData["company"],
+    //         jobTitle: myData["jobtitle"],
+    //         remote: getRemote(),
+    //         jobType: getSelectedOption(elements.jobtype),
+    //         blockchainName: getSelectedOption(elements.blockchain),
+    //         description: html,
+    //         contact: myData["contact"],
+    //         internalRef: myData["internalref"],
+    //         employer: getEmployer(),
+    //         salary: myData["salary"],
+    //         location: myData["location"],
+    //         city: myData["city"],
+    //         skills: getSkills(myData["skills"])
+    //     }
+    // };
+    
     var formData = {
         $class: transaction,
+        email: email,
         params: {
-            $class: "io.onemillionyearsbc.hubtutorial.jobs.JobPostingParameters",
-            jobReference: calculateJobReference(),
-            email: email,
-            company: myData["company"],
-            jobTitle: myData["jobtitle"],
-            remote: getRemote(),
-            jobType: getSelectedOption(elements.jobtype),
-            blockchainName: getSelectedOption(elements.blockchain),
-            description: html,
-            contact: myData["contact"],
-            internalRef: myData["internalref"],
-            employer: getEmployer(),
-            salary: myData["salary"],
-            location: myData["location"],
-            city: myData["city"],
-            skills: getSkills(myData["skills"])
-        }
+            $class: "io.onemillionyearsbc.hubtutorial.HubJobSeekerParameters",
+            name: {
+              $class: "io.onemillionyearsbc.hubtutorial.Name",
+              title: "MR",
+              firstName: "Geomina",
+              lastName: "Richardson"
+            },
+            phone: "+32494639815",
+            country: "Germany",
+            city: "Frankfurt",
+            cvhash: "ddffeffefefe",
+            weblink: "http://tanks.de",
+            itexperience: 1,
+            skills: "Tanks Are MEEEEEE",
+            blockchainUsed: "CORDA",
+            blockexperience: 1,
+            newjobsummary: "BIG TANKS AND ARTILLERY",
+            newjobtitle: "Inspector",
+            newjobremote: false,
+            newjobtype: "FULLTIME",
+            visibility: false
+          },
     };
 
-    if (document.querySelector("#imgs").getAttribute('src') === "") {
-        sessionStorage.setItem("logohash", "");
-    }
+    // if (document.querySelector("#imgs").getAttribute('src') === "") {
+    //     sessionStorage.setItem("logohash", "");
+    // }
     return formData;
 }
 

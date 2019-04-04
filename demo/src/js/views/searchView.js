@@ -1,4 +1,4 @@
-import { elements, strings, getJobTypeFor, getJobTimeFor, getDaySincePosted, renderLoader, clearLoader, setButtonHandlers } from './base';
+import { elements, strings, getJobTypeFor, getJobTimeFor, getDaySincePosted, renderLoader, clearLoader, setButtonHandlers, setGlobalCached } from './base';
 import FilterProcessor from '../models/FilterProcessor';
 
 
@@ -13,9 +13,6 @@ let selectedcrossicon = '<i class="far fa-times-circle"></i>';
 
 const renderJobItem = (jobItem, count) => {
 
-    for (var prop in jobItem) {
-        console.log(prop + " -> " + jobItem[prop]);
-    }
     let loc = "See all blockchain jobs in " + jobItem.location;
     let cityloc = "";
 
@@ -188,7 +185,8 @@ const renderButtons = (page, numResults, resPerPage) => {
 
 // may not need this
 export const setTotalJobsBucket = (jobs) => {
-    state.jobs = jobs;
+    state.cachedData = jobs;
+    setGlobalCached(jobs);
 }
 
 export const renderResults = (jobs, page = 1, resPerPage = 10) => {
