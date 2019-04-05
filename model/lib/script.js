@@ -140,7 +140,12 @@ function fillJobSeekerParameters(seeker, accountData) {
      seeker.params.country = accountData.params.country;
  
      seeker.params.cvhash = accountData.params.cvhash;
-     seeker.params.cvfiledate = accountData.params.cvfiledate;
+
+     // if cv has changed generate a new date (uploaded date)
+     if (seeker.params.cvfile != accountData.params.cvfile) {
+        seeker.params.cvfile = accountData.params.cvfile;
+        seeker.params.cvdate = new Date();
+     }
      
      seeker.params.weblink = accountData.params.weblink;
      seeker.params.itexperience = accountData.params.itexperience;
