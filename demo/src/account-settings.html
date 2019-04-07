@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css?family=Josefin+Sans:300,400,400i|Nunito:300,300i" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="shortcut icon" type="image/png" href="img/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <title>JobSeeker Settings</title>
+</head>
+
+<body>
+    <div id="dash" class="jsdashboard">
+        <div>
+
+            <div class="dashboard__topbar">
+                <div class="topleft">
+                    <a href="index.html">
+                        <img src="img/logo-small.png" alt="1MYBC">
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div>
+            <nav class="navbar">
+                <ul class="navbar__left">
+                    <li class="item-1"><a href="#jobs">Dashboard</a></li>
+                    <li><a href="#companies">Job Ads</a></li>
+
+                </ul>
+                <ul class="navbar__right">
+                    <li id="saved">
+                        <a href="favourites.html" class="link-icon"><i class="starwithnocircle fa fa-star"></i>Saved
+                            Jobs</a>
+                    </li>
+                    <li class="signin"><a href="register.html" class="link-icon"><i class="icon far fa-user"></i>Sign
+                            In</a></li>
+                    <div id="accountmenu" class="dropdownnavbar" style="display: none;">
+                        <button id="accountmenubtn" class="dropbtn">NOB's account
+                            <i class="left-icon icon far fa-user"></i>
+                            <i class="right-icon fa fa-caret-down"></i>
+                        </button>
+                        <div class="dropdownnavbar-content">
+                            <a href="jobseeker-account.html">Account</a>
+                            <a href="jobseeker-dashboard.html">Profile</a>
+                            <a href="#">Applications</a>
+                            <a id="signoutlink" href="#">Sign Out</a>
+                        </div>
+                    </div>
+
+                    </li>
+                    <div id="accountmenu" class="dropdown" style="display: none;">
+                        <button id="accountmenubtn" class="dropbtn">NOB's account
+                            <i class="left-icon icon far fa-user"></i>
+                            <i class="right-icon fa fa-caret-down"></i>
+                        </button>
+                        <div class="dropdown-content">
+                            <a href="#">Account</a>
+                            <a href="jobseeker-dashboard.html">Profile</a>
+                            <a href="#">Applications</a>
+                            <a id="signoutlink" href="#">Sign Out</a>
+                        </div>
+                    </div>
+                </ul>
+            </nav>
+
+
+            <div class="container profileparent">
+                <div class="settings profileparent__top animated zoomIn delay-2s">
+                    <p class="title">My Account Details</p>
+                    <div class="goback">
+                        <ul class="links">
+                            <li id="backtoaccount">Back to My Hub++ Account</li>
+                        </ul>
+                    </div>
+
+                </div>
+
+                <div class="profileparent__bottom animated zoomIn delay-2s">
+                    <div id="profilepage" class="account settings createjobad__parent">
+                        <form autocomplete="off" id="adform" class="myForm" top="false">
+                            <p class="profiletitle">Change Email Address</p>
+
+                            <div class="settings__main">
+                                <div class="createjobad__parent--form-item">
+                                    <input id="email" class="loginform__textfield form-control glowing-border" required
+                                        type="text" placeholder="New Email Address" autocomplete="off" />
+                                    <label for="email" class="loginform__label">New Email Address</label>
+                                </div>
+                                <div id="email-error" class="loginform__error">
+                                    <p><i class="icon fas fa-exclamation-triangle"></i>Please enter your email
+                                        address</p>
+                                </div>
+                                <button id="changeemailbtn" class="btn btn--orange">Submit</button>
+                            </div>
+
+                            <p class="profiletitle">Change Password</p>
+                            <div class="settings__main">
+
+                                <div class="account__main--right">
+                                    <p id="instr" class="texty texty2">Your new password must contain at least 6
+                                        characters
+                                    </p>
+                                    <div class="createjobad__parent--form-item">
+                                        <input id="oldpass" class="loginform__textfield form-control glowing-border"
+                                            required type="text" placeholder="Old Password" autocomplete="off" />
+                                        <label for="email" class="loginform__label">Old Password</label>
+                                    </div>
+                                    <div id="oldpass-error" class="loginform__error">
+                                        <p><i class="icon fas fa-exclamation-triangle"></i>Please enter your old
+                                            password</p>
+                                    </div>
+                                    <div class="createjobad__parent--form-item">
+                                        <input id="newpass1" class="loginform__textfield form-control glowing-border"
+                                            required type="text" placeholder="New Password" autocomplete="off" />
+                                        <label for="newpass1" class="loginform__label">New Password</label>
+                                    </div>
+                                    <div id="newpass1-error" class="loginform__error">
+                                        <p><i class="icon fas fa-exclamation-triangle"></i>Please enter your new
+                                            password</p>
+                                    </div>
+                                    <div class="createjobad__parent--form-item">
+                                        <input id="newpass2" class="loginform__textfield form-control glowing-border"
+                                            required type="text" placeholder="Confirm New Password"
+                                            autocomplete="off" />
+                                        <label for="newpass2" class="loginform__label">Confirm New Password</label>
+                                    </div>
+                                    <div id="newpass2-error" class="loginform__error">
+                                        <p><i class="icon fas fa-exclamation-triangle"></i>Please confirm your new
+                                            password</p>
+                                    </div>
+                                    <button id="changepassbtn" class="btn btn--orange">Submit</button>
+                                </div>
+                            </div>
+                            <p class="profiletitle">Manage Tokens</p>
+                            <div class="settings__main">
+                                <p id="instr" class="tokentextsummary"><span>Token Balance: </span><span
+                                        class="toktotal">15</span>
+                                </p>
+                                <p id="instr" class="tokentext"><span>Token Transaction History</span> </p>
+                                <div class="tableholder">
+                                    <table id="jobtable" class="sortable">
+                                        <thead>
+                                            <tr>
+                                                <th height="30px" width="25rem">Transaction Type</th>
+                                                <th class="sorttable_numeric" height="30px" width="25rem">Num Tokens
+                                                </th>
+
+                                                <th class="sorttable_ddmm" height="30px" width="25rem">Transaction date
+                                                </th>
+
+                                                <th height="30px" width="25rem">Token Action</th>
+                                                <th class="sorttable_numeric" height="30px" width="25rem">Token Balance
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tablebody">
+                                            <tr>
+                                                <td width="25rem">Cashed Out</td>
+                                                <td width="25rem">10</td>
+                                                <td width="25rem">07.04.19</td>
+                                                <td width="25rem">DEBIT</td>
+                                                <td width="25rem">15</td>
+                                            </tr>
+                                            <tr>
+                                                <td width="25rem">Search Hit</td>
+                                                <td width="25rem">5</td>
+                                                <td width="25rem">03.04.19</td>
+                                                <td width="25rem">CREDIT</td>
+                                                <td width="25rem">25</td>
+                                            </tr>
+                                            <tr>
+                                                <td width="25rem">Search Hit</td>
+                                                <td width="25rem">15</td>
+                                                <td width="25rem">03.04.19</td>
+                                                <td width="25rem">CREDIT</td>
+                                                <td width="25rem">20</td>
+                                            </tr>
+                                            <tr>
+                                                <td width="25rem">Search Hit</td>
+                                                <td width="25rem">5</td>
+                                                <td width="25rem">01.04.19</td>
+                                                <td width="25rem">CREDIT</td>
+                                                <td width="25rem">5</td>
+                                            </tr>
+                                            <tr>
+                                                <td width="25rem">Account Created</td>
+                                                <td width="25rem">0</td>
+                                                <td width="25rem">01.02.19</td>
+                                                <td width="25rem">-</td>
+                                                <td width="25rem">0</td>
+                                            </tr>
+                                        </tbody>
+
+
+                                    </table>
+                                </div>
+
+                                <!-- </p>
+                                <p id="instr" class="tokentext"><span>Cashed Out 5 HubTokens 07.04.19 (CREDIT USER)</span>
+                                <p id="instr" class="tokentext"><span>Received 20 HubTokens 03.04.19 (SEARCH)</span> -->
+
+                            </div>
+                            <!-- <p class="profiletitle">Close My Account</p>
+
+                            <div class="settings__main">
+                                <p class="texty3">By closing your account, you won't be able to access
+                                    your account information, application history and you'll need to open a new account
+                                    to apply.
+                                </p>
+
+                                <button id="closeaccountbtn" class="btn btn--orange">Submit</button>
+                            </div> -->
+                            <p class="profiletitle">Close My Account</p>
+                            <div class="settings__main">
+
+                                <div class="account__main--right">
+                                    <p id="instr" class="texty texty2">By closing your account, you won't be able to access
+                                            your account information, application history and you'll need to open a new account
+                                            to apply.
+                                    </p>
+                                 
+                                    <button id="closeaccountbtn" class="btn btn--orange">Close Account</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+</body>
+
+</html>

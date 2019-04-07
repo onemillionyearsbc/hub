@@ -1,0 +1,117 @@
+.myForm {
+    padding-left: 0rem;
+    padding-right: 0rem;
+
+    .account {
+        &__main {
+            display: flex;
+            &--left {
+                font-size: 3rem;
+                margin-top: 5rem;
+                margin-right: 5rem;
+            }
+            &--right {
+                width: 100%;
+                margin-right: 0;
+                padding-right: 0;
+                h1 {
+                    margin-top: 0.5rem;
+                    font-size: 2rem;
+                    color: black;
+                }
+                ul {
+                    margin-top: 2rem;
+                    margin-left: 1rem;
+                }
+                li {
+                    margin-top: 0.5rem;
+                    font-size: 1.5rem;
+                    list-style-type: none;
+                    color: $button-orange-background;
+                    font-weight: 600;
+                    border-bottom: 1px ridge $color-grey-light-2;
+                }
+                li:hover{
+                    cursor: pointer;
+                    color: $button-orange-background-darker;
+                    text-decoration: underline;
+                    font-weight: 600;
+                }
+              
+                .profilelist {
+                    margin-top: 0;
+                }
+                .jobalert {
+                    border: 1px solid $color-grey-light-1;
+                    border-radius: 2px;
+                    margin-bottom: 1rem;
+                    .top {
+                        color: black;
+                        background: $color-grey-light-1;
+                        display: flex;
+                        justify-content: space-between;
+                        height: 4rem;
+                        // margin: 1rem;
+                        font-size: 1.5rem;
+                        font-weight: 400;
+                        p {
+                            position: relative;
+                            top:25%;
+                            margin-left: 1rem;
+                            margin-right: 1rem;
+                        }
+                    }
+                    .middle {
+                       
+                        .togglefield {
+                            margin-left: 22rem;
+                            width: 65rem;
+                        }
+                        .criteriafield {
+                            display: flex;
+                            color: black;
+                            font-size: 1.5rem;
+                            margin-left: 25rem;
+                            span {
+                                font-weight: 600;
+                                margin-right: 0.5rem;
+                            }
+                        }
+                    }
+
+                }
+                .jobs {
+                    margin-top: 5rem;
+                    display: flex;
+                    justify-content: space-between;
+                    button {
+                        max-height: 4rem;
+                        margin-right: -10rem;
+                    }
+                }
+                .texty {
+                    color: black;
+                    margin-top: 1rem;
+                    font-size: 1.5rem;
+                    font-weight: 600;
+                    // margin-left: 1rem;
+                    padding-bottom: 2rem;
+                }
+                .texty2 {  
+                    margin-left: 1rem;
+                }
+                .texty3 {
+                    color: black;
+                    margin-top: 1rem;
+                    font-size: 1.5rem;
+                    font-weight: 600;
+                    // margin-left: 1rem;
+                    padding-bottom: 2rem;
+                }
+            }
+        }
+      
+    }
+}
+
+

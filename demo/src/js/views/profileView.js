@@ -1,5 +1,5 @@
 
-import { elements, strings, checkStyle, clearError, getSelectedOption } from './base';
+import { elements, getValueOfRadio, checkStyle, clearError, getSelectedOption, getDaysAgo } from './base';
 
 
 export const setJobSeekerEmail = (email) => {
@@ -107,6 +107,32 @@ function setBlockchainUsed(data) {
     }
 }
 
+function setDesiredJobType(data) {
+    if (data.params.newjobtype != undefined) {
+        var placeholder = document.getElementById("dd4");
+        placeholder.style.display = "block";
+        var jobType = elements.personJobType;
+        jobType.value = data.params.newjobtype;
+        elements.personJobType.style.color = 'black';
+    }
+}
+
+function setDesiredJobTitle(data) {
+    console.log("desired job title = " + data.params.newjobtitle);
+    if (data.params.newjobtitle != undefined) {
+        var newjobtitle = elements.desiredJobTitle;
+        console.log("newjobtitle = " + newjobtitle);
+        newjobtitle.value = data.params.newjobtitle;
+    }
+}
+
+function setDesiredJobSummary(data) {
+    if (data.params.newjobsummary != undefined) {
+        var psummary = elements.personSummary;
+        psummary.value = data.params.newjobsummary;
+    }
+}
+
 function setFirstAndLastName(data) {
     var firstElement = elements.firstName;
     firstElement.value = data.params.name.firstName;
@@ -115,7 +141,8 @@ function setFirstAndLastName(data) {
     lastElement.value = data.params.name.lastName;
 }
 function setRemote(data) {
-    if (data.params.newjobremote === "true") {
+    console.log("PARP 2 ! data.remote = " + data.params.newjobremote);
+    if (data.params.newjobremote === true) {
         document.getElementById("yesremote").checked = true;
     } else {
         document.getElementById("noremote").checked = true;
@@ -123,10 +150,29 @@ function setRemote(data) {
 }
 
 function setVisibility(data) {
-    if (data.params.visibility === "true") {
+    if (data.params.visibility === true) {
         document.getElementById("yesshare").checked = true;
     } else {
         document.getElementById("noshare").checked = true;
+    }
+}
+
+function setCV(data) {
+    if (data.params.cvfile != undefined) {
+        setCVFile(data.params.cvfile, data);
+        sessionStorage.setItem("amend", "true");
+    } else {
+        sessionStorage.setItem("amend", "false");
+    }
+}
+
+function setCVDaysAgo(data) {
+    let daysAgoElement = elements.cvDaysAgo;
+    if (data.params.cvdate != undefined) {
+        let daysAgo = getDaysAgo(data.params.cvdate);
+        daysAgoElement.innerHTML = "Uploaded " + daysAgo;
+    } else {
+        daysAgoElement.innerHTML = "Uploaded today";
     }
 }
 
@@ -154,86 +200,34 @@ export const setProfileFields = (data) => {
     setRemote(data);
 
     setVisibility(data);
+
+    setDesiredJobType(data);
+
+    setDesiredJobTitle(data);
+
+    setDesiredJobSummary(data);
+
+    setCV(data);
+
+    setCVDaysAgo(data);
 }
 
-// export const setJobSeekerAmendFields = () => {
+function getExperience(element) {
+    let val = getSelectedOption(element);
+    let years = parseInt(val);
+    return years;
+}
 
-//     // title
-//     let paj = document.getElementById("postajob");
-//     paj.innerHTML = "Update Job: " + sessionStorage.getItem("jobReference");
+function getSkills() {
+    let s = elements.personSkills;
+    return s.value;
+}
 
-//     // job type
-//     let jobType = sessionStorage.getItem("jobType");
-//     elements.jobtype.value = jobType;
-//     elements.jobtype.style.color = 'black';
+function getSummary() {
+    let s = elements.personSummary;
+    return s.value;
+}
 
-//     // job title
-//     var jt = sessionStorage.getItem("jobTitle");
-//     elements.jobtitle.value = jt;
-//     var placeholder = document.getElementById("bollocks1");
-//     placeholder.style.display = "block";
-
-//     // logo
-//     var image = sessionStorage.getItem("logo");
-//     setLogoFileAndImage("", image);
-
-//     // remote
-//     var remote = sessionStorage.getItem("remote");
-//     if (remote === "true") {
-//         document.getElementById("yesremote").checked = true;
-//     } else {
-//         document.getElementById("noremote").checked = true;
-//     }
-
-//     // blockchain name
-//     var bt = sessionStorage.getItem("blockchainName");
-//     elements.blockchain.value = bt;
-//     placeholder = document.getElementById("bollocks2");
-//     placeholder.style.display = "block";
-//     elements.blockchain.style.color = 'black';
-
-//     // contact
-//     var contact = sessionStorage.getItem("contact");
-//     elements.contact.value = contact;
-
-//     // internal ref
-//     var iref = sessionStorage.getItem("internalRef");
-//     elements.internalref.value = iref;
-
-//     // skills
-//     let skills = sessionStorage.getItem("skills");
-//     elements.skills.value = skills;
-
-//     // employer/agency
-//     var employer = sessionStorage.getItem("employer");
-//     if (employer === true) {
-//         document.getElementById("employer").checked = true;
-//     } else {
-//         document.getElementById("agency").checked = true;
-//     }
-
-//     // salary
-//     let salary = sessionStorage.getItem("salary");
-//     elements.salary.value = salary;
-
-//     // location
-//     let location = sessionStorage.getItem("location");
-//     elements.location.value = location;
-
-//     // city
-//     let city = sessionStorage.getItem("city");
-//     if (city != null && city != undefined && city.length > 0) {
-//         console.log("City = " + city)
-//         elements.city.value = city;
-//     }
-
-//     // description
-//     let htmlToInsert = sessionStorage.getItem("description");
-//     var editor = document.getElementsByClassName('ql-editor')
-//     editor[0].innerHTML = htmlToInsert;
-// }
-
-// TODO next up: map this to the transaction to write a profile to the blockchain
 export const getProfileFormData = (email, transaction) => {
     var form = elements.adForm;
     var el = form.querySelectorAll('input');
@@ -245,85 +239,47 @@ export const getProfileFormData = (email, transaction) => {
         myData[id] = value;
     };
 
-    // var formData = {
-    //     $class: transaction,
-    //     params: {
-    //         $class: "io.onemillionyearsbc.hubtutorial.jobs.JobPostingParameters",
-    //         jobReference: calculateJobReference(),
-    //         email: email,
-    //         company: myData["company"],
-    //         jobTitle: myData["jobtitle"],
-    //         remote: getRemote(),
-    //         jobType: getSelectedOption(elements.jobtype),
-    //         blockchainName: getSelectedOption(elements.blockchain),
-    //         description: html,
-    //         contact: myData["contact"],
-    //         internalRef: myData["internalref"],
-    //         employer: getEmployer(),
-    //         salary: myData["salary"],
-    //         location: myData["location"],
-    //         city: myData["city"],
-    //         skills: getSkills(myData["skills"])
-    //     }
-    // };
-    
     var formData = {
         $class: transaction,
         email: email,
         params: {
             $class: "io.onemillionyearsbc.hubtutorial.HubJobSeekerParameters",
             name: {
-              $class: "io.onemillionyearsbc.hubtutorial.Name",
-              title: "MR",
-              firstName: "Geomina",
-              lastName: "Richardson"
+                $class: "io.onemillionyearsbc.hubtutorial.Name",
+                title: getSelectedOption(elements.personTitle),
+                firstName: myData["first"],
+                lastName: myData["last"]
             },
-            phone: "+32494639815",
-            country: "Germany",
-            city: "Frankfurt",
-            cvhash: "ddffeffefefe",
-            weblink: "http://tanks.de",
-            itexperience: 1,
-            skills: "Tanks Are MEEEEEE",
-            blockchainUsed: "CORDA",
-            blockexperience: 1,
-            newjobsummary: "BIG TANKS AND ARTILLERY",
-            newjobtitle: "Inspector",
-            newjobremote: false,
-            newjobtype: "FULLTIME",
-            visibility: false
-          },
+            phone: myData["phone"],
+            country: getSelectedOption(elements.personCountry),
+            city: myData["postcode"],
+            weblink: myData["link1"],
+            itexperience: getExperience(elements.itexperience),
+            skills: getSkills(),
+            blockchainUsed: getSelectedOption(elements.blockchainUsed),
+            blockexperience: getExperience(elements.yearsBlock),
+            newjobsummary: getSummary(),
+            newjobtitle: myData["desiredjobtitle"],
+            newjobremote: getValueOfRadio("remote"),
+            newjobtype: getSelectedOption(elements.personJobType),
+            visibility: getValueOfRadio("share")
+        },
     };
-
-    // if (document.querySelector("#imgs").getAttribute('src') === "") {
-    //     sessionStorage.setItem("logohash", "");
-    // }
+    let cv = getCVFile();
+    if (cv != "" && cv != undefined) {
+        formData.params.cvfile = cv;
+    }
     return formData;
 }
 
-function getRemote() {
-    return document.querySelector('input[name="remote"]:checked').value;
-}
 
-function getEmployer() {
-    return document.querySelector('input[name="employer"]:checked').value;
-}
-
-function getSkills(skills) {
-    if (skills === "") {
-        return "";
+function getCVFile() {
+    let dateElement = document.getElementById("cvtext2");
+    console.log("dateElement = " + dateElement);
+    if (dateElement != null) {
+        return dateElement.innerHTML;
     }
-    let skillsArr = skills.match(/"[^"]*"|\S+/g);
-
-    // remove double quotes around any multi word strings
-    for (var i = 0; i < skillsArr.length; i++) {
-        if (skillsArr[i].charAt(0) === '"' && skillsArr[i].charAt(skillsArr[i].length - 1) === '"') {
-            skillsArr[i] = skillsArr[i].substr(1, skillsArr[i].length - 2);
-        }
-    }
-    return skillsArr;
 }
-
 
 export const clearValidationErrorMessages = () => {
     var x = document.getElementById("email-error");
@@ -343,8 +299,7 @@ export const validateField = (element) => {
         return;
     }
     if (element.id === "location") {
-        console.log("PARP 2 ! data.remote = " + getRemote());
-        if (element.value.length === 0 && getRemote() === "false") {
+        if (element.value.length === 0 && getValueOfRadio("remote") === "false") {
             var x = document.getElementById("location-error");
             checkStyle(x);
         } else {
@@ -415,12 +370,14 @@ export const validateProfileData = (data) => {
     return error;
 }
 
-export const setCVFile = (fileName, image) => {
-    // var logoText = document.getElementById('logotext2');
-    // logoText.innerHTML = fileName;
+export const setCVFile = (fileName, data) => {
+    var cvdate = document.getElementById('cvtext2');
+    cvdate.innerHTML = fileName;
 
-    // document.querySelector("#imgs").setAttribute('src', image);
-    // document.getElementById('pbox1').style.display = 'none';
-    // document.getElementById('pbox2').style.display = 'block';
+    document.getElementById('pbox1').style.display = 'none';
+    document.getElementById('pbox2').style.display = 'block';
+
+    setCVDaysAgo(data);
+
 }
 

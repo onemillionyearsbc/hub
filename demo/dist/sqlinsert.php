@@ -22,20 +22,41 @@
             }
             
             $table = $decoded["table"];
-            $email = $decoded["email"];
-            $id = $decoded["id"];
-            $hash = $decoded["hash"];
-            $image = $decoded["image"];
-            $insert = $decoded["insert"];
 
-            $sqlstatement = "insert into ".$table." 
-                values('".$email."','".$id."','".$hash."','".$image."')";
-                
-            if ($insert == FALSE) {
-                $sqlstatement = "update ".$table." set hash='".$hash."',image='".$image."'  
-                where id = ".$id;
+            // put logo into company_logo
+            if ($table == "company_logo") {
+                $email = $decoded["email"];
+                $id = $decoded["id"];
+                $hash = $decoded["hash"];
+                $image = $decoded["image"];
+                $insert = $decoded["insert"];
+
+                $sqlstatement = "insert into ".$table." 
+                    values('".$email."','".$id."','".$hash."','".$image."')";
+                    
+                if ($insert == FALSE) {
+                    $sqlstatement = "update ".$table." set hash='".$hash."',image='".$image."'  
+                    where id = ".$id;
+                }
+            
+                doInsertStatement($conn, $sqlstatement);
+            } else {
+                // put cv into profile_cv
+                $email = $decoded["email"];
+                $hash = $decoded["hash"];
+                $image = $decoded["image"];
+                $insert = $decoded["insert"];
+
+                $sqlstatement = "insert into ".$table." 
+                    values('".$email."','".$hash."','".$image."')";
+                    
+                if ($insert == FALSE) {
+                    $sqlstatement = "update ".$table." set hash='".$hash."',image='".$image."'  
+                    where email = '".$email."'";
+                }
+            
+                doInsertStatement($conn, $sqlstatement);
             }
-            doInsertStatement($conn, $sqlstatement);
         }
     }
 ?>

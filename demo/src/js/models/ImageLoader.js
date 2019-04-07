@@ -16,8 +16,9 @@ export default class ImageLoader {
         // load the image and get the blob
 
         // allowed MIME types
-        var mime_types = ['image/jpeg', 'image/png'];
+        var mime_types = ['image/jpeg', 'image/png', 'application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/pdf'];
 
+        console.log("file type = " + afile.type);
         // validate MIME
         if (mime_types.indexOf(afile.type) == -1) {
             throw Error('Error : Incorrect file type');
@@ -78,22 +79,42 @@ export default class ImageLoader {
         if (result.length == 0) {
             throw error("No logos found! ");
         }
-        // if (result.length > 1) {
-        //     throw error('Database select image failed: number rows = ' + result.length);
-        // }
-        // const row0 = result[0];
-        // try {
-        //     // await this.checkHash(row0["image"], row0["hash"], logohash);
-        //     // console.log("id: " + jobReference + " => HASHES EQUAL!");
-        //     console.log("OINKINGTON ROWS = " + result.length);
-        // }
-        // catch (error) {
-        //     console.log("BUGGER error = " + error);
-        //     throw error;
-        // }
-        // return row0["image"];
         return result;
     }
+
+    async getCVFromDatabase (email, cvhash)  {
+        var body = JSON.stringify({
+            database: dbelements.databaseName,
+            table: dbelements.databaseCVTable,
+            email: email
+        });
+    
+        const dp = new DatabaseProcessor(dbelements.databaseSelectCVUri);
+    
+        var result;
+        try {
+            result = await dp.transactionPut(body);
+        } catch (error) {
+           throw error;
+        }
+    
+        if (result.length == 0) {
+            console.log("WARNING: No image found for email " + email);
+            return;
+        }
+        if (result.length > 1) {
+            throw ('Database select image failed: number rows = ' + result.length);
+        }
+        const row0 = result[0];
+        try {
+            await this.checkHash(email, row0["image"], row0["hash"], cvhash);3
+        }
+        catch (error) {
+            throw error;
+        }
+        return row0["image"];
+    }
+
     async getImageFromDatabase (jobReference, logohash)  {
         var body = JSON.stringify({
             database: dbelements.databaseName,

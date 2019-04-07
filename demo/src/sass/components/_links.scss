@@ -1,0 +1,19 @@
+.links {
+    ul {
+        margin-top: 2rem;
+        margin-left: 1rem;
+    }
+    li {
+        margin-top: 0.5rem;
+        font-size: 1.5rem;
+        list-style-type: none;
+        color: $button-orange-background;
+        font-weight: 600;
+    }
+    li:hover{
+        cursor: pointer;
+        color: $button-orange-background-darker;
+        text-decoration: underline;
+        font-weight: 600;
+    }
+}

@@ -94,8 +94,6 @@ abstract transaction CreateAccount {
   o Double     allowance default=0.0
 }
 
-// TODO UpdateAccount and RemoveAccount
-
 transaction CreateRecruiterAccount extends CreateAccount {
   o String name
   o String company 
@@ -117,6 +115,14 @@ transaction RemoveHubUser {
   o String email 
   o AccountType accountType default="RECRUITER"
 }
+
+// UpdateEmailAddress
+// This transaction should:
+// 1. get and store in variables the HubAccount and HubUser information
+// 2. delete the HubAccount and HubUser records
+// 3. create a new HubAccount/HubUser with the new email 
+// 4. Copy the saved information into the new account/user objects
+// 5. Possibly fire an event so the alert server can send out a confirmatory email
 
 transaction RemoveHubAccount {
   o String email 

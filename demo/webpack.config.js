@@ -61,6 +61,10 @@ module.exports = {
             template: './src/jobseeker-dashboard.html'
         }),
         new HtmlWebpackPlugin({
+            filename: 'jobseeker-account.html',
+            template: './src/jobseeker-account.html'
+        }),
+        new HtmlWebpackPlugin({
             filename: 'recruiter-dashboard.html',
             template: './src/recruiter-dashboard.html'
         }),
@@ -91,6 +95,10 @@ module.exports = {
         new HtmlWebpackPlugin({
             filename: 'advert.html',
             template: './src/advert.html'
+        }),
+        new HtmlWebpackPlugin({
+            filename: 'account-settings.html',
+            template: './src/account-settings.html'
         }),
         new CopyWebpackPlugin([{
             from: 'src/img',

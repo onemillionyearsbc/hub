@@ -122,13 +122,28 @@ export const elements = {
     pSummary: document.getElementById("psummary"),
     desiredJobTitle: document.getElementById("desiredjobtitle"),
     desiredJobType: document.getElementById("desiredjobtype"),
+    personTitle: document.getElementById("title"),
+    personCountry: document.getElementById("country"),
+    itexperience: document.getElementById("experience"),
+    personSkills: document.getElementById("keyskills"),
+    personSummary: document.getElementById("psummary"),
+    personJobType: document.getElementById("desiredjobtype"),
+    cvDaysAgo: document.getElementById("cvimg"),
+    accBanner: document.getElementById("instr"),
+    changeEmail: document.getElementById("changeemail"),
+    changePref: document.getElementById("changepref"),
+    manageTok: document.getElementById("managetok"),
+    closeAcc: document.getElementById("closeacc"),
+    backLink: document.getElementById("backtoaccount")
 };
 
 export const dbelements = {
     databaseInsertUri: "http://localhost:8083/sqlinsert.php", // TODO change to ip of server (CONFIG)
     databaseSelectUri: "http://localhost:8083/sqlselectbyid.php", // TODO change to ip of server
     databaseTable: "company_logo",
-    databaseName: "hubdb"
+    databaseName: "hubdb",
+    databaseSelectCVUri: "http://localhost:8083/sqlselectbyemail.php", // TODO change to ip of server
+    databaseCVTable: "profile_cv",
 };
 
 //------------------------------------------------------------------
@@ -229,6 +244,7 @@ export const elementConsts = {
     MANAGEJOBSPAGE: 6,
     DISPLAYJOBPAGE: 7,
     PROFILEPAGE: 8,
+    ACCOUNTPAGE: 9,
     JOBADPRICE: 99,
     JOBDISCOUNT: 10,
     JOBMINPRICE: 49,
@@ -265,6 +281,14 @@ export const renderLoader = parent => {
     `;
     parent.insertAdjacentHTML('afterbegin', loader); // afterbegin means insert after the beginning of the parent element
 };
+
+export const renderLoaderByPixelsFromTop = (parent, dist) => {
+    const loader = `
+        <div style="top:${dist}rem "class="${strings.loader}"></div>
+    `;
+    parent.insertAdjacentHTML('beforeend', loader); // beforeend means insert before the end of the parent element
+};
+
 
 export const renderLoaderEnd = parent => {
     const loader = `
@@ -388,10 +412,13 @@ export function enableCreateJobButton(remaining) {
 }
 
 export function getSelectedOption(sel) {
+    if (sel.options[sel.selectedIndex] === undefined) {
+        return undefined;
+    }
     if (sel.options[sel.selectedIndex].disabled === false) {
         return sel.value;
     }
-    return "";
+    return undefined;
 }
 export function getJobTimeFor(expiryDate, postedDate) {
     const ed = new Date(expiryDate);
@@ -421,6 +448,20 @@ export function getJobTimeFor(expiryDate, postedDate) {
     return ("Posted " + dayDifference + " days ago");
 }
 
+export function getDaysAgo(date) {
+    const d = new Date(date);
+    const now = new Date();
+
+    let timeDiff = now.getTime() - d.getTime();
+    let dayDifference = Math.round(timeDiff / (1000 * 3600 * 24));
+    if (dayDifference == 0) {
+        return "today";
+    }
+    else if (dayDifference == 1) {
+        return ("yesterday");
+    }
+    return (dayDifference + " days ago");
+}
 
 export function getDaySincePosted(postedDate) {
     const pd = new Date(postedDate);
@@ -729,6 +770,10 @@ export const displayErrorPopup = async (theText) => {
         confirmButtonColor: '#cc6d14',
     });
 };
+
+export const getValueOfRadio = (name) => {
+    return document.querySelector(`input[name=${name}]:checked`).value;
+}
 
 export const jobTitles = ["Application Support Analyst",
     "Automation Tester",

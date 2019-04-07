@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css?family=Josefin+Sans:300,400,400i|Nunito:300,300i" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="shortcut icon" type="image/png" href="img/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <title>JobSeeker Profile</title>
+</head>
+
+<body>
+    <div id="dash" class="jsdashboard">
+        <div>
+
+            <div class="dashboard__topbar">
+                <div class="topleft">
+                    <a href="index.html">
+                        <img src="img/logo-small.png" alt="1MYBC">
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div>
+            <nav class="navbar">
+                <ul class="navbar__left">
+                    <li class="item-1"><a href="#jobs">Dashboard</a></li>
+                    <li><a href="#companies">Job Ads</a></li>
+
+                </ul>
+                <ul class="navbar__right">
+                    <li id="saved">
+                        <a href="favourites.html" class="link-icon"><i class="starwithnocircle fa fa-star"></i>Saved
+                            Jobs</a>
+                    </li>
+                    <li class="signin"><a href="register.html" class="link-icon"><i class="icon far fa-user"></i>Sign
+                            In</a></li>
+                    <div id="accountmenu" class="dropdownnavbar" style="display: none;">
+                        <button id="accountmenubtn" class="dropbtn">NOB's account
+                            <i class="left-icon icon far fa-user"></i>
+                            <i class="right-icon fa fa-caret-down"></i>
+                        </button>
+                        <div class="dropdownnavbar-content">
+                            <a href="jobseeker-account.html">Account</a>
+                            <a href="jobseeker-dashboard.html">Profile</a>
+                            <a href="#">Applications</a>
+                            <a id="signoutlink" href="#">Sign Out</a>
+                        </div>
+                    </div>
+
+                    </li>
+                    <div id="accountmenu" class="dropdown" style="display: none;">
+                        <button id="accountmenubtn" class="dropbtn">NOB's account
+                            <i class="left-icon icon far fa-user"></i>
+                            <i class="right-icon fa fa-caret-down"></i>
+                        </button>
+                        <div class="dropdown-content">
+                            <a href="#">Account</a>
+                            <a href="jobseeker-dashboard.html">Profile</a>
+                            <a href="#">Applications</a>
+                            <a id="signoutlink" href="#">Sign Out</a>
+                        </div>
+                    </div>
+                </ul>
+            </nav>
+            <div class="container profileparent">
+                <div class="profileparent__top animated zoomIn delay-2s">
+                    <p class="title">My Hub++ Blockchain Jobs</p>
+                    <p id="instr" class="instructions">Bienvenu
+
+                    </p>
+                </div>
+                <div class="profileparent__bottom animated zoomIn delay-2s">
+                    <div id="profilepage" class="account createjobad__parent">
+                        <form autocomplete="off" id="adform" class="myForm" top="false">
+                            <p class="profiletitle">My Account</p>
+                            <div class="account__main">
+                                <div class="account__main--left">
+                                    <i class="fas fa-user-cog"></i>
+                                </div>
+                                <div class="account__main--right">
+                                    <ul>
+                                        <li id="changeemail">Change email address</li>
+                                        <li id="changepref">Change email preferences and subscriptions</li>
+                                        <li id="managetok">Manage Tokens</li>
+                                        <li id="closeacc">Close My Account</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <p class="profiletitle">My Profile</p>
+                            <div class="account__main">
+                                <div class="account__main--left">
+                                    <i class="far fa-user"></i>
+                                </div>
+                                <div class="account__main--right">
+                                    <p id="instr" class="texty texty2">Create a profile to highlight your experience and
+                                        skills. This will make it easier for the right employer to find you.
+
+                                    </p>
+                                    <ul class="profilelist">
+                                        <li id="changeemail">Download CV</li>
+                                        <li id="changepref">Upload New CV</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <p class="profiletitle">My Job Alerts</p>
+                            <div class="account__main">
+                                <div class="account__main--left">
+                                    <i class="fas fa-user-clock"></i>
+                                </div>
+                                <div class="account__main--right">
+                                    <h1>Jobs By Email</h1>
+                                    <p id="instr" class="texty">Get all the latest jobs matching your criteria sent to
+                                        your inbox in one alert every morning. You can create up to 3 jobs by email
+                                        alerts.
+
+                                    </p>
+                                    <div class="jobalert">
+                                        <div class="top">
+                                            <p>Job Alert 1</p>
+                                            <p>Set up 3 days ago</p>
+                                        </div>
+                                        <div class="middle">
+                                            <div class="togglefield">
+                                                <div class="toggle">
+                                                    <input type="radio" name="status1" value="true" id="onstatus"
+                                                        checked="checked" />
+                                                    <label for="onstatus">Alert On</label>
+                                                    <input type="radio" name="status1" value="false" id="offstatus" />
+                                                    <label for="offstatus">Alert Off</label>
+                                                </div>
+                                            </div>
+                                            <div class="criteriafield">
+                                                <span>Criteria:</span>
+                                                <p>Developer, British Transport Police</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="jobalert">
+                                            <div class="top">
+                                                <p>Job Alert 2</p>
+                                                <p>Set up 10 days ago</p>
+                                            </div>
+                                            <div class="middle">
+                                                <div class="togglefield">
+                                                    <div class="toggle">
+                                                        <input type="radio" name="status2" value="true" id="onstatus"
+                                                            checked="checked" />
+                                                        <label for="onstatus">Alert On</label>
+                                                        <input type="radio" name="status2" value="false" id="offstatus" />
+                                                        <label for="offstatus">Alert Off</label>
+                                                    </div>
+                                                </div>
+                                                <div class="criteriafield">
+                                                    <span>Criteria:</span>
+                                                    <p>Blockchain, remote, cake, mushrooms, C++</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                </div>
+                            </div>
+                            <p class="profiletitle">My Job Applications</p>
+                            <div class="account__main">
+                                <div class="account__main--left">
+                                    <i class="far fa-address-card"></i>
+                                </div>
+                                <div class="account__main--right">
+                                    <div class="jobs">
+                                        <p id="instr" class="texty texty2">See all of the jobs you've applied for and
+                                            contact details for the employers involved.
+                                        </p>
+                                        <button id="viewjobappsbtn" class="btn btn--orange">See Applictions</button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+<script type="text/javascript" src="js/bundle.js"></script></body>
+
+</html>
