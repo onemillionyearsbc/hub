@@ -35,8 +35,7 @@ async function CreateRecruiterAccount(accountData) {
     }
 
     token.balance = accountData.balance;
-    token.allowance = g
-    accountData.allowance;
+    token.allowance = accountData.allowance;
 
     // usually it will be ...get registry, add new object
     // 2. Get the HubUser participant

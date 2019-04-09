@@ -64,7 +64,8 @@ async function main(){
 	for (var key in jsonArray) {
 		if (jsonArray.hasOwnProperty(key)) {
 			var val = jsonArray[key];
-			
+            
+            
             let transaction = factory.newTransaction(namespace,transactionType,"",options);
 
             // Set up the properties of the transaction object
@@ -74,13 +75,18 @@ async function main(){
             transaction.setPropertyValue('name', `${val.first_name} ${val.last_name}`);
         
             // Submit the transaction
-         
+            console.log("email = " + val.email);
+            console.log("password = " + val.password);
+            console.log("company = " + val.company_name);
+            console.log("first name = " + val.first_name);
+            console.log("last name = " + val.last_name);
             try {
                 await bnUtil.connection.submitTransaction(transaction);
                 console.log("Transaction processed: Account created for email " + val.email)
         
             } catch (error) {
                 console.log('Account creation failed: ' + error);
+                break;
             }        
 		}
     }

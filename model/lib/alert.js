@@ -66,46 +66,107 @@ function fillAlert(NSJOBS, factory, credentials, index) {
     return alert;
 }
 
+// /**
+//  * Return JobPosting array of records according to alert search critereia 
+//  * @param {io.onemillionyearsbc.hubtutorial.jobs.FireAlertSearch} credentials
+//  * @returns {io.onemillionyearsbc.hubtutorial.jobs.JobPosting[]} The JobPosting records for these criteria
+//  * @transaction
+//  */
+// async function FireAlertSearch(credentials) {
+
+//     var predicate = "";
+//     var filter = {};
+ 
+//     predicate += `WHERE (remote == _$remote AND employer == _$employer 
+//               AND (skills CONTAINS _$skills)`;
+
+//     filter.remote = credentials.alertCriteria.remote;
+//     filter.employer = credentials.alertCriteria.employer;
+//     filter.skills = credentials.alertCriteria.skills;
+
+//     if (credentials.alertCriteria.city != "") {
+//         predicate += ` AND city == _$city`;
+//     }
+
+//     if (credentials.alertCriteria.country != "") {
+//         predicate += ` AND country == _$country`
+//     }
+//     predicate += ')';
+
+//     var statement = `SELECT io.onemillionyearsbc.hubtutorial.jobs.JobPosting ${predicate}`;
+
+//     // Build a query.
+//     let qry = buildQuery(statement);
+
+//     // Execute the query
+//     let results = await query(qry, filter);
+
+//     // TODO filter out all jobs posted within last 24 hours
+//     return results;
+
+// }
+
 /**
- * Return JobPosting array of records according to alert search critereia 
- * @param {io.onemillionyearsbc.hubtutorial.jobs.FireAlertSearch} credentials
- * @returns {io.onemillionyearsbc.hubtutorial.jobs.JobPosting[]} The JobPosting records for these criteria
+ * Return JobPosting array of records according to email and filter critereia 
+ * @param {io.onemillionyearsbc.hubtutorial.jobs.FireAlertSearch} filterCriteria
+ * @returns {io.onemillionyearsbc.hubtutorial.jobs.JobPosting[]} The JobPosting records for these user and criteria
  * @transaction
  */
-async function FireAlertSearch(credentials) {
+async function FireAlertSearch(filterCriteria) {
 
-    var predicate = "";
+    var and = "";
     var filter = {};
- 
-    predicate += `WHERE (remote == _$remote AND employer == _$employer 
-              AND (skills CONTAINS _$skills)`;
+    filter.email = filterCriteria.email;
 
-    filter.remote = credentials.alertCriteria.remote;
-    filter.employer = credentials.alertCriteria.employer;
-    filter.skills = credentials.alertCriteria.skills;
-
-    if (credentials.alertCriteria.city != "") {
-        predicate += ` AND city == _$city`;
+    if (filterCriteria.filterBy != "") {
+        and += " AND (internalRef == _$filterBy OR jobTitle == _$filterBy OR jobReference == _$filterBy)";
+        filter.filterBy = filterCriteria.filterBy;
+    }
+    if (filterCriteria.dateFrom != "") {
+        and += " AND (datePosted > _$dateFrom)";
+        filter.dateFrom = filterCriteria.dateFrom;
+    }
+    if (filterCriteria.dateTo != "") {
+        and += " AND (datePosted < _$dateTo)";
+        filter.dateTo = filterCriteria.dateTo;
+    }
+    if (filterCriteria.user != "") {
+        and += " AND (contact == _$user)";
+        filter.user = filterCriteria.user;
+    }
+    if (filterCriteria.filterType != "" && filterCriteria.filterType != "ALL") {
+        const today = new Date();
+        // 1. if LIVE get all jobs where expiryDate > now
+        if (filterCriteria.filterType === "LIVE") {
+            and += " AND (expiryDate > _$today)";
+            filter.today = today;
+        }
+        // 2. if EXPIRING get all jobs where expiryDate > now and expiryDate < now + 5 days
+        else if (filterCriteria.filterType === "EXPIRING") {
+            const liveDate = addDays(today, filterCriteria.expiringDays);
+            and += " AND (expiryDate > _$today) AND (expiryDate < _$liveDate)";
+            filter.today = today;
+            filter.liveDate = liveDate;
+        }
+        // 3. if EXPIRED get all jobs where expiryDate < now
+        else if (filterCriteria.filterType === "EXPIRED") {
+            and += " AND (expiryDate < _$today)";
+            filter.today = today;
+        }
     }
 
-    if (credentials.alertCriteria.country != "") {
-        predicate += ` AND country == _$country`
-    }
-    predicate += ')';
+    var statement = `SELECT io.onemillionyearsbc.hubtutorial.jobs.JobPosting WHERE (email == _$email${and})`;
 
-    var statement = `SELECT io.onemillionyearsbc.hubtutorial.jobs.JobPosting ${predicate}`;
 
     // Build a query.
     let qry = buildQuery(statement);
-
     // Execute the query
+
     let results = await query(qry, filter);
 
-    // TODO filter out all jobs posted within last 24 hours
     return results;
 
 }
-
 /*
 {
     "$class": "io.onemillionyearsbc.hubtutorial.jobs.CreateJobAlert",

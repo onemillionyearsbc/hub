@@ -40,3 +40,23 @@ The message was sent!
      to: [ 'emerysolutions@yahoo.co.uk' ] },
   messageId: '<bfbbf888-12a3-a9b0-5bfb-1332609a9396@gmail.com>' }
 [2019-04-09 08:18:55] INFO  [etrFuCKC7z8] Connection closed
+[2019-04-09 12:44:00] DEBUG Sending mail using SMTP/6.1.0[client:6.1.0]
+[2019-04-09 12:44:00] DEBUG [oTEOgmj7h78] Resolved smtp.gmail.com as 173.194.76.109 [cache miss]
+[2019-04-09 12:44:00] INFO  [oTEOgmj7h78] Secure connection established to 173.194.76.109:465
+[2019-04-09 12:44:00] DEBUG [oTEOgmj7h78] SMTP handshake finished
+[2019-04-09 12:44:00] INFO  [oTEOgmj7h78] User "1mybchub@gmail.com" authenticated
+[2019-04-09 12:44:00] INFO  Sending message <b4c41529-04d2-6c01-7efb-5339b621649f@gmail.com> to <emerysolutions@yahoo.co.uk>
+[2019-04-09 12:44:00] INFO  [oTEOgmj7h78] <391 bytes encoded mime message (source size 388 bytes)>
+[2019-04-09 12:44:02] DEBUG [oTEOgmj7h78] Closing connection to the server using "end"
+The message was sent!
+{ accepted: [ 'emerysolutions@yahoo.co.uk' ],
+  rejected: [],
+  envelopeTime: 394,
+  messageTime: 1238,
+  messageSize: 391,
+  response: '250 2.0.0 OK  1554813841 n6sm22707960wmn.48 - gsmtp',
+  envelope: 
+   { from: '1mybchub@gmail.com',
+     to: [ 'emerysolutions@yahoo.co.uk' ] },
+  messageId: '<b4c41529-04d2-6c01-7efb-5339b621649f@gmail.com>' }
+[2019-04-09 12:44:02] INFO  [oTEOgmj7h78] Connection closed
