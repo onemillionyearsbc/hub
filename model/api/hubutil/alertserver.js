@@ -16,6 +16,10 @@ const transactionType = "CreateJobPosting";
 bnUtil.cardName = 'admin@hubtutorial';
 console.log("Waiting for the time...");
 
+// TODO listen to composer events so when a "demoalert" event occurs
+// we fire the alert search and send out an immediate email to the jobseeker
+// who fired the event
+
 var rule = new schedule.RecurrenceRule();
 rule.hour = 12;
 rule.minute = 12;

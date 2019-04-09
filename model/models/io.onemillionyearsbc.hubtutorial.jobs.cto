@@ -210,7 +210,6 @@ transaction GetJobPostingsDynamic {
 }
 
 
-
 @commit(false)
 @returns(JobPosting[])
 transaction FireAlertSearch {
