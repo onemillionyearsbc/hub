@@ -17,8 +17,8 @@ bnUtil.cardName = 'admin@hubtutorial';
 console.log("Waiting for the time...");
 
 var rule = new schedule.RecurrenceRule();
-rule.hour = 10;
-rule.minute = 59;
+rule.hour = 12;
+rule.minute = 12;
 
 var j = schedule.scheduleJob(rule, function () {
     transporter.sendMail(HelperOptions, (error, info) => {
@@ -63,7 +63,7 @@ async function main() {
     var seekers = await registry.getAll();
 
     for (var i = 0; i < seekers.length; i++) {
-        console.log("Seeker = " + seekers[i].email)
+        // console.log("Seeker = " + seekers[i].email)
     }
 
     console.log('Retrieved Hub JobSeekers : ', seekers.length);

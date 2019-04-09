@@ -5,6 +5,7 @@ namespace io.onemillionyearsbc.hubtutorial
 
 import io.onemillionyearsbc.hubtutorial.jobs.JobAds
 import io.onemillionyearsbc.hubtutorial.jobs.JobPosting
+import io.onemillionyearsbc.hubtutorial.jobs.JobAlert
 import io.onemillionyearsbc.hubtutorial.jobs.BlockchainType
 import io.onemillionyearsbc.hubtutorial.jobs.AccountType
 import io.onemillionyearsbc.hubtutorial.jobs.JobType
@@ -41,6 +42,7 @@ participant HubRecruiter extends HubUser {
 
 participant HubJobSeeker extends HubUser {
   o HubJobSeekerParameters params
+  --> JobAlert[] alerts optional
 }
 
 concept HubJobSeekerParameters {

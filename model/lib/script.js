@@ -35,7 +35,8 @@ async function CreateRecruiterAccount(accountData) {
     }
 
     token.balance = accountData.balance;
-    token.allowance = accountData.allowance;
+    token.allowance = g
+    accountData.allowance;
 
     // usually it will be ...get registry, add new object
     // 2. Get the HubUser participant
@@ -544,7 +545,7 @@ async function AddJobToFavourites(credentials) {
         }
         user.favourites.push(credentials.jobReference);
     }
-    participantRegistry.update(user);
+    await participantRegistry.update(user);
 }
 
 
@@ -562,7 +563,7 @@ async function RemoveAllFavourites(credentials) {
 
     recruiter.favourites = new Array();
 
-    participantRegistry.update(recruiter);
+    await participantRegistry.update(recruiter);
 }
 
 /**
@@ -616,11 +617,11 @@ async function RemoveJobFromFavourites(credentials) {
     }
     recruiter.favourites = recruiter.favourites.filter(e => e !== credentials.jobReference);
 
-    participantRegistry.update(recruiter);
+    await participantRegistry.update(recruiter);
 }
 
 /**
- * Return HubUser according to email and password
+ * Create a new JobPosting and attach to its owning (Recruiter) participant
  * @param {io.onemillionyearsbc.hubtutorial.jobs.CreateJobPosting} credentials
  * @transaction
  */
@@ -659,7 +660,7 @@ async function CreateJobPosting(credentials) {
     } else {
         recruiter.jobPostings.push(posting);
     }
-    participantRegistry.update(recruiter);
+    await participantRegistry.update(recruiter);
 
     // Update JobAds stats object
     if (credentials.params.testData === true) {

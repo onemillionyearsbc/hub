@@ -8,6 +8,20 @@ asset JobAds identified by email{
   o Integer     remaining default=0
 }
 
+concept AlertCriteria {
+  o Boolean   remote default=false
+  o Boolean   employer default=true
+  o String[]  skills 
+  o String    city optional 
+  o String    country optional
+} 
+
+asset JobAlert identified by alertId {
+  o String     alertId // alertId will be {emaii-index} eg emerysolutions@yahoo.co.uk-
+  o DateTime   datePosted
+  o AlertCriteria alertCriteria
+}
+
 asset JobPosting identified by jobReference {
   o String      jobReference 
   o String      email 
@@ -36,7 +50,6 @@ asset JobPosting identified by jobReference {
   o DateTime    expiryDate
   o Integer     views
   o Integer     applications
-
 }
 
 enum JobType {
@@ -94,6 +107,11 @@ concept JobPostingParameters {
 }
 transaction CreateJobPosting {
   o JobPostingParameters params
+}
+
+transaction CreateJobAlert {
+  o String email
+  o AlertCriteria alertCriteria
 }
 
 // Q: do we need to store who has viewed or applied for a job?
@@ -189,6 +207,14 @@ transaction GetJobPostingsDynamic {
   o DateTime dateTo optional
   o String user optional
   o Integer expiringDays default=5
+}
+
+
+
+@commit(false)
+@returns(JobPosting[])
+transaction FireAlertSearch {
+  o AlertCriteria alertCriteria
 }
 
 @commit(false)
