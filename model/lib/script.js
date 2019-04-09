@@ -765,7 +765,7 @@ function fillJobAdParams(posting, credentials) {
     posting.internalRef = credentials.internalRef;
     posting.employer = credentials.employer;
     posting.salary = credentials.salary,
-        posting.location = credentials.location;
+    posting.location = credentials.location;
     posting.city = credentials.city;
     posting.longitude = credentials.longitude;
     posting.latitude = credentials.latitude;

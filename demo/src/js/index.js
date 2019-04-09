@@ -593,6 +593,38 @@ const updateProfileHandler = async (transaction, ins) => {
     }
 }
 
+const queryAndDisplayJobHandler = async (jobRef) => {
+    state.page = elementConsts.DISPLAYJOBPAGE;
+    var myemail = sessionStorage.getItem('myemail');
+
+    letformData = {
+        $class: strings.getJobPostingsTransaction,
+        email: myemail,
+        filterBy: jobRef,
+        filterType: "ALL",
+        dateFrom: strings.beginningOfTime,
+        dateTo: strings.endOfTime,
+        user: ""
+    };
+
+    const tp = new TransactionProcessor(formData, strings.getJobPostingsUrl);
+
+    let resp = await tp.transaction();
+    if (resp.error !== undefined) {
+        console.log("Not found: " + jobRef + "; error = " + resp.error)
+        return;
+    } else {
+        //set the storage items and display
+        console.log("got a job!");
+        var propValue;
+        for (var propName in resp) {
+            propValue = data[propName];
+            sessionStorage.setItem(propName, propValue);
+        }
+        displayJobHandler();
+    }
+}
+
 const displayJobHandler = async () => {
     state.page = elementConsts.DISPLAYJOBPAGE;
     const views = sessionStorage.getItem("views");
@@ -706,37 +738,46 @@ if (document.URL.includes("managejobads")) {
 // VIEW JOB
 if (document.URL.includes("displayjob")) {
 
-    displayJobHandler();
-    let email = sessionStorage.getItem("email");
-    let myemail = sessionStorage.getItem("myemail");
-
-    // only allow amend/expire if the job belongs to this user
-    if (email === myemail) {
-        elements.buttonPanel.style = "block";
-        elements.amendjobbutton.addEventListener('click', e => {
-            e.preventDefault();
-            sessionStorage.setItem("amend", "true");
-            window.location = "createjobad.html";
-        });
-        elements.expirejobbutton.addEventListener('click', e => {
-            e.preventDefault();
-            expireJobHandler();
-        });
-        elements.jobcompany.addEventListener('click', e => {
-            e.preventDefault();
-            sessionStorage.setItem("searchtype", "companytotals");
-            sessionStorage.setItem("what", e.target.text);
-            window.location = "search.html";
-        });
+    var x = location.search;
+    console.log("x = " + x);
+    if (x.length > 0 && x.includes("=")) {
+        let jobRef = x.split("=");
+        console.log("job ref = " + jobRef[1]);
+        queryAndDisplayJobHandler(jobRef);
     } else {
-        elements.buttonPanel.style = "none";
-        if (isExpired() === true) {
-            elements.buttonPanel.innerHTML = `<button id="applyjobbutton" class="btn btn--disabled" disabled>Apply</button>`;
-        } else {
-            elements.buttonPanel.innerHTML = `<button id="applyjobbutton" class="btn btn--orange">Apply</button>`;
-        }
+        displayJobHandler();
+        let email = sessionStorage.getItem("email");
+        let myemail = sessionStorage.getItem("myemail");
 
+        // only allow amend/expire if the job belongs to this user
+        if (email === myemail) {
+            elements.buttonPanel.style = "block";
+            elements.amendjobbutton.addEventListener('click', e => {
+                e.preventDefault();
+                sessionStorage.setItem("amend", "true");
+                window.location = "createjobad.html";
+            });
+            elements.expirejobbutton.addEventListener('click', e => {
+                e.preventDefault();
+                expireJobHandler();
+            });
+            elements.jobcompany.addEventListener('click', e => {
+                e.preventDefault();
+                sessionStorage.setItem("searchtype", "companytotals");
+                sessionStorage.setItem("what", e.target.text);
+                window.location = "search.html";
+            });
+        } else {
+            elements.buttonPanel.style = "none";
+            if (isExpired() === true) {
+                elements.buttonPanel.innerHTML = `<button id="applyjobbutton" class="btn btn--disabled" disabled>Apply</button>`;
+            } else {
+                elements.buttonPanel.innerHTML = `<button id="applyjobbutton" class="btn btn--orange">Apply</button>`;
+            }
+
+        }
     }
+
 
 }
 
@@ -1029,366 +1070,366 @@ if (document.URL.includes("account-settings.html")) {
     });
 }
 
-    // JOBSEEKER PROFILE CONTROLLER 
-    if (document.URL.includes("jobseeker-dashboard.html")) {
-        state.page = elementConsts.PROFILEPAGE;
-        autocomplete(document.getElementById("desiredjobtitle"), jobTitles);
-        var email = sessionStorage.getItem('myemail');
-        var submitProfileBtn = elements.createprofilebutton;
-        let userData = sessionStorage.getItem("userdata");
-        let data = JSON.parse(userData);
+// JOBSEEKER PROFILE CONTROLLER 
+if (document.URL.includes("jobseeker-dashboard.html")) {
+    state.page = elementConsts.PROFILEPAGE;
+    autocomplete(document.getElementById("desiredjobtitle"), jobTitles);
+    var email = sessionStorage.getItem('myemail');
+    var submitProfileBtn = elements.createprofilebutton;
+    let userData = sessionStorage.getItem("userdata");
+    let data = JSON.parse(userData);
 
-        var select = document.getElementById("country");
+    var select = document.getElementById("country");
 
-        // Populate list with options:
-        for (var i = 0; i < countriesArray.length; i++) {
-            var opt = countriesArray[i];
-            select.innerHTML += "<option value=\"" + opt + "\" style=\"color:black\">" + opt + "</option>";
-        }
-
-        if (email != null && email != undefined) {
-            setJobSeekerEmail(email);
-            setProfileFields(data);
-            // save hash for later use in the crypto check
-            sessionStorage.setItem("cvhash", data.params.cvhash);
-        }
-
-        if (data.params.cvhash != undefined) {
-            // no need to do this if the user cv field is empty
-            checkCrytpoHashes(email);
-            console.log("CV CRYPTO CHECK OK!");
-        }
-
-        submitProfileBtn.addEventListener('click', e => {
-            e.preventDefault();
-            let transaction = strings.updateProfileTransaction;
-            let insert = true;
-            if (sessionStorage.getItem("amend") === "true") {
-                insert = false;
-            }
-            updateProfileHandler(transaction, insert);
-        });
-
-        document.querySelector("#file-1").addEventListener('change', function () {
-
-            // set the file name in the view text field
-            var path = this.value;
-            path = path.substring(path.lastIndexOf('\\') + 1);
-            try {
-                imageLoader.loadImage(this.files[0]);
-                profileView.setCVFile(path, data);
-                state.newCV = true;
-            } catch (error) {
-                console.log("Error loading image: " + error);
-                // TODO display popup? 
-            }
-        });
+    // Populate list with options:
+    for (var i = 0; i < countriesArray.length; i++) {
+        var opt = countriesArray[i];
+        select.innerHTML += "<option value=\"" + opt + "\" style=\"color:black\">" + opt + "</option>";
     }
 
-    async function checkCrytpoHashes(myemail) {
+    if (email != null && email != undefined) {
+        setJobSeekerEmail(email);
+        setProfileFields(data);
+        // save hash for later use in the crypto check
+        sessionStorage.setItem("cvhash", data.params.cvhash);
+    }
+
+    if (data.params.cvhash != undefined) {
+        // no need to do this if the user cv field is empty
+        checkCrytpoHashes(email);
+        console.log("CV CRYPTO CHECK OK!");
+    }
+
+    submitProfileBtn.addEventListener('click', e => {
+        e.preventDefault();
+        let transaction = strings.updateProfileTransaction;
+        let insert = true;
+        if (sessionStorage.getItem("amend") === "true") {
+            insert = false;
+        }
+        updateProfileHandler(transaction, insert);
+    });
+
+    document.querySelector("#file-1").addEventListener('change', function () {
+
+        // set the file name in the view text field
+        var path = this.value;
+        path = path.substring(path.lastIndexOf('\\') + 1);
         try {
-            // do the cryptographic check of cv 
-            let hashFromBlockchain = sessionStorage.getItem("cvhash");
-            await imageLoader.getCVFromDatabase(myemail, hashFromBlockchain);
+            imageLoader.loadImage(this.files[0]);
+            profileView.setCVFile(path, data);
+            state.newCV = true;
+        } catch (error) {
+            console.log("Error loading image: " + error);
+            // TODO display popup? 
         }
-        catch (error) {
-            await Swal({
-                title: 'ERROR RETRIEVING IMAGE!',
-                text: error,
-                type: 'error',
-                confirmButtonText: 'OK',
-                confirmButtonColor: '#cc6d14',
-            });
-        }
+    });
+}
+
+async function checkCrytpoHashes(myemail) {
+    try {
+        // do the cryptographic check of cv 
+        let hashFromBlockchain = sessionStorage.getItem("cvhash");
+        await imageLoader.getCVFromDatabase(myemail, hashFromBlockchain);
     }
-    // ADVERTS CONTROLLER
-    if (document.URL.includes("advert.html")) {
-        setPrices();
-        abtn.addEventListener('click', e => {
-            e.preventDefault();
-            sessionStorage.setItem("price", elementConsts.STANDARDPRICE);
-            window.location = "jobcredits.html";
-        });
-
-        bbtn.addEventListener('click', e => {
-            e.preventDefault();
-            sessionStorage.setItem("price", elementConsts.PREMIUMPRICE);
-            window.location = "jobcredits.html";
-        });
-
-    }
-
-    // BUY CREDITS PAGE
-    if (document.URL.includes("jobcredits")) {
-        state.page = elementConsts.BUYCREDITSPAGE;
-        var input = elements.slider;
-        setTotalJobPrice(1);
-        document.querySelector('input[type=range]').value = 1;
-        setJobAdsNumber(1);
-        input.oninput = function () {
-            setJobAdsNumber(input.value);
-            setTotalJobPrice(input.value);
-            restyle(input.value);
-        };
-        var leftSlider = elements.leftsliderbutton;
-        leftSlider.addEventListener('click', e => {
-            e.preventDefault();
-            adjustSlider(-1);
-        });
-        var rightSlider = elements.rightsliderbutton;
-        rightSlider.addEventListener('click', e => {
-            e.preventDefault();
-            adjustSlider(1);
-        });
-
-        var buyButton = elements.buyjobadsbtn;
-        buyButton.addEventListener("click", (e) => {
-            e.preventDefault();
-            buyJobCreditsHandler();
+    catch (error) {
+        await Swal({
+            title: 'ERROR RETRIEVING IMAGE!',
+            text: error,
+            type: 'error',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#cc6d14',
         });
     }
+}
+// ADVERTS CONTROLLER
+if (document.URL.includes("advert.html")) {
+    setPrices();
+    abtn.addEventListener('click', e => {
+        e.preventDefault();
+        sessionStorage.setItem("price", elementConsts.STANDARDPRICE);
+        window.location = "jobcredits.html";
+    });
 
-    if (document.URL.includes("recruiter-dashboard")) {
-        state.page = elementConsts.DASHBOARDPAGE;
+    bbtn.addEventListener('click', e => {
+        e.preventDefault();
+        sessionStorage.setItem("price", elementConsts.PREMIUMPRICE);
+        window.location = "jobcredits.html";
+    });
 
-        setCompanyName(sessionStorage.getItem('mycompany'));
-        setContactName(sessionStorage.getItem('name'));
-        getJobAdsHandler();
-        var createButton = elements.createBtn;
-        createButton.addEventListener("click", (e) => {
-            sessionStorage.setItem("amend", "false");
-            window.location = "createjobad.html";
-        });
-    }
+}
+
+// BUY CREDITS PAGE
+if (document.URL.includes("jobcredits")) {
+    state.page = elementConsts.BUYCREDITSPAGE;
+    var input = elements.slider;
+    setTotalJobPrice(1);
+    document.querySelector('input[type=range]').value = 1;
+    setJobAdsNumber(1);
+    input.oninput = function () {
+        setJobAdsNumber(input.value);
+        setTotalJobPrice(input.value);
+        restyle(input.value);
+    };
+    var leftSlider = elements.leftsliderbutton;
+    leftSlider.addEventListener('click', e => {
+        e.preventDefault();
+        adjustSlider(-1);
+    });
+    var rightSlider = elements.rightsliderbutton;
+    rightSlider.addEventListener('click', e => {
+        e.preventDefault();
+        adjustSlider(1);
+    });
+
+    var buyButton = elements.buyjobadsbtn;
+    buyButton.addEventListener("click", (e) => {
+        e.preventDefault();
+        buyJobCreditsHandler();
+    });
+}
+
+if (document.URL.includes("recruiter-dashboard")) {
+    state.page = elementConsts.DASHBOARDPAGE;
+
+    setCompanyName(sessionStorage.getItem('mycompany'));
+    setContactName(sessionStorage.getItem('name'));
+    getJobAdsHandler();
+    var createButton = elements.createBtn;
+    createButton.addEventListener("click", (e) => {
+        sessionStorage.setItem("amend", "false");
+        window.location = "createjobad.html";
+    });
+}
 
 
-    if (document.URL.includes("index")) {
-        const searchBtn = elements.searchBtn;
+if (document.URL.includes("index")) {
+    const searchBtn = elements.searchBtn;
 
-        searchBtn.addEventListener("click", (e) => {
-            e.preventDefault();
-            let what = document.getElementById("job");
-            let where = document.getElementById("location");
-            sessionStorage.setItem("what", what.value);
-            sessionStorage.setItem("where", where.value);
-            window.location = "search.html";
-        });
-        const advertBtn = elements.advertBtn;
-        advertBtn.addEventListener("click", (e) => {
-            e.preventDefault();
-            window.location = "advert.html";
-        });
-        getFavourites();
+    searchBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        let what = document.getElementById("job");
+        let where = document.getElementById("location");
+        sessionStorage.setItem("what", what.value);
+        sessionStorage.setItem("where", where.value);
+        window.location = "search.html";
+    });
+    const advertBtn = elements.advertBtn;
+    advertBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        window.location = "advert.html";
+    });
+    getFavourites();
 
-        addFavouritesLinkListener();
-    }
+    addFavouritesLinkListener();
+}
 
-    if (document.URL.includes("register")) {
-        state.page = elementConsts.REGISTERPAGE;
-        var radiobtn = elements.jobSeekerTabId;
-        radiobtn.checked = true;
-        state.tabbedPane = elements.tabbedPane1;
-        state.tabIndex = elementConsts.JOBSEEKER;;
+if (document.URL.includes("register")) {
+    state.page = elementConsts.REGISTERPAGE;
+    var radiobtn = elements.jobSeekerTabId;
+    radiobtn.checked = true;
+    state.tabbedPane = elements.tabbedPane1;
+    state.tabIndex = elementConsts.JOBSEEKER;;
 
-        // REGISTER RECRUITER
-        var recRegBtn = elements.registerRecruiterButton;
+    // REGISTER RECRUITER
+    var recRegBtn = elements.registerRecruiterButton;
 
-        recRegBtn.addEventListener('click', e => {
-            e.preventDefault();
-            loginView.clearValidationErrorMessages(state.tabIndex);
-            state.inputType = inputType.REGISTER;
-            signInHandler(e, registerView, strings.registerRecruiterUrl);
-        });
+    recRegBtn.addEventListener('click', e => {
+        e.preventDefault();
+        loginView.clearValidationErrorMessages(state.tabIndex);
+        state.inputType = inputType.REGISTER;
+        signInHandler(e, registerView, strings.registerRecruiterUrl);
+    });
 
-        // REGISTER JOBSEEKER
-        var seekRegBtn = elements.registerJobSeekerButton;
+    // REGISTER JOBSEEKER
+    var seekRegBtn = elements.registerJobSeekerButton;
 
-        seekRegBtn.addEventListener('click', e => {
-            e.preventDefault();
-            loginView.clearValidationErrorMessages(state.tabIndex); // clear the one not selected ie login 
-            state.inputType = inputType.REGISTER;
-            signInHandler(e, registerJobSeekerView, strings.registerJobSeekerUrl);
-        });
+    seekRegBtn.addEventListener('click', e => {
+        e.preventDefault();
+        loginView.clearValidationErrorMessages(state.tabIndex); // clear the one not selected ie login 
+        state.inputType = inputType.REGISTER;
+        signInHandler(e, registerJobSeekerView, strings.registerJobSeekerUrl);
+    });
 
-        // LOGIN RECRUITER
-        var recLoginBtn = elements.loginRecruiterButton;
+    // LOGIN RECRUITER
+    var recLoginBtn = elements.loginRecruiterButton;
 
-        recLoginBtn.addEventListener('click', e => {
-            e.preventDefault();
-            registerView.clearValidationErrorMessages(state.tabIndex);
-            state.inputType = inputType.LOGIN;
-            signInHandler(e, loginView, strings.loginRecruiterUrl, strings.recruiterLoginTransaction);
-        });
+    recLoginBtn.addEventListener('click', e => {
+        e.preventDefault();
+        registerView.clearValidationErrorMessages(state.tabIndex);
+        state.inputType = inputType.LOGIN;
+        signInHandler(e, loginView, strings.loginRecruiterUrl, strings.recruiterLoginTransaction);
+    });
 
-        // LOGIN JOBSEEKER
-        var seekLoginBtn = elements.loginJobSeekerButton;
+    // LOGIN JOBSEEKER
+    var seekLoginBtn = elements.loginJobSeekerButton;
 
-        seekLoginBtn.addEventListener('click', e => {
-            e.preventDefault();
-            registerJobSeekerView.clearValidationErrorMessages(state.tabIndex); // clear the one not selected ie login 
-            state.inputType = inputType.LOGIN;
-            signInHandler(e, loginView, strings.loginJobSeekerUrl, strings.jobSeekerLoginTransaction);
-        });
+    seekLoginBtn.addEventListener('click', e => {
+        e.preventDefault();
+        registerJobSeekerView.clearValidationErrorMessages(state.tabIndex); // clear the one not selected ie login 
+        state.inputType = inputType.LOGIN;
+        signInHandler(e, loginView, strings.loginJobSeekerUrl, strings.jobSeekerLoginTransaction);
+    });
 
-        var fields = elements.inputFields;
-        var i;
-        for (i = 0; i < fields.length; i++) {
-            fields[i].addEventListener("blur", (e) => {
-                if (state.inputType == inputType.REGISTER) {
-                    if (state.tabIndex == elementConsts.JOBSEEKER) {
-                        registerJobSeekerView.validateField(e.target, state.tabIndex);
-                    } else {
-                        registerView.validateField(e.target, state.tabIndex);
-                    }
+    var fields = elements.inputFields;
+    var i;
+    for (i = 0; i < fields.length; i++) {
+        fields[i].addEventListener("blur", (e) => {
+            if (state.inputType == inputType.REGISTER) {
+                if (state.tabIndex == elementConsts.JOBSEEKER) {
+                    registerJobSeekerView.validateField(e.target, state.tabIndex);
                 } else {
-                    loginView.validateField(e.target, state.tabIndex);
+                    registerView.validateField(e.target, state.tabIndex);
                 }
-            });
-        }
-
-        var tabs = elements.tabs;
-        for (i = 0; i < tabs.length; i++) {
-            tabs[i].addEventListener("click", (e) => {
-                tabClickHandler(e);
-            });
-        }
-    }
-    window.onload = () => {
-        let user = sessionStorage.getItem("user");
-        let type = parseInt(user);
-        if (type === elementConsts.JOBSEEKER) {
-            let userData = sessionStorage.getItem("userdata");
-            let data = JSON.parse(userData);
-            navBarSetLoggedIn(state.loggedIn, data.params.name.firstName);
-        } else {
-            navBarSetLoggedIn(state.loggedIn, "Bob");
-        }
+            } else {
+                loginView.validateField(e.target, state.tabIndex);
+            }
+        });
     }
 
-    var el = document.getElementById('signoutlink');
+    var tabs = elements.tabs;
+    for (i = 0; i < tabs.length; i++) {
+        tabs[i].addEventListener("click", (e) => {
+            tabClickHandler(e);
+        });
+    }
+}
+window.onload = () => {
     let user = sessionStorage.getItem("user");
     let type = parseInt(user);
-    if (type === elementConsts.RECRUITER) {
-        el = document.getElementById('recruiterlogout');
+    if (type === elementConsts.JOBSEEKER) {
+        let userData = sessionStorage.getItem("userdata");
+        let data = JSON.parse(userData);
+        navBarSetLoggedIn(state.loggedIn, data.params.name.firstName);
+    } else {
+        navBarSetLoggedIn(state.loggedIn, "Bob");
     }
-    if (el != null) {
-        el.onclick = function () {
-            console.log("SIGN OUT CLICKED...!!");
-            signOutHandler();
-        };
-    }
+}
 
-    // getImage();
+var el = document.getElementById('signoutlink');
+let user = sessionStorage.getItem("user");
+let type = parseInt(user);
+if (type === elementConsts.RECRUITER) {
+    el = document.getElementById('recruiterlogout');
+}
+if (el != null) {
+    el.onclick = function () {
+        console.log("SIGN OUT CLICKED...!!");
+        signOutHandler();
+    };
+}
+
+// getImage();
 
 
-    // async function getImage() {
-    //     // var xhr = new XMLHttpRequest();
-    //     var imageURL = 'http://localhost:8083/img/bubbles.jpg';
-    //     var response = await fetch(imageURL);
-    //     console.log(">>>>>>>>>>>>>>>>>>>>>>>BEGIN>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-    //     console.log(response);
-    //     console.log(">>>>>>>>>>>>>>>>>>>>>>>END>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+// async function getImage() {
+//     // var xhr = new XMLHttpRequest();
+//     var imageURL = 'http://localhost:8083/img/bubbles.jpg';
+//     var response = await fetch(imageURL);
+//     console.log(">>>>>>>>>>>>>>>>>>>>>>>BEGIN>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+//     console.log(response);
+//     console.log(">>>>>>>>>>>>>>>>>>>>>>>END>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 
-    //     var blob = await response.blob();
-    //     console.log(blob);
-    //     console.log(">>>>>>>>>>>>>>>>>>>>>>>END 2 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-    //     var reader = new FileReader();
-    //     reader.readAsDataURL(blob);
-    //     reader.onloadend = function () {
-    //         console.log(reader.result);
-    //         console.log(">>>>>>>>>>>>>>>>>>>>>>>END 3 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-    //         console.log("STRING LEN = " + reader.result.length);
-    //     };
+//     var blob = await response.blob();
+//     console.log(blob);
+//     console.log(">>>>>>>>>>>>>>>>>>>>>>>END 2 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+//     var reader = new FileReader();
+//     reader.readAsDataURL(blob);
+//     reader.onloadend = function () {
+//         console.log(reader.result);
+//         console.log(">>>>>>>>>>>>>>>>>>>>>>>END 3 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+//         console.log("STRING LEN = " + reader.result.length);
+//     };
 
-    // }
-    // getImage();
-    var idbSupported = false;
-    var db;
-    var indexdbtransaction;
-    var store;
+// }
+// getImage();
+var idbSupported = false;
+var db;
+var indexdbtransaction;
+var store;
 
-    async function loadObjectStore() {
-        console.log("STARTING...");
-        document.addEventListener("DOMContentLoaded", async function () {
+async function loadObjectStore() {
+    console.log("STARTING...");
+    document.addEventListener("DOMContentLoaded", async function () {
 
-            if ("indexedDB" in window) {
-                idbSupported = true;
+        if ("indexedDB" in window) {
+            idbSupported = true;
+        }
+
+        if (idbSupported) {
+            var openRequest = await indexedDB.open("datastore", 1);
+
+            openRequest.onupgradeneeded = function (e) {
+                console.log("running onupgradeneeded");
+                var thisDB = e.target.result;
+
+                if (!thisDB.objectStoreNames.contains("jobs")) {
+                    console.log("Creating objectstore jobs")
+                    thisDB.createObjectStore("jobs");
+                }
             }
 
-            if (idbSupported) {
-                var openRequest = await indexedDB.open("datastore", 1);
+            openRequest.onsuccess = async function (e) {
+                console.log("ObjectStore: Success!");
+                db = e.target.result;
+                indexdbtransaction = await db.transaction(["jobs"], "readwrite");
 
-                openRequest.onupgradeneeded = function (e) {
-                    console.log("running onupgradeneeded");
-                    var thisDB = e.target.result;
+                store = await indexdbtransaction.objectStore("jobs");
+                let request = await store.get(1);
 
-                    if (!thisDB.objectStoreNames.contains("jobs")) {
-                        console.log("Creating objectstore jobs")
-                        thisDB.createObjectStore("jobs");
-                    }
-                }
-
-                openRequest.onsuccess = async function (e) {
-                    console.log("ObjectStore: Success!");
-                    db = e.target.result;
-                    indexdbtransaction = await db.transaction(["jobs"], "readwrite");
-
-                    store = await indexdbtransaction.objectStore("jobs");
-                    let request = await store.get(1);
-
-                    request.onsuccess = function (e) {
-                        cachedData = e.target.result;
-                        if (cachedData != undefined) {
-                            let rows = JSON.parse(cachedData);
-                            if (rows.length > 0) {
-                                console.log("************** num rows in cache = " + rows.length);
-                            }
-                        }
-
-                        if (document.URL.includes("search.htm")) {
-                            searchScreenController();
-                        } else if (document.URL.includes("createjobad")) {
-                            createJobController();
+                request.onsuccess = function (e) {
+                    cachedData = e.target.result;
+                    if (cachedData != undefined) {
+                        let rows = JSON.parse(cachedData);
+                        if (rows.length > 0) {
+                            console.log("************** num rows in cache = " + rows.length);
                         }
                     }
 
-                    request.onerror = function (e) {
-                        console.log("Error");
-                        console.dir(e);
+                    if (document.URL.includes("search.htm")) {
+                        searchScreenController();
+                    } else if (document.URL.includes("createjobad")) {
+                        createJobController();
                     }
                 }
 
-                openRequest.onerror = function (e) {
+                request.onerror = function (e) {
                     console.log("Error");
                     console.dir(e);
                 }
-
             }
 
-        }, false);
-    }
-    // This overwrites the cache with a new cache (supplied as data)
-    async function addIndexedData(data) {
-        // Open up a transaction as usual
-        var objectStore = db.transaction(['jobs'], "readwrite").objectStore('jobs');
+            openRequest.onerror = function (e) {
+                console.log("Error");
+                console.dir(e);
+            }
 
-        // Create another request that inserts the item back into the database
-        var updateTitleRequest = objectStore.put(data, 1);
+        }
 
-        // Log the transaction that originated this request
-        console.log("The transaction that originated this request is " + updateTitleRequest.transaction);
+    }, false);
+}
+// This overwrites the cache with a new cache (supplied as data)
+async function addIndexedData(data) {
+    // Open up a transaction as usual
+    var objectStore = db.transaction(['jobs'], "readwrite").objectStore('jobs');
 
-        // When this new request succeeds, run the displayData() function again to update the display
-        updateTitleRequest.onsuccess = function () {
-            console.log("SUCCESS!!!! WOOOHOOOO");
-        };
-    }
+    // Create another request that inserts the item back into the database
+    var updateTitleRequest = objectStore.put(data, 1);
+
+    // Log the transaction that originated this request
+    console.log("The transaction that originated this request is " + updateTitleRequest.transaction);
+
+    // When this new request succeeds, run the displayData() function again to update the display
+    updateTitleRequest.onsuccess = function () {
+        console.log("SUCCESS!!!! WOOOHOOOO");
+    };
+}
 
 
-    let A = state.loggedIn === false;
-    let B = document.URL.includes("index") === false;
-    let C = document.URL.includes("register") === false
-
-    if (A && B && C) {
-        window.location = "register.html";
-    } 
+let A = state.loggedIn === false;
+let B = document.URL.includes("index") === false;
+let C = document.URL.includes("register") === false;
+let D = document.URL.includes("display") === false;
+if (A && B && C && D) {
+    window.location = "register.html";
+} 

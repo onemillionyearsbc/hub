@@ -127,8 +127,8 @@ const clearResults = () => {
 };
 
 
-function isInFavourites(ref) {
-    return (state.favourites.filter(e => e.jobReference === ref).length > 0);
+function isInFavourites(ref) { 
+    return (state.favourities != undefined  && state.favourites.filter(e => e.jobReference === ref).length > 0);
 }
 
 function truncate(obj) {
@@ -212,6 +212,9 @@ export const renderResults = (jobs, page = 1, resPerPage = 10) => {
     for (let p of jobtitles) {
         p.addEventListener("click", (e) => {
             let data = pageOfJobs[p.dataset.index];
+
+            // XXXX move intomethod to be reused when we query for job
+            // MJR TODO
             var propValue;
             for (var propName in data) {
                 propValue = data[propName];

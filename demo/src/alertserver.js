@@ -1,24 +1,15 @@
 
 var nodemailer = require('nodemailer');
 var schedule = require('node-schedule');
-const bnUtil = require('../bn-connection-util');
-const axios = require('axios');
-const fetch = require('node-fetch');
+// var EmailTemplate = require('email-templates').EmailTemplate;
+// var path = require('path');
+// var Promise = require('bluebird');
 
-let ukdata = false; // true = generates jobs in Swindon, Wiltshire area of UK
-const participantNamespace = 'io.onemillionyearsbc.hubtutorial';
-const recruiterResourceName = 'HubRecruiter';
-const seekerResourceName = 'HubJobSeeker';
-const jobnamespace = 'io.onemillionyearsbc.hubtutorial.jobs';
-
-const transactionType = "CreateJobPosting";
-
-bnUtil.cardName = 'admin@hubtutorial';
 console.log("Waiting for the time...");
-
+ 
 var rule = new schedule.RecurrenceRule();
-rule.hour = 10;
-rule.minute = 59;
+rule.hour=09;
+rule.minute=18;
 
 var j = schedule.scheduleJob(rule, function () {
     transporter.sendMail(HelperOptions, (error, info) => {
@@ -30,6 +21,10 @@ var j = schedule.scheduleJob(rule, function () {
     });
 });
 
+function loadTemplate (templateName, contexts) {
+
+}
+
 let transporter = nodemailer.createTransport({
     service: 'gmail',
     secure: false,
@@ -39,7 +34,7 @@ let transporter = nodemailer.createTransport({
         pass: 'Cazenove01'
     },
     debug: false,
-    logger: true
+    logger: true 
 });
 
 // 1. loop through all jobseekers
@@ -47,27 +42,6 @@ let transporter = nodemailer.createTransport({
 // 3. for each alert, run the alert search and get back a list of jobs
 // 4. get the name, email and for each job: job title and location -> poke into markup
 // 5. poke the job ref into the markup <a link> element
-try {
-    bnUtil.connect(main);
-} catch (error) { }
-
-async function main() {
-
-    const bnDef = bnUtil.connection.getBusinessNetwork();
-    const factory = bnDef.getFactory();
-
-    var registry = await bnUtil.connection.getParticipantRegistry(participantNamespace + '.'
-        + seekerResourceName)
-
-    console.log('Received Registry: ', registry.id);
-    var seekers = await registry.getAll();
-
-    for (var i = 0; i < seekers.length; i++) {
-        console.log("Seeker = " + seekers[i].email)
-    }
-
-    console.log('Retrieved Hub JobSeekers : ', seekers.length);
-}
 
 let markup = `<!DOCTYPE html>
 <html lang="en" style="margin-top:0;margin-bottom:0;margin-right:0;margin-left:0;padding-top:0;padding-bottom:0;padding-right:0;padding-left:0;box-sizing:border-box;font-size:62.5%;" >
@@ -121,9 +95,9 @@ let HelperOptions = {
     to: 'emerysolutions@yahoo.co.uk',
     subject: 'Do Not Reply',
     attachments: [{
-        filename: 'cheat.png',
-        path: './img/cheat.png',
-        cid: 'logo'
-    }],
+      filename: 'cheat.png',
+      path: './img/cheat.png',
+      cid: 'logo'
+  }],
     html: markup
 };
