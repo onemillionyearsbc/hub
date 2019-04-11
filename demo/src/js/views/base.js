@@ -152,10 +152,10 @@ export const dbelements = {
 
 // Romania Hub (Linux)
 // var ipAddress = '84.117.182.193';
-var ipAddress = '192.168.0.66';
+// var ipAddress = '192.168.0.66';
 
 // localhost (Windows)
-// var ipAddress = "localhost";
+var ipAddress = "localhost";
 //-------------------------------------------------------------------
 
 var recruiterLoginTransaction = 'io.onemillionyearsbc.hubtutorial.GetHubRecruiter';

@@ -14,7 +14,7 @@ const jobnamespace = 'io.onemillionyearsbc.hubtutorial.jobs';
 const transactionType = "CreateJobPosting";
 
 bnUtil.cardName = 'admin@hubtutorial';
-console.log("Waiting for the time...");
+
 
 // TODO listen to composer events so when a "demoalert" event occurs
 // we fire the alert search and send out an immediate email to the jobseeker
@@ -46,6 +46,7 @@ let transporter = nodemailer.createTransport({
     logger: true
 });
 
+
 // 1. loop through all jobseekers
 // 2. if number of alerts set up > 0
 // 3. for each alert, run the alert search and get back a list of jobs
@@ -55,10 +56,20 @@ try {
     bnUtil.connect(main);
 } catch (error) { }
 
-async function main() {
 
-    const bnDef = bnUtil.connection.getBusinessNetwork();
-    const factory = bnDef.getFactory();
+
+
+console.log("Waiting for the time...");
+async function main() {
+    // const bnDef = await bnUtil.connection.getBusinessNetwork();
+
+    console.log("Subscribing to events...");
+    bnUtil.connection.on('event', (event) => {
+        // event: { "$class": "org.namespace.BasicEvent", "eventId": "0000-0000-0000-000000#0" }
+        console.log("Received hubutil event! event = " + event);
+        console.log("event message = " + event.message);
+    });
+    // const factory = bnDef.getFactory();
 
     var registry = await bnUtil.connection.getParticipantRegistry(participantNamespace + '.'
         + seekerResourceName)

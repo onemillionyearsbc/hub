@@ -1430,6 +1430,7 @@ let A = state.loggedIn === false;
 let B = document.URL.includes("index") === false;
 let C = document.URL.includes("register") === false;
 let D = document.URL.includes("display") === false;
-if (A && B && C && D) {
+let E = document.URL.includes("advert") === false;
+if (A && B && C && E) {
     window.location = "register.html";
 } 

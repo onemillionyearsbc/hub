@@ -16,6 +16,10 @@ concept AlertCriteria {
   o String    country optional
 } 
 
+event AlertEvent {
+  o String    message
+}
+
 asset JobAlert identified by alertId {
   o String     alertId // alertId will be {emaii-index} eg emerysolutions@yahoo.co.uk-
   o DateTime   datePosted
@@ -209,22 +213,15 @@ transaction GetJobPostingsDynamic {
   o Integer expiringDays default=5
 }
 
-
-@commit(false)
+// TODO put this back
+// @commit(false)
 @returns(JobPosting[])
 transaction FireAlertSearch {
-  // o Boolean   remote default=false
-  // o Boolean   employer default=true
-  // o String[]  skills 
-  // o String    city optional 
-  // o String    country optional
-  o String email
-  o String filterBy optional
-  o JobFilterType filterType optional
-  o DateTime dateFrom optional
-  o DateTime dateTo optional
-  o String user optional
-  o Integer expiringDays default=5
+  o Boolean   employer default=true
+  o String[]  skills 
+  o String    city optional 
+  o String    country optional
+  o Boolean   remote default=false
 }
 
 @commit(false)

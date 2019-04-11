@@ -60,7 +60,8 @@ async function main(){
     }
    
     const jsonArray = await csv().fromFile(csvFilePath);
-	// var obj = { a: 1, b: 2 };
+    // var obj = { a: 1, b: 2 };
+    let count = 0;
 	for (var key in jsonArray) {
 		if (jsonArray.hasOwnProperty(key)) {
 			var val = jsonArray[key];
@@ -82,7 +83,8 @@ async function main(){
             console.log("last name = " + val.last_name);
             try {
                 await bnUtil.connection.submitTransaction(transaction);
-                console.log("Transaction processed: Account created for email " + val.email)
+                console.log("Transaction processed: Account created for email " + val.email);
+                count++;
         
             } catch (error) {
                 console.log('Account creation failed: ' + error);
@@ -90,7 +92,7 @@ async function main(){
             }        
 		}
     }
-    console.log("All done.")
+    console.log("All done. "+ count + " accounts created!");
     bnUtil.disconnect();
 
 }
