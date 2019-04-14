@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css?family=Josefin+Sans:300,400,400i|Nunito:300,300i" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="shortcut icon" type="image/png" href="img/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <title>JobSeeker Profile</title>
+</head>
+
+<body>
+    <div id="dash" class="jsdashboard">
+        <div>
+
+            <div class="dashboard__topbar">
+                <div class="topleft">
+                    <a href="index.html">
+                        <img src="img/logo-small.png" alt="1MYBC">
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div>
+            <nav class="navbar">
+                <ul class="navbar__left">
+                    <li class="item-1"><a href="#jobs">Dashboard</a></li>
+                    <li><a href="#companies">Job Ads</a></li>
+
+                </ul>
+                <ul class="navbar__right">
+                    <li id="saved">
+                        <a href="favourites.html" class="link-icon"><i class="starwithnocircle fa fa-star"></i>Saved
+                            Jobs</a>
+                    </li>
+                    <li class="signin"><a href="register.html" class="link-icon"><i class="icon far fa-user"></i>Sign
+                            In</a></li>
+                    <div id="accountmenu" class="dropdownnavbar" style="display: none;">
+                        <button id="accountmenubtn" class="dropbtn">NOB's account
+                            <i class="left-icon icon far fa-user"></i>
+                            <i class="right-icon fa fa-caret-down"></i>
+                        </button>
+                        <div class="dropdownnavbar-content">
+                            <a href="jobseeker-account.html">Account</a>
+                            <a href="jobseeker-dashboard.html">Profile</a>
+                            <a href="#">Applications</a>
+                            <a id="signoutlink" href="#">Sign Out</a>
+                        </div>
+                    </div>
+
+                    </li>
+                    <div id="accountmenu" class="dropdown" style="display: none;">
+                        <button id="accountmenubtn" class="dropbtn">NOB's account
+                            <i class="left-icon icon far fa-user"></i>
+                            <i class="right-icon fa fa-caret-down"></i>
+                        </button>
+                        <div class="dropdown-content">
+                            <a href="#">Account</a>
+                            <a href="jobseeker-dashboard.html">Profile</a>
+                            <a href="#">Applications</a>
+                            <a id="signoutlink" href="#">Sign Out</a>
+                        </div>
+                    </div>
+                </ul>
+            </nav>
+            <div class="container profileparent">
+                <div class="profileparent__top animated zoomIn delay-2s">
+                    <p class="title">Create Jobs By EMail</p>
+                    <p id="instr" class="instructions">We'll send you an email once a day with the latest jobs
+                        you're interested in.
+                    </p>
+                </div>
+                <div class="profileparent__bottom animated zoomIn delay-2s">
+                    <div id="alertpage" class="alert createjobad__parent">
+                        <form autocomplete="off" id="adform" class="myForm" top="false">
+                            <p class="profiletitle">What kind of Job Are You Looking For?</p>
+
+                            <div class="alert__main">
+                                <div class="createjobad__parent--form-item">
+                                    <input id="skills" class="loginform__textfield glowing-border" type="text"
+                                        placeholder="Skills" autocomplete="off" />
+                                    <label for="skills" class="loginform__label">Skills</label>
+                                </div>
+                                <div class="firstrow">
+                                    <div class="toggle">
+                                        <input type="radio" name="remote" value="true" id="yesremote"
+                                            checked="checked" />
+                                        <label for="yesremote">Remote</label>
+                                        <input type="radio" name="remote" value="false" id="noremote" />
+                                        <label for="noremote">Non Remote</label>
+                                    </div>
+                                    <div class="toggle right">
+                                        <input type="radio" name="jobtype" value="true" id="fulltime"
+                                            checked="checked" />
+                                        <label for="fulltime">Full Time</label>
+                                        <input type="radio" name="jobtype" value="false" id="contract" />
+                                        <label for="contract">Contract</label>
+                                    </div>
+                                </div>
+                                <div class="search_categories">
+                                    <div class="select">
+                                        <select class="dropdown"
+                                            onchange="document.getElementById('country').style.color = 'black'"
+                                            name="search_categories2" id="country">
+
+                                            <option selected disabled hidden>Country</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <p id="dd5" class="mybollocks">Country</p>
+                                <div class="createjobad__parent--form-item">
+                                    <input id="postcode" class="loginform__textfield form-control glowing-border"
+                                        type="text" placeholder="City" autocomplete="off" />
+                                    <label for="postcode" class="loginform__label">City</label>
+                                </div>
+
+                                <div class="search_categories">
+                                    <div class="select">
+                                        <select class="dropdown"
+                                            onchange="document.getElementById('blockchainused').style.color = 'black'"
+                                            name="search_categories2" id="blockchainused">
+                                            <option selected disabled hidden>Blockchain</option>
+                                            <option value="NONE" style="color:black">None</option>
+                                            <option value="CORDA" style="color:black">Corda</option>
+                                            <option value="ETHEREUM" style="color:black">Ethereum</option>
+                                            <option value="HYPERLEDGER" style="color:black">Hyperledger</option>
+                                            <option value="NEO" style="color:black">Neo</option>
+                                            <option value="QUOROM" style="color:black">Quorum</option>
+                                            <option value="RIPPLE" style="color:black">Ripple</option>
+                                            <option value="OTHER" style="color:black">Other</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <p id="dd2" class="mybollocks">Blockchain</p>
+                                <button id="submitalertbtn" class="btn btn--orange">Email Me Jobs Like These</button>
+                                <p class="padding"></p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+<script>jQuery(".dropdown").change(function (e) {
+        var element = document.getElementById("bollocks1");
+
+        if (e.target.id == "blockchainused") {
+            element = document.getElementById("dd2");
+        }
+        if (e.target.id == "country") {
+            element = document.getElementById("dd5");
+        }
+        element.style.display = "block";
+    });
+</script>
+
+</html>

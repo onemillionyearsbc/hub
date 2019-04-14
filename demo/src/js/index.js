@@ -12,6 +12,8 @@ import * as loginView from './views/loginView';
 import * as createJobAdView from './views/createJobAdView';
 import * as manageJobAdsView from './views/manageJobAdsView';
 import * as profileView from './views/profileView';
+import * as accountView from './views/accountView';
+import * as alertView from './views/alertView';
 
 import { getFormFor, clearError, elements, dbelements, elementConsts, inputType, renderLoader, renderLoaderEnd, renderLoaderEndByNumber, renderLoaderByPixelsFromTop, clearLoader, navBarSetLoggedIn, setLoggedIn, strings, enableCreateJobButton, autocomplete, jobTitles, setButtonHandlers, displayErrorPopup, displaySuccessPopup, updateFavouritesTotal, addFavouritesLinkListener, countriesArray } from './views/base';
 import { setCompanyName, setContactName, getJobAdsData, setJobAdsData, setJobCreditsRemaining } from './views/recruiterDashboardView';
@@ -24,7 +26,6 @@ import { renderResults, setTotalJobsBucket, handleNext, handlePrev, applyFilter,
 import { renderFavouriteResults } from './views/favouritesView';
 import { setPrices } from './views/advertView';
 import { setJobSeekerEmail, setProfileFields } from './views/profileView';
-
 
 loadObjectStore();
 
@@ -133,8 +134,9 @@ const signOutHandler = async () => {
             renderLoaderEndByNumber(elements.profilePage, 5);
         } else if (state.page === elementConsts.ACCOUNTPAGE) {
             renderLoaderEndByNumber(elements.profilePage, 5);
+        } else if (state.page === elementConsts.ALERTPAGE) {
+            renderLoader(elements.viewJob);
         }
-
     }
 
     var email = sessionStorage.getItem('myemail');
@@ -190,6 +192,7 @@ const searchJobsHandler = async () => {
     if (cachedData != null && cachedData != undefined) {
         cachedData = JSON.parse(cachedData);
         renderResults(cachedData);
+        console.log("SETTING TOTAL JOBS BUCKET...")
         setTotalJobsBucket(cachedData);
     } else {
         var data = {
@@ -587,7 +590,6 @@ const updateProfileHandler = async (transaction, ins) => {
 
         displaySuccessPopup('Profile Successfully Updated!');
         setLoggedIn(state, true, resp.params.name.firstName);
-        console.log("logged in as..." + formData.params.name.firstName);
         sessionStorage.setItem("userdata", JSON.stringify(formData));
         setProfileFields(formData);
     }
@@ -1039,6 +1041,25 @@ function createJobController() {
     autocomplete(document.getElementById("jobtitle"), jobTitles);
 }
 
+// JOBSEEKER ALERT CONTROLLER 
+if (document.URL.includes("createalert.html")) {
+    state.page = elementConsts.ALERTPAGE;
+    var select = document.getElementById("country");
+
+    // Populate list with options:
+    for (var i = 0; i < countriesArray.length; i++) {
+        var opt = countriesArray[i];
+        select.innerHTML += "<option value=\"" + opt + "\" style=\"color:black\">" + opt + "</option>";
+    }
+
+
+    elements.submitAlert.addEventListener('click', e => {
+        e.preventDefault();
+        createAlertHandler();
+    });
+
+}
+
 // JOBSEEKER ACCOUNT CONTROLLER 
 if (document.URL.includes("jobseeker-account.html")) {
     state.page = elementConsts.ACCOUNTPAGE;
@@ -1051,6 +1072,14 @@ if (document.URL.includes("jobseeker-account.html")) {
         e.preventDefault();
         window.location = "account-settings.html";
     });
+
+    elements.createAlert.addEventListener('click', e => {
+        e.preventDefault();
+        window.location = "createalert.html";
+    });
+
+    accountView.setAlertData(data);
+
     // <li id="changeemail">Change email address</li>
     // <li id="changepref">Change email preferences and subscriptions</li>
     // <li id="managetok">Manage Tokens</li>
@@ -1058,9 +1087,6 @@ if (document.URL.includes("jobseeker-account.html")) {
 
 
 }
-
-
-
 
 // JOBSEEKER ACCOUNT SETTINGS CONTROLLER 
 if (document.URL.includes("account-settings.html")) {
@@ -1125,6 +1151,33 @@ if (document.URL.includes("jobseeker-dashboard.html")) {
         }
     });
 }
+
+async function createAlertHandler() {
+    renderLoader(elements.alertPage);
+    var myemail = sessionStorage.getItem('myemail');
+    var data = alertView.getFormData(myemail);
+
+    const tp = new TransactionProcessor(data, strings.createAlertUrl);
+
+    let resp = await tp.transaction();
+
+    var err = null;
+    if (resp.error !== undefined) {
+        err = resp.error;
+    }
+    if (err != null) {
+        clearLoader();
+        if (err.message.includes("maximum")) {
+            displayErrorPopup('Failed to create alert: Maximum 3 alerts per user');
+        } else {
+            displayErrorPopup('Failed to create alert: ' + err.message);
+        } 
+    } else {
+        clearLoader();
+        await displaySuccessPopup('Job Alert Successfully Created!');
+    }
+}
+
 
 async function checkCrytpoHashes(myemail) {
     try {

@@ -113,11 +113,14 @@
                                 </div>
                                 <div class="account__main--right">
                                     <h1>Jobs By Email</h1>
-                                    <p id="instr" class="texty">Get all the latest jobs matching your criteria sent to
-                                        your inbox in one alert every morning. You can create up to 3 jobs by email
-                                        alerts.
-
-                                    </p>
+                                    <div class="textbutton">
+                                        <p id="instr" class="texty">Get all the latest jobs matching your criteria sent to
+                                            your inbox in one alert every morning. You can create up to 3 jobs by email
+                                            alerts. Click 'Test Alert' to receive an immediate email with the search results.
+                                        </p>
+                                        <button id="createalertbtn" class="btn btn--orange">Create Alert</button>
+                                    </div>
+                                   
                                     <div class="jobalert">
                                         <div class="top">
                                             <p>Job Alert 1</p>
@@ -137,29 +140,51 @@
                                                 <span>Criteria:</span>
                                                 <p>Developer, British Transport Police</p>
                                             </div>
+                                            <div class="links">
+                                                <ul class="alertlist">
+                                                    <li id="editcriteria">edit criteria
+                                                    </li>
+                                                    <li id="editcriteria">test alert
+                                                    </li>
+                                                    <li id="deletealert">delete alert
+                                                    </li>
+
+                                                </ul>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="jobalert">
-                                            <div class="top">
-                                                <p>Job Alert 2</p>
-                                                <p>Set up 10 days ago</p>
+                                        <div class="top">
+                                            <p>Job Alert 2</p>
+                                            <p>Set up 10 days ago</p>
+                                        </div>
+                                        <div class="middle">
+                                            <div class="togglefield">
+                                                <div class="toggle">
+                                                    <input type="radio" name="status2" value="true" id="onstatus"
+                                                        checked="checked" />
+                                                    <label for="onstatus">Alert On</label>
+                                                    <input type="radio" name="status2" value="false" id="offstatus" />
+                                                    <label for="offstatus">Alert Off</label>
+                                                </div>
                                             </div>
-                                            <div class="middle">
-                                                <div class="togglefield">
-                                                    <div class="toggle">
-                                                        <input type="radio" name="status2" value="true" id="onstatus"
-                                                            checked="checked" />
-                                                        <label for="onstatus">Alert On</label>
-                                                        <input type="radio" name="status2" value="false" id="offstatus" />
-                                                        <label for="offstatus">Alert Off</label>
-                                                    </div>
-                                                </div>
-                                                <div class="criteriafield">
-                                                    <span>Criteria:</span>
-                                                    <p>Blockchain, remote, cake, mushrooms, C++</p>
-                                                </div>
+                                            <div class="criteriafield">
+                                                <span>Criteria:</span>
+                                                <p>Blockchain, remote, cake, mushrooms, C++</p>
+                                            </div>
+                                            <div class="links">
+                                                <ul class="alertlist">
+                                                    <li id="editcriteria">edit criteria
+                                                    </li>
+                                                    <li id="editcriteria">fire search
+                                                    </li>
+                                                    <li id="deletealert">delete alert
+                                                    </li>
+
+                                                </ul>
                                             </div>
                                         </div>
+                                    </div>
                                 </div>
                             </div>
                             <p class="profiletitle">My Job Applications</p>

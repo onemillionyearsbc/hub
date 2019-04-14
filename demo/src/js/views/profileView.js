@@ -141,7 +141,6 @@ function setFirstAndLastName(data) {
     lastElement.value = data.params.name.lastName;
 }
 function setRemote(data) {
-    console.log("PARP 2 ! data.remote = " + data.params.newjobremote);
     if (data.params.newjobremote === true) {
         document.getElementById("yesremote").checked = true;
     } else {

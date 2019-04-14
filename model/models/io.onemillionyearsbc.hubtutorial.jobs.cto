@@ -10,18 +10,20 @@ asset JobAds identified by email{
 
 concept AlertCriteria {
   o Boolean   remote default=false
-  o Boolean   employer default=true
+  o Boolean   fulltime default=true
   o String[]  skills 
+  o BlockchainType  blockchainName optional
   o String    city optional 
   o String    country optional
 } 
 
 event AlertEvent {
   o String    message
+  o String    id
 }
 
 asset JobAlert identified by alertId {
-  o String     alertId // alertId will be {emaii-index} eg emerysolutions@yahoo.co.uk-
+  o String     alertId // alertId will be {email-uuid} eg emerysolutions@yahoo.co.uk-98653548
   o DateTime   datePosted
   o AlertCriteria alertCriteria
 }
@@ -72,6 +74,7 @@ enum BlockchainType {
   o QUOROM
   o RIPPLE
   o OTHER
+  o NONE
 }
 
 enum AccountType {
@@ -116,6 +119,15 @@ transaction CreateJobPosting {
 transaction CreateJobAlert {
   o String email
   o AlertCriteria alertCriteria
+}
+
+transaction UpdateJobAlert {
+  o String alertId
+  o AlertCriteria alertCriteria
+}
+
+transaction RemoveJobAlert {
+  o String alertId
 }
 
 // Q: do we need to store who has viewed or applied for a job?
@@ -217,11 +229,12 @@ transaction GetJobPostingsDynamic {
 // @commit(false)
 @returns(JobPosting[])
 transaction FireAlertSearch {
-  o Boolean   employer default=true
+  o Boolean   fulltime default=true
   o String[]  skills 
   o String    city optional 
   o String    country optional
   o Boolean   remote default=false
+  o BlockchainType blockchainName default="NONE"
 }
 
 @commit(false)

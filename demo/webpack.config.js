@@ -100,6 +100,10 @@ module.exports = {
             filename: 'account-settings.html',
             template: './src/account-settings.html'
         }),
+        new HtmlWebpackPlugin({
+            filename: 'createalert.html',
+            template: './src/createalert.html'
+        }),
         new CopyWebpackPlugin([{
             from: 'src/img',
             to: 'img',

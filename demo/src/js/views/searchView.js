@@ -185,6 +185,7 @@ const renderButtons = (page, numResults, resPerPage) => {
 
 // may not need this
 export const setTotalJobsBucket = (jobs) => {
+    console.log("SETTING state.cachedData length to " + jobs.length);
     state.cachedData = jobs;
     setGlobalCached(jobs);
 }

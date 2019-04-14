@@ -41,6 +41,16 @@
                 .profilelist {
                     margin-top: 0;
                 }
+                .textbutton {
+                    display: flex;
+                    button {
+                        padding-top: 1rem; 
+                        height: 5rem;
+                        &:hover {
+                            background-color: $color-grey-light-1;
+                        }
+                    }
+                }
                 .jobalert {
                     border: 1px solid $color-grey-light-1;
                     border-radius: 2px;
@@ -115,3 +125,18 @@
 }
 
 
+.links {
+    .alertlist {
+        display: flex;
+        li {
+            border-bottom :none;
+            padding-left: 0.5rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        li:not(:first-child) {
+           border-left: 1px solid $color-grey-light-2;
+        }
+    }
+   
+}

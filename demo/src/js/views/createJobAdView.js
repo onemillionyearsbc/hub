@@ -1,4 +1,4 @@
-import { elements, strings, checkStyle, clearError, getSelectedOption } from './base';
+import { elements, checkStyle, clearError, getSelectedOption, getSkills } from './base';
 
 
 export const setEmail = (email) => {
@@ -141,20 +141,7 @@ function getEmployer() {
     return document.querySelector('input[name="employer"]:checked').value;
 }
 
-function getSkills(skills) {
-    if (skills === "") {
-        return "";
-    }
-    let skillsArr = skills.match(/"[^"]*"|\S+/g);
 
-    // remove double quotes around any multi word strings
-    for (var i = 0; i < skillsArr.length; i++) {
-        if (skillsArr[i].charAt(0) === '"' && skillsArr[i].charAt(skillsArr[i].length - 1) === '"') {
-            skillsArr[i] = skillsArr[i].substr(1, skillsArr[i].length - 2);
-        } 
-    }
-    return skillsArr;
-}
 
 function calculateJobReference() {
     if (sessionStorage.getItem("amend") === "true") {

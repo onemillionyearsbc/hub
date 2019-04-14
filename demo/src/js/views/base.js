@@ -134,7 +134,10 @@ export const elements = {
     changePref: document.getElementById("changepref"),
     manageTok: document.getElementById("managetok"),
     closeAcc: document.getElementById("closeacc"),
-    backLink: document.getElementById("backtoaccount")
+    backLink: document.getElementById("backtoaccount"),
+    createAlert: document.getElementById("createalertbtn"),
+    submitAlert: document.getElementById("submitalertbtn"),
+    alertPage: document.getElementById("alertpage")
 };
 
 export const dbelements = {
@@ -177,6 +180,8 @@ var removeAllFavouritesTransaction = "io.onemillionyearsbc.hubtutorial.jobs.Remo
 var incrementViewsTransaction = "io.onemillionyearsbc.hubtutorial.jobs.IncrementViews";
 var incrementApplicationsTransaction = "io.onemillionyearsbc.hubtutorial.jobs.IncrementApplications";
 var updateProfileTransaction = "io.onemillionyearsbc.hubtutorial.UpdateJobSeeker";
+var createAlertTransaction = "io.onemillionyearsbc.hubtutorial.jobs.CreateJobAlert";
+
 
 export const strings = {
     loader: 'loader',
@@ -201,6 +206,7 @@ export const strings = {
     incrementApplicationsTransaction: `${incrementApplicationsTransaction}`,
     incrementViewsTransaction: `${incrementViewsTransaction}`,
     updateProfileTransaction: `${updateProfileTransaction}`,
+    createAlertTransaction: `${createAlertTransaction}`,
     loginRecruiterUrl: `http://${ipAddress}:3000/api/${recruiterLoginTransaction}`,
     loginJobSeekerUrl: `http://${ipAddress}:3000/api/${jobSeekerLoginTransaction}`,
     registerRecruiterUrl: `http://${ipAddress}:3000/api/${recruiterRegisterTransaction}`,
@@ -220,6 +226,7 @@ export const strings = {
     incrementViewsUrl: `http://${ipAddress}:3000/api/${incrementViewsTransaction}`,
     incrementApplicationsUrl: `http://${ipAddress}:3000/api/${incrementApplicationsTransaction}`,
     updateProfileUrl: `http://${ipAddress}:3000/api/${updateProfileTransaction}`,
+    createAlertUrl: `http://${ipAddress}:3000/api/${createAlertTransaction}`,
 
     beginningOfTime: "1970-01-01T15:11:47.728Z",
     endOfTime: "3070-01-01T15:11:47.728Z",
@@ -245,6 +252,7 @@ export const elementConsts = {
     DISPLAYJOBPAGE: 7,
     PROFILEPAGE: 8,
     ACCOUNTPAGE: 9,
+    ALERTPAGE: 10,
     JOBADPRICE: 99,
     JOBDISCOUNT: 10,
     JOBMINPRICE: 49,
@@ -631,7 +639,7 @@ export const addToFavouritesHandler = async (button, jobRef) => {
     // clearLoader();
 
     if (err != null) {
-        // displayErrorPopup('Failed to add Job to favourites: ' + err.message);
+        displayErrorPopup('Failed to add Job to favourites: ' + err.message);
     } else {
         // remove the "save" button and replace with the "saved" label
         button.style.display = "none";
@@ -729,6 +737,7 @@ export const addFavouritesLinkListener = () => {
 
 export const setGlobalCached = (data) => {
     state.cachedData = data;
+    console.log("GLOBAL CACHED LENGTH = " + state.cachedData.length);
 }
 
 export const setButtonHandlers = () => {
@@ -773,6 +782,21 @@ export const displayErrorPopup = async (theText) => {
 
 export const getValueOfRadio = (name) => {
     return document.querySelector(`input[name=${name}]:checked`).value;
+}
+
+export const getSkills = (skills) => {
+    if (skills === "") {
+        return "";
+    }
+    let skillsArr = skills.match(/"[^"]*"|\S+/g);
+
+    // remove double quotes around any multi word strings
+    for (var i = 0; i < skillsArr.length; i++) {
+        if (skillsArr[i].charAt(0) === '"' && skillsArr[i].charAt(skillsArr[i].length - 1) === '"') {
+            skillsArr[i] = skillsArr[i].substr(1, skillsArr[i].length - 2);
+        } 
+    }
+    return skillsArr;
 }
 
 export const jobTitles = ["Application Support Analyst",

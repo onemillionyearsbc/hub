@@ -1,0 +1,20 @@
+.alert {
+    .firstrow {
+        display: flex;
+        justify-content: space-evenly;
+        .toggle {
+            min-width: 35rem;
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+        }
+    }
+    .padding {
+        padding-bottom: 3rem;
+    }
+    button {
+        margin-left: 5rem;
+        margin-right: 5rem;
+        margin-top: 1rem;
+        width: 88.5%;
+    }
+}
