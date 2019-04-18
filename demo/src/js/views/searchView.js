@@ -188,6 +188,7 @@ export const setTotalJobsBucket = (jobs) => {
     console.log("SETTING state.cachedData length to " + jobs.length);
     state.cachedData = jobs;
     setGlobalCached(jobs);
+    state.filteredjobs = jobs;
 }
 
 export const renderResults = (jobs, page = 1, resPerPage = 10) => {
@@ -388,14 +389,19 @@ function renderPopularCompanyTotals(companies) {
     }
 }
 
-export const filterByWhat = (item) => {
-    // let what = sessionStorage.getItem("what");   
-    state.filteredjobs = state.jobs;
+export const filterByWhat = (item) => {   
+    if (state.jobs != undefined) {
+        state.filteredjobs = state.jobs;
+    }
+    
+    console.log("state.filterejobs length = " + state.filteredjobs.length);
     applyFilter(strings.whatFilter, item, "");
 }
 
 export const filterByWhere = (location) => {
-    state.filteredjobs = state.jobs;
+    if (state.jobs != undefined) {
+        state.filteredjobs = state.jobs;
+    }
     sessionStorage.setItem("where", location);
     let distance = document.querySelector('input[name="miles"]:checked').value;
     console.log("SEARCH FOR " + location + " PLUS " + distance + " MILES");
@@ -411,9 +417,9 @@ export const applyFilter = async (filter, item, name) => {
 
     // export async const applyFilter = (filter, item, name) => {
     console.log("++++++++++++++++ NOW WE ARE APPLYING A FILTER (TYPE " + filter + ")+ NAME: " + name + " ITEM: " + item);
+    console.log("++++++++++++++++ NUM JOBS FOR FILTER PROCESSOR = " + state.filteredjobs.length);
     let fp = new FilterProcessor(state.filteredjobs);
     let bcname = "live blockchain";
-    console.log("1 state.label = " + state.label);
     if (state.label === undefined) {
         state.label = "";
     }
@@ -447,11 +453,11 @@ export const applyFilter = async (filter, item, name) => {
 
     if (filter === strings.whatFilter) {
 
+        console.log("Filtering by WHAT item = " + item);
         state.filteredjobs = fp.filterByWhat(item);
         state.label = item;
         document.getElementById("what").value = item;
 
-        // if (sessionStorage.getItem("where"))
         state.location = false;
         displayFilterChain(item);
         if (document.getElementById("where").value != "") {

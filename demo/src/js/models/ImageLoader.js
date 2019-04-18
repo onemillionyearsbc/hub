@@ -19,6 +19,7 @@ export default class ImageLoader {
         var mime_types = ['image/jpeg', 'image/png', 'application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/pdf'];
 
         console.log("file type = " + afile.type);
+
         // validate MIME
         if (mime_types.indexOf(afile.type) == -1) {
             throw Error('Error : Incorrect file type');
@@ -99,15 +100,15 @@ export default class ImageLoader {
         }
     
         if (result.length == 0) {
-            console.log("WARNING: No image found for email " + email);
+            console.log("WARNING: No cv found for email " + email);
             return;
         }
         if (result.length > 1) {
-            throw ('Database select image failed: number rows = ' + result.length);
+            throw ('Database select cv failed: number rows = ' + result.length);
         }
         const row0 = result[0];
         try {
-            await this.checkHash(email, row0["image"], row0["hash"], cvhash);3
+            await this.checkHash(email, row0["image"], row0["hash"], cvhash);
         }
         catch (error) {
             throw error;
@@ -116,6 +117,7 @@ export default class ImageLoader {
     }
 
     async getImageFromDatabase (jobReference, logohash)  {
+        jobReference = Number(jobReference).toString();
         var body = JSON.stringify({
             database: dbelements.databaseName,
             table: dbelements.databaseTable,
@@ -140,6 +142,7 @@ export default class ImageLoader {
         }
         const row0 = result[0];
         try {
+           
             await this.checkHash(jobReference, row0["image"], row0["hash"], logohash);3
         }
         catch (error) {

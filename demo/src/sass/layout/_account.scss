@@ -43,9 +43,16 @@
                 }
                 .textbutton {
                     display: flex;
+                    justify-content: space-between;
+                    p {
+                        max-width: 45rem;
+                    }
                     button {
                         padding-top: 1rem; 
                         height: 5rem;
+                        // padding-right: 0;
+                        margin-right: 10rem;
+                        margin-left: 5rem;
                         &:hover {
                             background-color: $color-grey-light-1;
                         }
@@ -55,9 +62,11 @@
                     border: 1px solid $color-grey-light-1;
                     border-radius: 2px;
                     margin-bottom: 1rem;
+                    margin-right: 10rem;
+                    margin-left: 0;
                     .top {
-                        color: black;
-                        background: $color-grey-light-1;
+                        color: white;
+                        background: $teal2;
                         display: flex;
                         justify-content: space-between;
                         height: 4rem;
@@ -72,16 +81,19 @@
                         }
                     }
                     .middle {
-                       
+                        text-align: center;
+                      
                         .togglefield {
-                            margin-left: 22rem;
+                            margin-left: 15rem;
+                            // margin-left: 22rem;
                             width: 65rem;
                         }
                         .criteriafield {
+                            margin-left: 15rem;
                             display: flex;
                             color: black;
                             font-size: 1.5rem;
-                            margin-left: 25rem;
+                            // margin-left: 25rem;
                             span {
                                 font-weight: 600;
                                 margin-right: 0.5rem;

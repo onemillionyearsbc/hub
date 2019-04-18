@@ -112,16 +112,16 @@
                                 </div>
                                 <p id="dd5" class="mybollocks">Country</p>
                                 <div class="createjobad__parent--form-item">
-                                    <input id="postcode" class="loginform__textfield form-control glowing-border"
+                                    <input id="city" class="loginform__textfield form-control glowing-border"
                                         type="text" placeholder="City" autocomplete="off" />
-                                    <label for="postcode" class="loginform__label">City</label>
+                                    <label for="city" class="loginform__label">City</label>
                                 </div>
 
                                 <div class="search_categories">
                                     <div class="select">
                                         <select class="dropdown"
-                                            onchange="document.getElementById('blockchainused').style.color = 'black'"
-                                            name="search_categories2" id="blockchainused">
+                                            onchange="document.getElementById('blockchain').style.color = 'black'"
+                                            name="search_categories2" id="blockchain">
                                             <option selected disabled hidden>Blockchain</option>
                                             <option value="NONE" style="color:black">None</option>
                                             <option value="CORDA" style="color:black">Corda</option>
@@ -149,7 +149,7 @@
 <script>jQuery(".dropdown").change(function (e) {
         var element = document.getElementById("bollocks1");
 
-        if (e.target.id == "blockchainused") {
+        if (e.target.id == "blockchain") {
             element = document.getElementById("dd2");
         }
         if (e.target.id == "country") {

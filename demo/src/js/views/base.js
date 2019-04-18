@@ -74,6 +74,7 @@ export const elements = {
     expirejobbutton: document.getElementById("expirejobbutton"),
     jobdescription: document.getElementById("jobdescription"),
     searchResList: document.querySelector(".results_list"),
+    alertList: document.querySelector(".alert_list"),
     alertBtn: document.getElementById("alertbtn"),
     jobTotal: document.getElementById("jobtotal"),
     searchBtn: document.getElementById("mainsearchbutton"),
@@ -112,7 +113,7 @@ export const elements = {
     lastName: document.getElementById("last"),
     title: document.getElementById("title"),
     phone: document.getElementById("phone"),
-    city: document.getElementById("postcode"),
+    city: document.getElementById("city"),
     country: document.getElementById("country"),
     link1: document.getElementById("link1"),
     experience: document.getElementById("experience"),
@@ -135,9 +136,11 @@ export const elements = {
     manageTok: document.getElementById("managetok"),
     closeAcc: document.getElementById("closeacc"),
     backLink: document.getElementById("backtoaccount"),
-    createAlert: document.getElementById("createalertbtn"),
+    createAlertBtn: document.getElementById("createalertbtn"),
     submitAlert: document.getElementById("submitalertbtn"),
-    alertPage: document.getElementById("alertpage")
+    alertPage: document.getElementById("alertpage"),
+    downloadcv: document.getElementById("downloadcv"),
+    uploadcv: document.getElementById("uploadcv")
 };
 
 export const dbelements = {
@@ -181,6 +184,11 @@ var incrementViewsTransaction = "io.onemillionyearsbc.hubtutorial.jobs.Increment
 var incrementApplicationsTransaction = "io.onemillionyearsbc.hubtutorial.jobs.IncrementApplications";
 var updateProfileTransaction = "io.onemillionyearsbc.hubtutorial.UpdateJobSeeker";
 var createAlertTransaction = "io.onemillionyearsbc.hubtutorial.jobs.CreateJobAlert";
+var updateAlertTransaction = "io.onemillionyearsbc.hubtutorial.jobs.UpdateJobAlert";
+var removeAlertTransaction = "io.onemillionyearsbc.hubtutorial.jobs.RemoveJobAlert";
+var testAlertTransaction = "io.onemillionyearsbc.hubtutorial.jobs.TestJobAlert";
+var getAlertsTransaction = "io.onemillionyearsbc.hubtutorial.jobs.GetAlertsForEmail";
+var getJobByRefTransaction = "io.onemillionyearsbc.hubtutorial.jobs.SelectJobPostingByRef";
 
 
 export const strings = {
@@ -207,6 +215,11 @@ export const strings = {
     incrementViewsTransaction: `${incrementViewsTransaction}`,
     updateProfileTransaction: `${updateProfileTransaction}`,
     createAlertTransaction: `${createAlertTransaction}`,
+    updateAlertTransaction: `${updateAlertTransaction}`,
+    removeAlertTransaction: `${removeAlertTransaction}`,
+    testAlertTransaction: `${testAlertTransaction}`,
+    getAlertsTransaction: `${getAlertsTransaction}`,
+    getJobByRefTransaction: `${getJobByRefTransaction}`,
     loginRecruiterUrl: `http://${ipAddress}:3000/api/${recruiterLoginTransaction}`,
     loginJobSeekerUrl: `http://${ipAddress}:3000/api/${jobSeekerLoginTransaction}`,
     registerRecruiterUrl: `http://${ipAddress}:3000/api/${recruiterRegisterTransaction}`,
@@ -227,7 +240,11 @@ export const strings = {
     incrementApplicationsUrl: `http://${ipAddress}:3000/api/${incrementApplicationsTransaction}`,
     updateProfileUrl: `http://${ipAddress}:3000/api/${updateProfileTransaction}`,
     createAlertUrl: `http://${ipAddress}:3000/api/${createAlertTransaction}`,
-
+    updateAlertUrl: `http://${ipAddress}:3000/api/${updateAlertTransaction}`,
+    removeAlertUrl: `http://${ipAddress}:3000/api/${removeAlertTransaction}`,
+    testAlertUrl: `http://${ipAddress}:3000/api/${testAlertTransaction}`,
+    getAlertsUrl: `http://${ipAddress}:3000/api/${getAlertsTransaction}`,
+    getJobByRefUrl: `http://${ipAddress}:3000/api/${getJobByRefTransaction}`,
     beginningOfTime: "1970-01-01T15:11:47.728Z",
     endOfTime: "3070-01-01T15:11:47.728Z",
     blockchainFilter: 'blockchaintotals',
@@ -290,7 +307,7 @@ export const renderLoader = parent => {
     parent.insertAdjacentHTML('afterbegin', loader); // afterbegin means insert after the beginning of the parent element
 };
 
-export const renderLoaderByPixelsFromTop = (parent, dist) => {
+export const renderLoaderByREMFromTop = (parent, dist) => {
     const loader = `
         <div style="top:${dist}rem "class="${strings.loader}"></div>
     `;
@@ -374,13 +391,11 @@ export const navBarSetLoggedIn = (loggedIn, name) => {
                 }
             }
         } else {
-         
             signins[i].style.display = "block";
             if (dropdown != null) {
                 dropdown.style.display = "none";
             }
             let ele = document.getElementById("recruiterlogout");
-            console.log("QUACK ele = " + ele);
             if (ele != null) {
                 ele.style.display = "none";
             }
@@ -786,7 +801,7 @@ export const getValueOfRadio = (name) => {
 
 export const getSkills = (skills) => {
     if (skills === "") {
-        return "";
+        return [];
     }
     let skillsArr = skills.match(/"[^"]*"|\S+/g);
 

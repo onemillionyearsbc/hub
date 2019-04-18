@@ -2,6 +2,7 @@ import { elements, checkStyle, clearError, getSelectedOption, getSkills } from '
 
 
 export const setEmail = (email) => {
+    console.log("Setting email to " + email);
     var emailElement = document.getElementById("email");
     emailElement.value = email;
     emailElement.readOnly = true;
@@ -9,6 +10,7 @@ export const setEmail = (email) => {
 }
 
 export const setCompany = (company) => {
+    console.log("Setting company name to " + company);
     var companyElement = document.getElementById("company");
     companyElement.value = company;
     companyElement.readOnly = true;
@@ -61,7 +63,8 @@ export const setAmendFields = () => {
 
     // skills
     let skills = sessionStorage.getItem("skills");
-    elements.skills.value = skills;
+    var newStr = skills.replace(/,/g, ' ');
+    elements.skills.value = newStr;
 
     // employer/agency
     var employer = sessionStorage.getItem("employer");

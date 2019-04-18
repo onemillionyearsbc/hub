@@ -238,7 +238,6 @@ export default class FilterProcessor {
                 jobsWithinDistance.push(this.jobs[i]);
                 continue;
             }
-            // console.log("Job id: " + this.jobs[i].jobReference + "; longitude = " + this.jobs[i].longitude + "; latitude = " + this.jobs[i].latitude);
             if (this.jobs[i].longitude != undefined && this.jobs[i].latitude != undefined) {
                 let dist = this.getDistance(itemCoords.longitude, itemCoords.latitude,this.jobs[i].longitude, this.jobs[i].latitude);
                 console.log("distance between" + item + " and " + this.jobs[i].city + " is " + dist + " miles."); 
@@ -253,6 +252,7 @@ export default class FilterProcessor {
     }
 
     filterByWhat(item) {
+        console.log("FILTER PROCESSOR: this.jobs size = " + this.jobs.length);
         return (this.jobs.filter(posting => posting.blockchainName.toUpperCase().includes(item.toUpperCase()) || posting.skills.includes(item) || posting.jobTitle.includes(item) || posting.company.includes(item)));
     }
 

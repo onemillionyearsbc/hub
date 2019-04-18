@@ -138,7 +138,6 @@ export const populateFilterTable = (rows, bulkt) => {
             let data = rows[rowIndex-1];
             for(var propName in data) {
                 propValue = data[propName];
-                console.log("Setting " + propName + " to " + propValue);
                 sessionStorage.setItem(propName, propValue);
             }
             window.location = "displayjob.html";
