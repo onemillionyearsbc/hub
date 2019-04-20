@@ -104,6 +104,26 @@ module.exports = {
             filename: 'createalert.html',
             template: './src/createalert.html'
         }),
+        new HtmlWebpackPlugin({
+            filename: 'blockchaintools.html',
+            template: './src/blockchaintools.html'
+        }),
+        new HtmlWebpackPlugin({
+            filename: 'jobseeker-applications.html',
+            template: './src/jobseeker-applications.html'
+        }),
+        new HtmlWebpackPlugin({
+            filename: 'recruiter-applications.html',
+            template: './src/recruiter-applications.html'
+        }),
+        new HtmlWebpackPlugin({
+            filename: 'cvsearch.html',
+            template: './src/cvsearch.html'
+        }),
+        new HtmlWebpackPlugin({
+            filename: 'cvsearchresults.html',
+            template: './src/cvsearchresults.html'
+        }),
         new CopyWebpackPlugin([{
             from: 'src/img',
             to: 'img',

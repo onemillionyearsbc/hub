@@ -101,6 +101,7 @@ export const elements = {
     advertBtn: document.getElementById("advertbutton"),
     removeAllBtn: document.getElementById("removeallbutton"),
     savedJobs: document.getElementById("savedjobs"),
+    jobApplications: document.getElementById("jobapplications"),
     abtn: document.getElementById("abtn"),
     bbtn: document.getElementById("bbtn"),
     price1: document.getElementById("p1"),
@@ -140,7 +141,8 @@ export const elements = {
     submitAlert: document.getElementById("submitalertbtn"),
     alertPage: document.getElementById("alertpage"),
     downloadcv: document.getElementById("downloadcv"),
-    uploadcv: document.getElementById("uploadcv")
+    uploadcv: document.getElementById("uploadcv"),
+    viewjobappsBtn: document.getElementById("viewjobappsbtn")
 };
 
 export const dbelements = {
@@ -270,6 +272,7 @@ export const elementConsts = {
     PROFILEPAGE: 8,
     ACCOUNTPAGE: 9,
     ALERTPAGE: 10,
+    APPLICATIONPAGE: 11,
     JOBADPRICE: 99,
     JOBDISCOUNT: 10,
     JOBMINPRICE: 49,

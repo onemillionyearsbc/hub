@@ -1,7 +1,6 @@
 import { elements, strings, getSelectedOption, getDaysAgo } from './base';
 
 export const setAlertData = (data) => {
-    console.log("alert size = " + data.length);
     for (let i = 0; i < data.length; i++) {
         renderAlert(data[i], i + 1);
     }

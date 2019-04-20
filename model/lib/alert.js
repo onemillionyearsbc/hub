@@ -40,13 +40,20 @@ async function CreateJobAlert(credentials) {
     await assetRegistry.addAll([alert]);
 
     await participantRegistry.update(seeker);
+}
 
-    // add a new parameter: fireImmediate
-    // if fireImmediate == true emit an event for the alert server 
+/**
+ * Emit an event for listening clients to fire a search
+ * @param {io.onemillionyearsbc.hubtutorial.jobs.TestJobAlert} credentials
+ * @transaction
+ */
+async function TestJobAlert(credentials) {
+    const NSJOBS = 'io.onemillionyearsbc.hubtutorial.jobs';
+
     var factory = getFactory();
     let alertEvent = factory.newEvent(NSJOBS, 'AlertEvent');
-    alertEvent.message="Alert created";
-    alertEvent.id = alert.alertId;
+    alertEvent.alertId = credentials.alertId;
+    alertEvent.name = credentials.name;
     emit(alertEvent);
 }
 
@@ -65,14 +72,14 @@ async function RemoveJobAlert(credentials) {
 
     // 1. remove the alert from the alert asset registry
     var assetRegistry = await getAssetRegistry(NSJOBS + '.JobAlert');
-    
+
     await assetRegistry.remove(credentials.alertId);
 
     // 2. remove the alert from the participant's alert list and update the JobSeeker participant registry
     var seeker = await participantRegistry.get(email);
 
     seeker.alerts = seeker.alerts.filter(e => e.getIdentifier() != credentials.alertId);
-  
+
     await participantRegistry.update(seeker);
 }
 
@@ -91,7 +98,7 @@ async function UpdateJobAlert(credentials) {
     var assetRegistry = await getAssetRegistry(NSJOBS + '.JobAlert');
 
     var alert = await assetRegistry.get(credentials.alertId);
-    
+
     alert = fillAlertFields(alert, credentials);
 
     await assetRegistry.update(alert);
@@ -99,7 +106,7 @@ async function UpdateJobAlert(credentials) {
 
 function createAlert(NSJOBS, factory, credentials) {
 
-    let id = new Date().getTime().toString().substr(-8); 
+    let id = new Date().getTime().toString().substr(-8);
     let alertId = credentials.email + "-" + id;
 
     var alert = factory.newResource(NSJOBS, 'JobAlert', alertId);
@@ -119,7 +126,7 @@ function fillAlertFields(alert, credentials) {
     alert.alertCriteria.city = credentials.alertCriteria.city;
     alert.alertCriteria.country = credentials.alertCriteria.country;
     alert.alertCriteria.blockchainName = credentials.alertCriteria.blockchainName;
-    
+
     // The calculated stuff...
     var d = new Date();
     alert.datePosted = d;
@@ -133,11 +140,30 @@ function fillAlertFields(alert, credentials) {
  */
 async function FireAlertSearch(credentials) {
     var filter = {};
-    var predicate = `WHERE ((remote == _$remote) AND (fulltime == _$fulltime) 
+
+    // {
+    //     "$class": "io.onemillionyearsbc.hubtutorial.jobs.FireAlertSearch", 
+    //       "remote": false,
+    //       "fulltime": true,
+    //       "skills": [
+    //         "Go"
+    //       ],
+    //       "blockchainName": "ETHEREUM",
+    //       "city": "Bucharest",
+    //       "country": "Romania"
+    //   }
+
+
+    let jobType = "FULLTIME";
+    if (credentials.fulltime != true) {
+        jobType = "CONTRACT";
+    }
+
+    var predicate = `WHERE ((remote == _$remote) AND (jobType == _$jobType) 
               AND (skills CONTAINS _$skills)`;
 
     filter.remote = credentials.remote;
-    filter.fulltime = credentials.fulltime;
+    filter.jobType = jobType;
     filter.skills = credentials.skills;
 
     if (credentials.city != "") {
@@ -146,19 +172,19 @@ async function FireAlertSearch(credentials) {
     }
 
     if (credentials.country != "") {
-        predicate += ` AND (country == _$country)`;
+        predicate += ` AND (location == _$country)`;
         filter.country = credentials.country;
     }
     if (credentials.blockchainName != "" && credentials.blockchainName != "NONE") {
         predicate += ` AND (blockchainName == _$blockchainName)`;
         filter.blockchainName = credentials.blockchainName;
     }
-    
+
     const today = new Date();
-    const oneDayAgo = subtractDays(today,1);
+    const oneDayAgo = subtractDays(today, 1);
     predicate += " AND (datePosted > _$oneDayAgo)";
     filter.oneDayAgo = oneDayAgo;
-  
+
     predicate += ')';
     var statement = `SELECT io.onemillionyearsbc.hubtutorial.jobs.JobPosting ${predicate}`;
 
@@ -175,7 +201,66 @@ function subtractDays(date, days) {
     return new Date(date.getTime() - days * 24 * 60 * 60 * 1000);
 }
 
+
+/**
+ * Return JobAlert array of records for given email (user)
+ * @param {io.onemillionyearsbc.hubtutorial.jobs.GetAlertsForEmail} credentials
+ * @returns {io.onemillionyearsbc.hubtutorial.jobs.JobAlert[]} The JobAlert records for these criteria
+ * @transaction
+ */
+async function GetAlertsForEmail(credentials) {
+    let results = await query('selectHubJobSeekerByEmail', {
+        "email": credentials.email,
+    });
+
+    let alerts = [];
+    if (results.length == 1) {
+        const NSJOBS = 'io.onemillionyearsbc.hubtutorial.jobs';
+        var assetRegistry = await getAssetRegistry(NSJOBS + '.JobAlert');
+        let seeker = results[0];
+
+        if (seeker.alerts === undefined) {
+            return [];
+        }
+        for (let i = 0; i < seeker.alerts.length; i++) {
+            var alert = await assetRegistry.get(seeker.alerts[i].getIdentifier());
+            alerts.push(alert);
+        }
+        return alerts;
+    };
+
+    return [];
+}
+
+/**
+ * Enable or disable the job alert. If disabled won't fire in searches
+ * @param {io.onemillionyearsbc.hubtutorial.jobs.TurnAlertOnOff} credentials
+ * @transaction
+ */
+async function TurnAlertOnOff(credentials) {
+    var NSJOBS = 'io.onemillionyearsbc.hubtutorial.jobs';
+
+    var assetRegistry = await getAssetRegistry(NSJOBS + '.JobAlert');
+
+    var alert = await assetRegistry.get(credentials.alertId);
+
+    alert.alertOn = credentials.alertOn;
+
+    await assetRegistry.update(alert);
+}
+
 /*
+{
+    "$class": "io.onemillionyearsbc.hubtutorial.jobs.FireAlertSearch", 
+      "remote": false,
+      "fulltime": true,
+      "skills": [
+        "Go"
+      ],
+      "blockchainName": "ETHEREUM",
+      "city": "Bucharest",
+      "country": "Romania"
+  }
 {
     "$class": "io.onemillionyearsbc.hubtutorial.jobs.CreateJobAlert",
     "email": "heinz.guderian@wehrmacht.de",
@@ -192,6 +277,7 @@ function subtractDays(date, days) {
   {
   "$class": "io.onemillionyearsbc.hubtutorial.jobs.UpdateJobAlert",
   "alertId": "heinz.guderian@wehrmacht.de-50710471",
+  "alertOn": true,
   "alertCriteria": {
     "$class": "io.onemillionyearsbc.hubtutorial.jobs.AlertCriteria",
     "remote": true,

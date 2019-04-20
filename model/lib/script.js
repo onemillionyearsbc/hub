@@ -509,7 +509,23 @@ async function GetFavourites(credentials) {
     return results;
 }
 
+/**
+ * Return jobposting for the given job ref
+ * @param {io.onemillionyearsbc.hubtutorial.jobs.SelectJobPostingByRef} credentials
+ * @returns {io.onemillionyearsbc.hubtutorial.jobs.JobPosting} 
+ * @transaction
+ */
+async function SelectJobPostingByRef(credentials) {
+    let results = await query('selectJobPostingById', {
+        "ref": credentials.ref
+    });
 
+    if (results.length === 0) {
+        throw new Error("Job Reference " + credentials.jobReference + " not found in registry");
+    }
+
+   return results[0];
+}
 
 /**
  * Add the job reference to the list of favourites for the recruiter
@@ -581,23 +597,91 @@ async function IncrementViews(credentials) {
 
     await jobPostingRegistry.update(jobPosting);
 }
-
 /**
- * Incerement the number of applications for a job reference 
- * @param {io.onemillionyearsbc.hubtutorial.jobs.IncrementApplications} credentials
+ * 1. create a new JobApplication object...
+ * 2. Add an email to the list of applicants in the jobposting
+ * 3. Add a job reference to the list of jobs applied for in the jobseeker object
+ * @param {io.onemillionyearsbc.hubtutorial.jobs.ApplyForJob} credentials
  * @transaction
  */
-async function IncrementApplications(credentials) {
+async function ApplyForJob(credentials) {
     var NSJOBS = 'io.onemillionyearsbc.hubtutorial.jobs';
+    var NS = 'io.onemillionyearsbc.hubtutorial';
+
+    // get the job posting asset and job seeker participant
+    // and add the job application object to both
 
     const jobPostingRegistry = await getAssetRegistry(NSJOBS + '.JobPosting');
-
     var jobPosting = await jobPostingRegistry.get(credentials.jobReference);
 
-    jobPosting.applications++;
+    const participantRegistry = await getParticipantRegistry(NS + '.HubJobSeeker');
+    var seeker = await participantRegistry.get(credentials.email);
+
+    const jobApplicationRegistry = await getAssetRegistry(NSJOBS + '.JobApplication');
+
+
+    let results = await query('selectJobApplicationsByJobReferenceAndEmail', {
+        "email": credentials.email,
+        "jobReference": credentials.jobReference
+    });
+
+    if (results.length > 0) {
+        throw Error("Job " + credentials.jobReference + " has already been applied for by email " + credentials.email);
+    }
+
+    let applicationId = new Date().getTime().toString().substr(-8);
+    var factory = getFactory();
+    var application = factory.newResource(NSJOBS, 'JobApplication', applicationId);
+    application.email = credentials.email; 
+    application.jobReference = credentials.jobReference;
+    const now = new Date();
+    application.dateApplied = now;
+
+    await jobApplicationRegistry.addAll([application]);
+
+    if (jobPosting.applications == undefined) {
+        jobPosting.applications = new Array();
+        jobPosting.applications[0] = application;
+    } else {
+        jobPosting.applications.push(application);
+    }
+
+    if (seeker.applications == undefined) {
+        seeker.applications = new Array();
+        seeker.applications[0] = application;
+    } else {
+        seeker.applications.push(application);
+    }
+    await participantRegistry.update(seeker);   
 
     await jobPostingRegistry.update(jobPosting);
+
+    // var factory = getFactory();
+    // let appEvent = factory.newEvent(NSJOBS, 'JobApplicationEvent');
+    // appEvent.jobReference = appEvent.email;
+    // appEvent.jobReference = credentials.jobReference;
+    // emit(appEvent);
 }
+
+// replace this with apply for job...adds an id to the list of applicants
+// num applicants is the length of the list
+
+// /**
+//  * Incerement the number of applications for a job reference 
+//  * @param {io.onemillionyearsbc.hubtutorial.jobs.IncrementApplications} credentials
+//  * @transaction
+//  */
+// async function IncrementApplications(credentials) {
+//     var NSJOBS = 'io.onemillionyearsbc.hubtutorial.jobs';
+
+//     const jobPostingRegistry = await getAssetRegistry(NSJOBS + '.JobPosting');
+
+//     var jobPosting = await jobPostingRegistry.get(credentials.jobReference);
+
+//     jobPosting.applications++;
+
+//     await jobPostingRegistry.update(jobPosting);
+// }
 
 /**
  * Remove the job reference from the list of favourites for the recruiter
@@ -746,7 +830,6 @@ function fillPosting(NSJOBS, factory, credentials) {
     posting.expiryDate = dplus1Month;
 
     posting.views = 0;
-    posting.applications = 0;
 
     return posting;
 }
@@ -797,6 +880,19 @@ async function GetAllLiveJobPostings(credentials) {
     return liveJobs;
 }
 
+/**
+ * Return JobApplication array of records for given email (user)
+ * @param {io.onemillionyearsbc.hubtutorial.jobs.GetJobApplicationsForEmail} credentials
+ * @returns {io.onemillionyearsbc.hubtutorial.jobs.JobApplication[]} The JobApplication records for these criteria
+ * @transaction
+ */
+async function GetJobApplicationsForEmail(credentials) {
+    let results = await query('selectJobApplicationsByEmail', {
+        "email": credentials.email,
+    });
+
+    return results;
+}
 /*
 {
     "$class": "io.onemillionyearsbc.hubtutorial.jobs.UpdateJobPosting",

@@ -120,9 +120,9 @@ function clearCache() {
         for (var i = 0; i < db.length; i++) {
             window.indexedDB.deleteDatabase(db[i].name);
         }
-     
+
     }).then(() => {
-       console.log("All Data Cleared!");
+        console.log("All Data Cleared!");
     });
 }
 
@@ -151,6 +151,9 @@ const signOutHandler = async () => {
             renderLoaderEndByNumber(elements.profilePage, 5);
         } else if (state.page === elementConsts.ALERTPAGE) {
             renderLoader(elements.viewJob);
+        } else if (state.page === elementConsts.APPLICATIONPAGE) {
+            console.log("QUACK 99!");
+            renderLoader(elements.jobApplications);
         }
     }
 
@@ -270,7 +273,7 @@ const searchJobsHandler = async () => {
                 // request.onsuccess = function (e) {
                 //     console.log("Woot! Did it, jobs saved");
                 // }
-              
+
 
             } catch (error) {
                 clearLoader();
@@ -376,8 +379,8 @@ const getAlerts = async () => {
     if (err != null) {
         await displayErrorPopup('Failed to get alerts: ' + err.message);
     } else {
-        console.log("received alerts = " + alerts);
         sessionStorage.setItem("alerts", JSON.stringify(alerts));
+        state.alerts = alerts;
     }
     clearLoader();
 }
@@ -558,7 +561,7 @@ const createJobAdHandler = async (transaction, ins) => {
                 let cdata = JSON.stringify(data);
                 await addIndexedData(cdata);
                 console.log("Added new job to cache");
-             
+
             }
         }
         clearLoader();
@@ -793,7 +796,7 @@ if (document.URL.includes("displayjob")) {
         let jobRef = x.split("=");
         console.log("job ref = " + jobRef[1]);
         queryAndDisplayJobHandler(jobRef[1]);
-    
+
     } else {
         displayJobHandler();
         let email = sessionStorage.getItem("email");
@@ -811,7 +814,7 @@ if (document.URL.includes("displayjob")) {
                 e.preventDefault();
                 expireJobHandler();
             });
-           
+
         } else {
             elements.buttonPanel.style = "none";
             if (isExpired() === true) {
@@ -821,7 +824,7 @@ if (document.URL.includes("displayjob")) {
             }
 
         }
-       
+
     }
     elements.jobcompany.addEventListener('click', e => {
         e.preventDefault();
@@ -1093,6 +1096,13 @@ function createJobController() {
     autocomplete(document.getElementById("jobtitle"), jobTitles);
 }
 
+// JOBSEEKER APPLICATION CONTROLLER 
+if (document.URL.includes("applications")) {
+    state.page = elementConsts.APPLICATIONPAGE;
+    console.log("set state.page to " + state.page);
+}
+
+
 // JOBSEEKER ALERT CONTROLLER 
 if (document.URL.includes("createalert.html")) {
     state.page = elementConsts.ALERTPAGE;
@@ -1192,6 +1202,12 @@ if (document.URL.includes("jobseeker-account.html")) {
         e.preventDefault();
         downloadCVHandler(data);
     });
+
+   
+    elements.viewjobappsBtn.addEventListener('click', e => {   
+        e.preventDefault();
+        window.location = "jobseeker-applications.html";
+    });
 }
 
 // JOBSEEKER ACCOUNT SETTINGS CONTROLLER 
@@ -1282,7 +1298,7 @@ async function testAlertHandler(id) {
     } else {
         await displaySuccessPopup('Job alert search successful. Please check your email!');
     }
-   
+
 }
 
 async function downloadCVHandler(data) {
@@ -1297,7 +1313,7 @@ async function downloadCVHandler(data) {
         // const linkSource = `data:application/pdf;base64,${pdf}`;
         const downloadLink = document.createElement("a");
         const fileName = data.params.cvfile;
-    
+
         downloadLink.href = linkSource;
         downloadLink.download = fileName;
         downloadLink.click();
@@ -1327,6 +1343,7 @@ async function deleteAlertHandler(id) {
         await getAlerts(); // this will force a cache update
         clearLoader();
         await displaySuccessPopup('Job Alert Successfully Removed!');
+        window.location = "jobseeker-account.html";
     }
 }
 
@@ -1382,7 +1399,7 @@ async function checkCrytpoHashes(myemail) {
             confirmButtonColor: '#cc6d14',
         });
     }
-   
+
 }
 // ADVERTS CONTROLLER
 if (document.URL.includes("advert.html")) {

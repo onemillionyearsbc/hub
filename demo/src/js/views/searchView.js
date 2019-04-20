@@ -44,8 +44,11 @@ const renderJobItem = (jobItem, count) => {
     let pdisp = "none";
 
     if (isInFavourites(jobItem.jobReference)) {
+        console.log(jobItem.jobReference + " IS in favourites");
         bdisp = "none";
         pdisp = "block";
+    } else {
+        console.log(jobItem.jobReference + " IS NOT in favourites");
     }
 
     let savedItemB = `<button style="display: ${bdisp};" id="savefavouritesbutton" data-id=${jobItem.jobReference} class="saveBtn"><i class="far fa-star"></i>Save</button>`;
@@ -128,7 +131,16 @@ const clearResults = () => {
 
 
 function isInFavourites(ref) { 
-    return (state.favourities != undefined  && state.favourites.filter(e => e.jobReference === ref).length > 0);
+    // console.log("state.favourites length = " + state.favourites.length);
+    // let found = true;
+    // if (state.favourites.filter(e => e.jobReference === ref).length > 0) {
+    //     found = false;
+    // }
+    console.log("Job id " + ref +" => length = " + state.favourites.filter(e => e.jobReference === ref).length);
+    if (state.favourites != undefined && state.favourites.filter(e => e.jobReference === ref).length > 0) {
+        return true;
+    }
+    return false;
 }
 
 function truncate(obj) {

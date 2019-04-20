@@ -18,13 +18,19 @@ concept AlertCriteria {
 } 
 
 event AlertEvent {
-  o String    message
-  o String    id
+  o String    alertId
+  o String    name
+}
+
+event JobApplicationEvent {
+  o String    jobReference
+  o String    email
 }
 
 asset JobAlert identified by alertId {
   o String     alertId // alertId will be {email-uuid} eg emerysolutions@yahoo.co.uk-98653548
   o DateTime   datePosted
+  o Boolean    alertOn default=true
   o AlertCriteria alertCriteria
 }
 
@@ -55,7 +61,14 @@ asset JobPosting identified by jobReference {
   o DateTime    datePosted
   o DateTime    expiryDate
   o Integer     views
-  o Integer     applications
+  --> JobApplication[]     applications optional // list of emails of applicants
+}
+
+asset JobApplication identified by applicationId {
+  o String      applicationId
+  o String      email 
+  o String      jobReference 
+  o DateTime    dateApplied
 }
 
 enum JobType {
@@ -116,6 +129,12 @@ transaction CreateJobPosting {
   o JobPostingParameters params
 }
 
+transaction ApplyForJob {
+  o String jobReference
+  o String email
+}
+
+
 transaction CreateJobAlert {
   o String email
   o AlertCriteria alertCriteria
@@ -130,15 +149,20 @@ transaction RemoveJobAlert {
   o String alertId
 }
 
+transaction TestJobAlert {
+  o String alertId
+  o String name
+}
+
 // Q: do we need to store who has viewed or applied for a job?
 
 transaction IncrementViews {
   o String jobReference
 }
 
-transaction IncrementApplications {
-  o String jobReference
-}
+// transaction IncrementApplications {
+//   o String jobReference
+// }
 
 
 transaction AddJobToFavourites {
@@ -225,8 +249,7 @@ transaction GetJobPostingsDynamic {
   o Integer expiringDays default=5
 }
 
-// TODO put this back
-// @commit(false)
+@commit(false)
 @returns(JobPosting[])
 transaction FireAlertSearch {
   o Boolean   fulltime default=true
@@ -261,5 +284,37 @@ transaction GetPopularEmployers {
 @commit(false)
 @returns(JobPosting[])
 transaction GetAllLiveJobPostings {
+}
+
+@commit(false)
+@returns(JobPosting)
+transaction SelectJobPostingByRef {
+  o String ref
+}
+
+@commit(false)
+@returns(JobAlert[])
+transaction GetAlertsForEmail {
+  o String email
+}
+
+
+@commit(false)
+@returns(JobApplication[])
+transaction GetJobApplicationsForEmail {
+  o String email
+}
+
+
+@commit(false)
+@returns(JobApplication[])
+transaction GetJobApplicationsForJobReference {
+  o String jobReference
+}
+
+@commit(false)
+transaction TurnAlertOnOff {
+  o String alertId
+  o Boolean alertOn
 }
 

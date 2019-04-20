@@ -6,6 +6,7 @@ namespace io.onemillionyearsbc.hubtutorial
 import io.onemillionyearsbc.hubtutorial.jobs.JobAds
 import io.onemillionyearsbc.hubtutorial.jobs.JobPosting
 import io.onemillionyearsbc.hubtutorial.jobs.JobAlert
+import io.onemillionyearsbc.hubtutorial.jobs.JobApplication
 import io.onemillionyearsbc.hubtutorial.jobs.BlockchainType
 import io.onemillionyearsbc.hubtutorial.jobs.AccountType
 import io.onemillionyearsbc.hubtutorial.jobs.JobType
@@ -43,6 +44,7 @@ participant HubRecruiter extends HubUser {
 participant HubJobSeeker extends HubUser {
   o HubJobSeekerParameters params
   --> JobAlert[] alerts optional
+  --> JobApplication[] applications optional
 }
 
 concept HubJobSeekerParameters {
@@ -159,11 +161,4 @@ transaction GetHubAccount {
   o String email
   o String password
 }
-
-
-/* TODO model the JobPosting asset */
-/* TODO model:
-  1. transactions to update data (user participant, job posting)
-  2. apply for job transaction plus event */
-
 

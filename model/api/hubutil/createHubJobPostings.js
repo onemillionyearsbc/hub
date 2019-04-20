@@ -155,7 +155,7 @@ async function main() {
         if (ukdata) {
             if (remote === false) {
                 location = "United Kingdom";
-                city = getRandomArrayElement(uk_towns);
+                city = getRandomArrayElement(towns_near_swindon);
             }
         } else {
             if (remote === false) {
@@ -699,7 +699,7 @@ countries['South America'] = 'Argentina|Bolivia|Brazil|Chile|Colombia|Ecuador|Gu
 ////////////////////////////////////////////////////////////////////////////
 // function
 //////////////////////////////////////////////////////////////////////
-let uk_towns = ['Melksham', 'Cirencester', 'Faringdon', 'Malmesbury', 'Chippenham', 'Purton', 'Highworth', 'Devizes', 'Swindon', 'Bristol', 'Reading', 'London'];
+let towns_near_swindon = ['Melksham', 'Cirencester', 'Faringdon', 'Malmesbury', 'Chippenham', 'Purton', 'Highworth', 'Devizes', 'Swindon', 'Bristol', 'Reading', 'London'];
 
 let city_states = [];
 //Africa
