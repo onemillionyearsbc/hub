@@ -10,7 +10,11 @@ import io.onemillionyearsbc.hubtutorial.jobs.JobApplication
 import io.onemillionyearsbc.hubtutorial.jobs.BlockchainType
 import io.onemillionyearsbc.hubtutorial.jobs.AccountType
 import io.onemillionyearsbc.hubtutorial.jobs.JobType
+import io.onemillionyearsbc.hubtutorial.jobs.CVSearchResults
 import io.onemillionyearsbc.hubtutorial.tokens.ERC20Token
+import io.onemillionyearsbc.hubtutorial.tokens.ERC20TokenTransaction
+import io.onemillionyearsbc.hubtutorial.tokens.ERC20TokenTransactionType
+
 
 /**
   Six types of resource definitions
@@ -32,6 +36,13 @@ abstract participant HubUser identified by email {
   o String      email 
   --> ERC20Token hubToken optional
   o String[] favourites optional
+  --> ERC20TokenTransaction[] history optional
+}
+
+transaction addToTransactionHistory {
+  o String email
+  o ERC20TokenTransactionType type
+  o Integer amount
 }
 
 participant HubRecruiter extends HubUser {
@@ -58,6 +69,7 @@ concept HubJobSeekerParameters {
   o String weblink optional
   o Integer itexperience optional
   o String skills optional
+  o String[] languages optional
   o BlockchainType  blockchainUsed optional
   o Integer blockexperience optional
   o String newjobsummary optional
@@ -153,8 +165,7 @@ transaction GetHubJobSeeker {
   o String email
   o String password
 }
-  
-  
+    
 @commit(false)
 @returns(HubAccount)
 transaction GetHubAccount {
@@ -162,3 +173,19 @@ transaction GetHubAccount {
   o String password
 }
 
+@returns(HubJobSeeker)
+transaction GetHubJobSeekerByEmail {
+  o String email
+}
+
+transaction AddERC20TokenTransactionToHistory {
+  o String email
+  o AccountType accountType default="JOBSEEKER"
+  o ERC20TokenTransactionType type
+  o Double amount
+}
+
+@returns(CVSearchResults)
+transaction CreateSearchResults {
+  o HubJobSeeker[] candidates
+}

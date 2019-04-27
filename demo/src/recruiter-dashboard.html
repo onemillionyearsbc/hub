@@ -33,8 +33,9 @@
         <div>
             <nav class="navbar animated slideInRight delay-2s">
                 <ul class="navbar__left">
-                    <li class="item-1"><a href="#jobs">Dashboard</a></li>
                     <li><a href="managejobads.html">Job Ads</a></li>
+                    <li><a href="jobcredits.html">Job Credits</a></li>
+                    <li><a href="cvsearchcredits.html">Search Credits</a></li>
                 </ul>
                 <ul class="navbar__right">
                   
@@ -91,7 +92,17 @@
                                     0
                                 </div>
                             </div>
-
+                            <div class="count jobspanel__countpanel--searches">
+                                    <div class="texty">
+                                        CV Searches
+                                    </div>
+                                    <div class="jobicon">
+                                        <img src="img/recruitment.png" alt="searches">
+                                    </div>
+                                    <div id="searchcounter" class="counter">
+                                        0
+                                    </div>
+                                </div>
                         </div>
                         <div class="jobspanel__countpanel--buttonpanel">
                             <button id="createBtn" class="btn" disabled>Create job ad</button>
@@ -101,8 +112,8 @@
                             <a href="managejobads.html">
                                 <button class="btn">Manage ads</button>
                             </a>
-                            <a href="cvsearch.html">
-                                <button class="btn">CV Search</button>
+                            <a href="cvsearches.html">
+                                <button id="cvsearchBtn" class="btn" disabled>CV Search</button>
                             </a>
                         </div>
                        

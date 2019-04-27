@@ -44,12 +44,10 @@ const renderJobItem = (jobItem, count) => {
     let pdisp = "none";
 
     if (isInFavourites(jobItem.jobReference)) {
-        console.log(jobItem.jobReference + " IS in favourites");
+       
         bdisp = "none";
         pdisp = "block";
-    } else {
-        console.log(jobItem.jobReference + " IS NOT in favourites");
-    }
+    } 
 
     let savedItemB = `<button style="display: ${bdisp};" id="savefavouritesbutton" data-id=${jobItem.jobReference} class="saveBtn"><i class="far fa-star"></i>Save</button>`;
     let savedItemP = `<p id="p-${jobItem.jobReference}" style="display: ${pdisp};" class="savedlabel">Saved</>`;
@@ -131,12 +129,6 @@ const clearResults = () => {
 
 
 function isInFavourites(ref) { 
-    // console.log("state.favourites length = " + state.favourites.length);
-    // let found = true;
-    // if (state.favourites.filter(e => e.jobReference === ref).length > 0) {
-    //     found = false;
-    // }
-    console.log("Job id " + ref +" => length = " + state.favourites.filter(e => e.jobReference === ref).length);
     if (state.favourites != undefined && state.favourites.filter(e => e.jobReference === ref).length > 0) {
         return true;
     }
@@ -197,7 +189,6 @@ const renderButtons = (page, numResults, resPerPage) => {
 
 // may not need this
 export const setTotalJobsBucket = (jobs) => {
-    console.log("SETTING state.cachedData length to " + jobs.length);
     state.cachedData = jobs;
     setGlobalCached(jobs);
     state.filteredjobs = jobs;
@@ -232,7 +223,17 @@ export const renderResults = (jobs, page = 1, resPerPage = 10) => {
             var propValue;
             for (var propName in data) {
                 propValue = data[propName];
-                sessionStorage.setItem(propName, propValue);
+                console.log("*********" + propName);
+                if (propName === "applications") {
+                    if (data.applications != undefined) {
+                        sessionStorage.setItem("applications", data.applications.length);
+                    } else {
+                        sessionStorage.setItem("applications", 0);
+                    }
+                } else {
+                    sessionStorage.setItem(propName, propValue);
+                }
+               
             }
             window.location = "displayjob.html";
         });
@@ -405,8 +406,6 @@ export const filterByWhat = (item) => {
     if (state.jobs != undefined) {
         state.filteredjobs = state.jobs;
     }
-    
-    console.log("state.filterejobs length = " + state.filteredjobs.length);
     applyFilter(strings.whatFilter, item, "");
 }
 
@@ -488,9 +487,8 @@ export const applyFilter = async (filter, item, name) => {
         // display the "filter chain" in the top panel
         displayFilterChain(thisFilterName);
     } else if (filter == strings.companyFilter) {
-        console.log("QUACKINGTON 98 filtering by " + name);
+
         state.filteredjobs = fp.filterByCompany(name); // note we use name to search for
-        console.log("compnay, filteredjobs length = " + state.filteredjobs.length);
 
         thisFilterName = name;
         if (state.label != name) {

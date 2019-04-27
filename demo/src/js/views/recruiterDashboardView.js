@@ -17,6 +17,10 @@ export const setJobAdsData = (remaining) => {
     elements.remainingcounter.innerHTML = remaining;
 }
 
+export const setCVSearchData = (searches) => {
+    elements.searchcounter.innerHTML = searches;
+}
+
 export const setJobCreditsRemaining = (rows) => {
     let live=0;
     const now = new Date();

@@ -34,7 +34,7 @@
             margin-top: 2rem;
             margin-right: 50rem;
             padding-top: 2rem;
-            min-width: 70rem;
+            min-width: 80rem;
            
             border-radius: 5px;
             border: 1px solid $dashboard-panel-border;
@@ -56,6 +56,11 @@
                 }
                 &--buttonpanel {
                     display: flex;
+                    
+                    button {
+                        min-width: 16.3rem;    
+
+                    }
                 }
 
             }

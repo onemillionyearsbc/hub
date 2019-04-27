@@ -141,19 +141,6 @@ function fillAlertFields(alert, credentials) {
 async function FireAlertSearch(credentials) {
     var filter = {};
 
-    // {
-    //     "$class": "io.onemillionyearsbc.hubtutorial.jobs.FireAlertSearch", 
-    //       "remote": false,
-    //       "fulltime": true,
-    //       "skills": [
-    //         "Go"
-    //       ],
-    //       "blockchainName": "ETHEREUM",
-    //       "city": "Bucharest",
-    //       "country": "Romania"
-    //   }
-
-
     let jobType = "FULLTIME";
     if (credentials.fulltime != true) {
         jobType = "CONTRACT";
@@ -248,6 +235,7 @@ async function TurnAlertOnOff(credentials) {
 
     await assetRegistry.update(alert);
 }
+
 
 /*
 {

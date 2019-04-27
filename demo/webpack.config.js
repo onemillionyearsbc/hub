@@ -117,12 +117,16 @@ module.exports = {
             template: './src/recruiter-applications.html'
         }),
         new HtmlWebpackPlugin({
-            filename: 'cvsearch.html',
-            template: './src/cvsearch.html'
+            filename: 'cvsearches.html',
+            template: './src/cvsearches.html'
         }),
         new HtmlWebpackPlugin({
             filename: 'cvsearchresults.html',
             template: './src/cvsearchresults.html'
+        }),
+        new HtmlWebpackPlugin({
+            filename: 'cvsearchcredits.html',
+            template: './src/cvsearchcredits.html'
         }),
         new CopyWebpackPlugin([{
             from: 'src/img',

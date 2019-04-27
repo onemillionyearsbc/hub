@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css?family=Josefin+Sans:300,400,400i|Nunito:300,300i" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="shortcut icon" type="image/png" href="img/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <title>CV Search</title>
+</head>
+
+<body>
+    <div id="savedjobspage">
+        <div>
+            <div class="dashboard__topbar">
+                <div class="topleft">
+                    <a href="index.html">
+                        <img src="img/logo-small.png" alt="1MYBC">
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div>
+            <nav class="navbar">
+                <ul class="navbar-menu navbar__left">
+                    <li class="item-1"><a href="recruiter-dashboard.html">Dashboard</a></li>
+                    <li><a href="jobcredits.html">Job Credits</a></li>
+                    <li><a href="managejobads.html">Job Ads</a></li>
+                </ul>
+                <ul class="navbar__right">
+                    <!-- <li class="signin"><a href="#" class="link-icon">Log Out</a></li> -->
+                    <li id="recruiterlogout" class="signin"><a href="#" class="link-icon">Log Out</a>
+                    </li>
+                </ul>
+            </nav>
+            <div id="savedjobs" class="container cvpanel">
+                <div class="main animated slideInUp delay-2s">
+                    <p class="main__title1">
+                        CV Search
+                    </p>
+                    <p class="main__title2">
+                        Enter the attributes you require from candidates to search our CV database:
+                    </p>
+                    <div id="cv" class="profileparent__bottom animated zoomIn delay-2s">
+                        <div id="alertpage" class="alert createjobad__parent">
+                            <form autocomplete="off" id="adform" class="myForm" top="false">
+                                <div class="alert__main">
+                                    <div class="createjobad__parent--form-item">
+                                        <input id="skills" class="loginform__textfield glowing-border" type="text"
+                                            placeholder="Skills" autocomplete="off" />
+                                        <label for="skills" class="loginform__label">Skills</label>
+                                    </div>
+                                    <div class="createjobad__parent--form-item">
+                                        <input id="languages" class="loginform__textfield glowing-border" type="text"
+                                            placeholder="Languages" autocomplete="off" />
+                                        <label for="languages" class="loginform__label">Languages</label>
+                                    </div>
+                                    <div class="search_categories">
+                                        <div class="select">
+                                            <select class="dropdown"
+                                                onchange="document.getElementById('country').style.color = 'black'"
+                                                name="search_categories2" id="country">
+
+                                                <option selected disabled hidden>Country</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <p id="dd5" class="mybollocks">Country</p>
+                                    <div class="createjobad__parent--form-item">
+                                        <input id="city" class="loginform__textfield form-control glowing-border"
+                                            type="text" placeholder="City" autocomplete="off" />
+                                        <label for="city" class="loginform__label">City</label>
+                                    </div>
+
+                                    <div class="search_categories">
+                                        <div class="select">
+                                            <select class="dropdown"
+                                                onchange="document.getElementById('blockchain').style.color = 'black'"
+                                                name="search_categories2" id="blockchain">
+                                                <option selected disabled hidden>Blockchain</option>
+                                                <option value="NONE" style="color:black">None</option>
+                                                <option value="CORDA" style="color:black">Corda</option>
+                                                <option value="ETHEREUM" style="color:black">Ethereum</option>
+                                                <option value="HYPERLEDGER" style="color:black">Hyperledger</option>
+                                                <option value="NEO" style="color:black">Neo</option>
+                                                <option value="QUOROM" style="color:black">Quorum</option>
+                                                <option value="RIPPLE" style="color:black">Ripple</option>
+                                                <option value="OTHER" style="color:black">Other</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <p id="dd2" class="mybollocks">Blockchain</p>
+                                    <div class="autocomplete createjobad__parent--form-item">
+                                        <input id="desiredjobtitle" class="loginform__textfield glowing-border"
+                                            type="text" placeholder="Desired Job Title" />
+                                        <label for="desiredjobtitle" class="loginform__label">Desired Job Title</label>
+                                        <div id="desiredjobtitle-error" class="job-error2 loginform__error">
+                                            <p><i class="icon fas fa-exclamation-triangle"></i>Please enter the desired
+                                                job
+                                                title</p>
+                                        </div>
+
+                                    </div>
+                                    <div class="toggle">
+                                        <input type="radio" name="remote" value="true" id="yesremote"
+                                            checked="checked" />
+                                        <label for="yesremote">Remote</label>
+                                        <input type="radio" name="remote" value="false" id="noremote" />
+                                        <label for="noremote">Non Remote</label>
+                                    </div>
+                                    <div class="search_categories">
+                                        <div class="select">
+                                            <select class="dropdown"
+                                                onchange="document.getElementById('jobtype').style.color = 'black'"
+                                                name="search_categories1" id="jobtype">
+                                                <option selected disabled hidden>Desired Job Type</option>
+                                                <option value="ANY" style="color:black">Any</option>
+                                                <option value="FULLTIME" style="color:black">Full Time</option>
+                                                <option value="PARTTIME" style="color:black">Part Time</option>
+                                                <option value="INTERNSHIP" style="color:black">Internship</option>
+                                                <option value="CONTRACT" style="color:black">Contract</option>
+                                                <option value="OTHER" style="color:black">Other</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div id="jobtype-error" class="job-error loginform__error">
+                                        <p><i class="icon fas fa-exclamation-triangle"></i>Please enter the desired job
+                                            type
+                                        </p>
+                                    </div>
+                                   
+                                    <button id="cvsearchbtn" class="btn btn--orangeandgrey">Search for
+                                        Candidates</button>
+                                    <p class="padding"></p>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+<script type="text/javascript" src="js/bundle.js"></script></body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+<script>jQuery(".dropdown").change(function (e) {
+        var element = document.getElementById("bollocks1");
+        if (e.target.id == "blockchain") {
+            element = document.getElementById("bollocks2");
+        }
+        if (e.target.id == "experience") {
+            element = document.getElementById("dd1");
+        }
+        if (e.target.id == "blockchain") {
+            element = document.getElementById("dd2");
+        }
+        if (e.target.id == "yearsblock") {
+            element = document.getElementById("dd3");
+        }
+        if (e.target.id == "desiredjobtype") {
+            element = document.getElementById("dd4");
+        }
+        if (e.target.id == "country") {
+            element = document.getElementById("dd5");
+        }
+        element.style.display = "block";
+    });
+</script>
+   
+
+</html>

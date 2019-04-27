@@ -1,0 +1,22 @@
+.recapplications {
+    .titley {
+        width: 60vw;
+        display: flex;
+        justify-content: space-between;
+        p {
+            margin-left: 2rem;
+        }
+        button {
+            height: 4rem;
+            width: 16rem;
+        }
+
+        .btn:hover {
+            text-decoration: none;
+        }
+      
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+}

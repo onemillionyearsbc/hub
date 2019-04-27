@@ -13,14 +13,31 @@ async function CreateRecruiterAccount(accountData) {
 
     // Create a JobAds object to attach the the (HubRecruiter) user object
     var jobAds = factory.newResource(NSJOBS, 'JobAds', accountData.email);
-    var token = factory.newResource(NSTOK, 'ERC20Token', accountData.email);
-
+   
     // Create the HubRecruiter
     var recruiter = factory.newResource(NS, 'HubRecruiter', accountData.email);
     recruiter.company = accountData.company;
     recruiter.name = accountData.name;
     recruiter.jobAds = factory.newRelationship(NSJOBS, 'JobAds', accountData.email);
-    recruiter.hubToken = factory.newRelationship(NSTOK, 'ERC20Token', accountData.email);
+    if (accountData.balance > accountData.allowance) {
+        throw Error("ERC20Token balance cannot be greater than allowance");
+    }
+
+    var token = factory.newResource(NSTOK, 'ERC20Token', accountData.email);
+    token.balance = accountData.balance;
+    token.allowance = accountData.allowance;
+
+    // 4 create the initial token, token transaction and add to history
+    let cred={};
+    cred.email = accountData.email;
+    cred.type = "INITIAL";
+    cred.amount = accountData.balance;
+
+    // token object
+    const erc20Registry = await getAssetRegistry(NSTOK + '.ERC20Token');
+    await erc20Registry.addAll([token]);
+
+    recruiter.hubToken = token;
 
     // Create a Hub Account for the recruiter
     var recruiterAccount = factory.newResource(NS, 'HubAccount', accountData.email);
@@ -28,14 +45,6 @@ async function CreateRecruiterAccount(accountData) {
     recruiterAccount.accountType = "RECRUITER";
     recruiterAccount.dateCreated = new Date();
     recruiterAccount.password = accountData.password;
-
-    // Set ERC20 Token initial attributes
-    if (accountData.balance > accountData.allowance) {
-        throw Error("balance cannot be greater than allowance");
-    }
-
-    token.balance = accountData.balance;
-    token.allowance = accountData.allowance;
 
     // usually it will be ...get registry, add new object
     // 2. Get the HubUser participant
@@ -52,22 +61,22 @@ async function CreateRecruiterAccount(accountData) {
     //         accountRegistry.addAll([recruiterAccount]);
     //     });
 
-    const participantRegistry = await getParticipantRegistry(NS + '.HubRecruiter');
-
-    await participantRegistry.addAll([recruiter]);
-
     const jobAdsRegistry = await getAssetRegistry(NSJOBS + '.JobAds');
-
     await jobAdsRegistry.addAll([jobAds]);
 
-    const erc20Registry = await getAssetRegistry(NSTOK + '.ERC20Token');
-
-    await erc20Registry.addAll([token]);
-
     const accountRegistry = await getAssetRegistry(NS + '.HubAccount');
-
     await accountRegistry.addAll([recruiterAccount]);
 
+    // create token transaction history
+    cred.newBalance = token.balance;
+    let transaction = await CreateERC20Transaction(cred);
+
+    recruiter.history = new Array();
+    recruiter.history.push(transaction);
+
+    // 6 Wire in the new Recruiter participant and HubAccount and ERC20 assets
+    const participantRegistry = await getParticipantRegistry(NS + '.HubRecruiter');
+    await participantRegistry.addAll([recruiter]);
 };
 
 
@@ -84,8 +93,6 @@ async function CreateJobSeekerAccount(accountData) {
     var NS = 'io.onemillionyearsbc.hubtutorial';
     var NSTOK = 'io.onemillionyearsbc.hubtutorial.tokens';
 
-    // Create an ERC20 token object to attach the the user object
-    var token = factory.newResource(NSTOK, 'ERC20Token', accountData.email);
 
     var email = accountData.email;
     var seekerParams = factory.newConcept(NS, 'HubJobSeekerParameters');
@@ -100,68 +107,89 @@ async function CreateJobSeekerAccount(accountData) {
 
     fillJobSeekerParameters(seeker, accountData);
 
-    // 4 Create a HubAccount for the job seeker
-
+    // 2 Create a HubAccount for the job seeker
     var seekerAccount = factory.newResource(NS, 'HubAccount', accountData.email);
     seekerAccount.owner = factory.newRelationship(NS, 'HubUser', email);
     seekerAccount.accountType = "JOBSEEKER";
     seekerAccount.dateCreated = new Date();
     seekerAccount.password = accountData.password;
 
-    // 5 Set ERC20 Token initial attributes
-      if (accountData.balance > accountData.allowance) {
-        throw Error("balance cannot be greater than allowance");
+    // 3 Set ERC20 Token initial attributes
+    if (accountData.balance > accountData.allowance) {
+        throw Error("ERC20Token balance cannot be greater than allowance");
     }
 
+    var token = factory.newResource(NSTOK, 'ERC20Token', accountData.email);
     token.balance = accountData.balance;
     token.allowance = accountData.allowance;
 
-    
-    // 6  Wire in the HubUser participant and HubAccount and ERC20 assets
+    // 4 create the initial token, token transaction and add to history
+    let cred={};
+    cred.email = accountData.email;
+    cred.type = "INITIAL";
+    cred.amount = accountData.balance;
 
-    const participantRegistry = await getParticipantRegistry(NS + '.HubJobSeeker');
-
-    await participantRegistry.addAll([seeker]);
-
-    const accountRegistry = await getAssetRegistry(NS + '.HubAccount');
-
-    await accountRegistry.addAll([seekerAccount]);
-
+    // token object
     const erc20Registry = await getAssetRegistry(NSTOK + '.ERC20Token');
-
     await erc20Registry.addAll([token]);
 
+    seeker.hubToken = token;
+
+  
+    // 5 Add the new account to the HubAccount registry
+    const accountRegistry = await getAssetRegistry(NS + '.HubAccount');
+    await accountRegistry.addAll([seekerAccount]);
+
+     // createtoken transaction history
+    cred.newBalance = token.balance;
+    let transaction = await CreateERC20Transaction(cred);
+
+    seeker.history = new Array();
+    seeker.history.push(transaction);
+
+    // 6 Wire in the new HubUser participant and HubAccount and ERC20 assets
+    const participantRegistry = await getParticipantRegistry(NS + '.HubJobSeeker');
+    await participantRegistry.addAll([seeker]);
+     
 };
 
-function fillJobSeekerParameters(seeker, accountData) {
-     // 2 copy params
-     seeker.params.city = accountData.params.city;
-     seeker.params.phone = accountData.params.phone;
-     seeker.params.country = accountData.params.country;
- 
-     seeker.params.cvhash = accountData.params.cvhash;
 
-     // if cv has changed generate a new date (uploaded date)
-     if (seeker.params.cvfile != accountData.params.cvfile) {
+function fillJobSeekerParameters(seeker, accountData) {
+    // 2 copy params
+    seeker.params.city = accountData.params.city;
+    seeker.params.phone = accountData.params.phone;
+    seeker.params.country = accountData.params.country;
+
+    seeker.params.cvhash = accountData.params.cvhash;
+
+    // if cv has changed generate a new date (uploaded date)
+    if (seeker.params.cvfile != accountData.params.cvfile) {
         seeker.params.cvfile = accountData.params.cvfile;
         seeker.params.cvdate = new Date();
-     }
-     
-     seeker.params.weblink = accountData.params.weblink;
-     seeker.params.itexperience = accountData.params.itexperience;
- 
-     seeker.params.skills = accountData.params.skills;
-     seeker.params.blockchainUsed = accountData.params.blockchainUsed;
-     seeker.params.blockexperience = accountData.params.blockexperience;
-     seeker.params.newjobsummary = accountData.params.newjobsummary;
-     seeker.params.newjobtitle = accountData.params.newjobtitle;
-     seeker.params.newjobremote = accountData.params.newjobremote;
-     seeker.params.newjobtype = accountData.params.newjobtype;
-     seeker.params.visibility = accountData.params.visibility;
- 
-     seeker.params.name.title = accountData.params.name.title;
-     seeker.params.name.firstName = accountData.params.name.firstName;
-     seeker.params.name.lastName = accountData.params.name.lastName;
+    }
+
+    seeker.params.weblink = accountData.params.weblink;
+    seeker.params.itexperience = accountData.params.itexperience;
+
+    seeker.params.skills = accountData.params.skills;
+    seeker.params.languages = accountData.params.languages;
+
+    seeker.params.languages = new Array();
+    var i;
+    for (i = 0; i < accountData.params.languages.length; i++) {
+        seeker.params.languages.push(accountData.params.languages[i]);
+    }
+    seeker.params.blockchainUsed = accountData.params.blockchainUsed;
+    seeker.params.blockexperience = accountData.params.blockexperience;
+    seeker.params.newjobsummary = accountData.params.newjobsummary;
+    seeker.params.newjobtitle = accountData.params.newjobtitle;
+    seeker.params.newjobremote = accountData.params.newjobremote;
+    seeker.params.newjobtype = accountData.params.newjobtype;
+    seeker.params.visibility = accountData.params.visibility;
+
+    seeker.params.name.title = accountData.params.name.title;
+    seeker.params.name.firstName = accountData.params.name.firstName;
+    seeker.params.name.lastName = accountData.params.name.lastName;
 }
 
 /**
@@ -206,7 +234,7 @@ async function RemoveHubUser(credentials) {
 /* TODO RemoveAccountAndHubTokensAndUser */
 /* For full implementation we would need to return the user's tokens to the supply 
     then remove the user then remove the account */
- 
+
 /* Alternatively just have separate functions and call them one at a time from the client */
 
 /**
@@ -281,6 +309,22 @@ async function GetHubJobSeeker(credentials) {
     return undefined;
 }
 
+/**
+ * Return HubUser according to email only (used to get user data for recruiters)
+ * @param {io.onemillionyearsbc.hubtutorial.GetHubJobSeekerByEmail} credentials
+ * @returns {io.onemillionyearsbc.hubtutorial.HubJobSeeker} The user
+ * @transaction
+ */
+async function GetHubJobSeekerByEmail(credentials) {
+    let user = await query('selectHubJobSeekerByEmail', {
+        "email": credentials.email,
+    });
+    if (user.length == 1) {
+        return user[0];
+    }
+    return undefined;
+}
+
 async function loggedInHelper(email, loggedIn) {
     // Get the asset registry for the asset.
     var assetRegistry = await getAssetRegistry('io.onemillionyearsbc.hubtutorial.HubAccount');
@@ -313,6 +357,7 @@ async function BuyJobCredits(credentials) {
     var user = await assetRegistry.get(credentials.email);
 
     user.remaining += credentials.credits;
+    user.searches += credentials.searches;
 
     // Update the asset in the asset registry.
     await assetRegistry.update(user);
@@ -524,7 +569,7 @@ async function SelectJobPostingByRef(credentials) {
         throw new Error("Job Reference " + credentials.jobReference + " not found in registry");
     }
 
-   return results[0];
+    return results[0];
 }
 
 /**
@@ -632,8 +677,17 @@ async function ApplyForJob(credentials) {
     let applicationId = new Date().getTime().toString().substr(-8);
     var factory = getFactory();
     var application = factory.newResource(NSJOBS, 'JobApplication', applicationId);
-    application.email = credentials.email; 
+    application.email = credentials.email;
     application.jobReference = credentials.jobReference;
+    application.name = seeker.params.name.firstName + " " + seeker.params.name.lastName
+    let location = "";
+    if (seeker.params.city != undefined) {
+        location = seeker.params.city + ", " + seeker.params.country;
+    } else {
+        location = seeker.params.country;
+    }
+    application.location = location;
+
     const now = new Date();
     application.dateApplied = now;
 
@@ -652,7 +706,7 @@ async function ApplyForJob(credentials) {
     } else {
         seeker.applications.push(application);
     }
-    await participantRegistry.update(seeker);   
+    await participantRegistry.update(seeker);
 
     await jobPostingRegistry.update(jobPosting);
 
@@ -848,7 +902,7 @@ function fillJobAdParams(posting, credentials) {
     posting.internalRef = credentials.internalRef;
     posting.employer = credentials.employer;
     posting.salary = credentials.salary,
-    posting.location = credentials.location;
+        posting.location = credentials.location;
     posting.city = credentials.city;
     posting.longitude = credentials.longitude;
     posting.latitude = credentials.latitude;
@@ -881,18 +935,60 @@ async function GetAllLiveJobPostings(credentials) {
 }
 
 /**
+ * Return JobApplication array of records for given ref (job posting)
+ * @param {io.onemillionyearsbc.hubtutorial.jobs.GetJobApplicationsForJobReference} credentials
+ * @returns {io.onemillionyearsbc.hubtutorial.jobs.JobApplication[]} The JobApplication records for these criteria
+ * @transaction
+ */
+async function GetJobApplicationsForJobReference(credentials) {
+    let results = await query('selectJobApplicationsByJobReference', {
+        "jobReference": credentials.jobReference,
+    });
+
+    return results;
+}
+
+/**
  * Return JobApplication array of records for given email (user)
  * @param {io.onemillionyearsbc.hubtutorial.jobs.GetJobApplicationsForEmail} credentials
  * @returns {io.onemillionyearsbc.hubtutorial.jobs.JobApplication[]} The JobApplication records for these criteria
  * @transaction
  */
-async function GetJobApplicationsForEmail(credentials) {
+async function GetJobApplicationsFor(credentials) {
     let results = await query('selectJobApplicationsByEmail', {
         "email": credentials.email,
     });
 
     return results;
 }
+
+
+/**
+ * Add a new ERC20 transaction to the user's history
+ * @param {io.onemillionyearsbc.hubtutorial.AddERC20TokenTransactionToHistory} credentials
+ * @transaction
+ */
+async function AddERC20TokenTransactionToHistory(credentials) {
+    var NS = 'io.onemillionyearsbc.hubtutorial';
+    var accountType = '.HubRecruiter';
+
+    if (credentials.accountType === 'JOBSEEKER') {
+        accountType = '.HubJobSeeker';
+    }
+    let transaction = await CreateERC20Transaction(credentials);
+    const participantRegistry = await getParticipantRegistry(NS + accountType);
+    var seeker = await participantRegistry.get(credentials.email);
+
+    if (seeker.history == undefined) {
+        seeker.history = new Array();
+        seeker.history[0] = transaction;
+    } else {
+        seeker.history.push(transaction);
+    }
+    await participantRegistry.update(seeker);
+}
+
+
 /*
 {
     "$class": "io.onemillionyearsbc.hubtutorial.jobs.UpdateJobPosting",
@@ -973,5 +1069,37 @@ async function GetJobApplicationsForEmail(credentials) {
   "password": "fluffy",
   "balance": 10,
   "allowance": 10
+}
+
+  {
+  "$class": "io.onemillionyearsbc.hubtutorial.CreateJobSeekerAccount",
+  "params": {
+    "$class": "io.onemillionyearsbc.hubtutorial.HubJobSeekerParameters",
+    "name": {
+      "$class": "io.onemillionyearsbc.hubtutorial.Name",
+      "title": "MR",
+      "firstName": "Erwin",
+      "lastName": "Rommel"
+    },
+    "phone": "+32494639815",
+    "country": "Germany",
+    "city": "Essen",
+    "cvhash": "ddffeffefefe",
+    "weblink": "http://tanks.de",
+    "itexperience": 1,
+    "skills": "Tanks Are MEEEEEE",
+    "blockchainUsed": "CORDA",
+    "blockexperience": 1,
+    "newjobsummary": "PANZER BOY",
+    "newjobtitle": "Inspector",
+    "newjobremote": false,
+    "newjobtype": "FULLTIME",
+    "visibility": false
+  },
+  "accountType": "JOBSEEKER",
+  "email": "e.rommel@wehrmacht.de",
+  "password": "fluffy",
+  "balance": 2,
+  "allowance": 50
 }
   */

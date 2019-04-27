@@ -12,7 +12,24 @@ asset ERC20Token identified by email {
   o Double balance default=0.0
   o Double allowance default=0.0
 }
- 
+
+enum ERC20TokenTransactionType {
+  o CASHOUT
+  o SEARCH // tokens received for appearing in search results
+  o INITIAL
+  o LOADUP // user buys tokens`
+} 
+
+asset ERC20TokenTransaction identified by id {
+  o String id
+  o ERC20TokenTransactionType type
+  o DateTime date
+  o Double amount
+  o Double balance
+}
+
+
+
 transaction GetERC20TotalSupply {
   o String tokenName
 }
@@ -58,5 +75,12 @@ transaction TransferERC20 {
   o Double amount
 }
 
+@returns(ERC20TokenTransaction)
+transaction CreateERC20Transaction {
+  o String email
+  o ERC20TokenTransactionType type
+  o Double amount
+  o Double newBalance optional // use for new accounts
+}
 
 

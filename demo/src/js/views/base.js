@@ -27,11 +27,13 @@ export const elements = {
     contact: document.getElementById("contact"),
     internalref: document.getElementById("internalref"),
     skills: document.getElementById("skills"),
+    languages: document.getElementById("languages"),
     salary: document.getElementById("salary"),
     location: document.getElementById("location"),
     jobCity: document.getElementById("city"),
     dashboard: document.getElementById("dash"),
     createBtn: document.getElementById("createBtn"),
+    cvSearchBtn: document.getElementById("cvsearchBtn"),
     mainWindow: document.getElementById("main"),
     jobadsnum: document.getElementById("jobadsnum"),
     slider: document.getElementById('rangeinput'),
@@ -44,6 +46,7 @@ export const elements = {
     livecounter: document.getElementById("livecounter"),
     postedcounter: document.getElementById("postedcounter"),
     remainingcounter: document.getElementById("remainingcounter"),
+    searchcounter: document.getElementById("searchcounter"),
     createjobbutton: document.getElementById("createjobbutton"),
     createJobPage: document.getElementById("jobad"),
     adForm: document.getElementById("adform"),
@@ -142,7 +145,11 @@ export const elements = {
     alertPage: document.getElementById("alertpage"),
     downloadcv: document.getElementById("downloadcv"),
     uploadcv: document.getElementById("uploadcv"),
-    viewjobappsBtn: document.getElementById("viewjobappsbtn")
+    viewjobappsBtn: document.getElementById("viewjobappsbtn"),
+    applyjobBtn: document.getElementById("applyjobbutton"),
+    ref: document.getElementById("jobreftitle"),
+    cvpanel:  document.getElementById("cv"),
+    cvsearchesBtn:  document.getElementById("cvsearchbtn")
 };
 
 export const dbelements = {
@@ -191,6 +198,11 @@ var removeAlertTransaction = "io.onemillionyearsbc.hubtutorial.jobs.RemoveJobAle
 var testAlertTransaction = "io.onemillionyearsbc.hubtutorial.jobs.TestJobAlert";
 var getAlertsTransaction = "io.onemillionyearsbc.hubtutorial.jobs.GetAlertsForEmail";
 var getJobByRefTransaction = "io.onemillionyearsbc.hubtutorial.jobs.SelectJobPostingByRef";
+var applyForJobTransaction = "io.onemillionyearsbc.hubtutorial.jobs.ApplyForJob";
+var getApplicationsForUserTransaction = "io.onemillionyearsbc.hubtutorial.jobs.GetJobApplicationsForEmail";
+var getApplicationsForJobRefTransaction = "io.onemillionyearsbc.hubtutorial.jobs.GetJobApplicationsForJobReference";
+var getJobSeekerAccountTransaction = 'io.onemillionyearsbc.hubtutorial.GetHubJobSeekerByEmail';
+var cvSearchTransaction = 'io.onemillionyearsbc.hubtutorial.jobs.CVSearch';
 
 
 export const strings = {
@@ -222,6 +234,12 @@ export const strings = {
     testAlertTransaction: `${testAlertTransaction}`,
     getAlertsTransaction: `${getAlertsTransaction}`,
     getJobByRefTransaction: `${getJobByRefTransaction}`,
+    applyForJobTransaction: `${applyForJobTransaction}`,
+    getApplicationsForUserTransaction: `${getApplicationsForUserTransaction}`,
+    getApplicationsForJobRefTransaction: `${getApplicationsForJobRefTransaction}`,
+    getJobSeekerAccountTransaction: `${getJobSeekerAccountTransaction}`,
+    cvSearchTransaction: `${cvSearchTransaction}`,
+    
     loginRecruiterUrl: `http://${ipAddress}:3000/api/${recruiterLoginTransaction}`,
     loginJobSeekerUrl: `http://${ipAddress}:3000/api/${jobSeekerLoginTransaction}`,
     registerRecruiterUrl: `http://${ipAddress}:3000/api/${recruiterRegisterTransaction}`,
@@ -247,6 +265,13 @@ export const strings = {
     testAlertUrl: `http://${ipAddress}:3000/api/${testAlertTransaction}`,
     getAlertsUrl: `http://${ipAddress}:3000/api/${getAlertsTransaction}`,
     getJobByRefUrl: `http://${ipAddress}:3000/api/${getJobByRefTransaction}`,
+    applyForJobUrl: `http://${ipAddress}:3000/api/${applyForJobTransaction}`,
+    getApplicationsForUserUrl: `http://${ipAddress}:3000/api/${getApplicationsForUserTransaction}`,
+    getApplicationsForJobRefUrl: `http://${ipAddress}:3000/api/${getApplicationsForJobRefTransaction}`,
+    getJobSeekerAccountUrl: `http://${ipAddress}:3000/api/${getJobSeekerAccountTransaction}`,
+    cvSearchUrl: `http://${ipAddress}:3000/api/${cvSearchTransaction}`,
+
+    
     beginningOfTime: "1970-01-01T15:11:47.728Z",
     endOfTime: "3070-01-01T15:11:47.728Z",
     blockchainFilter: 'blockchaintotals',
@@ -273,9 +298,18 @@ export const elementConsts = {
     ACCOUNTPAGE: 9,
     ALERTPAGE: 10,
     APPLICATIONPAGE: 11,
+    SEARCHRESULTSPAGE: 12,
+    RECRUITERAPPLICATIONPAGE: 13,
+    BUYSEARCHESPAGE: 14,
+    CVSEARCHPAGE: 15,
     JOBADPRICE: 99,
+    CVSEARCHPRICE: 25,
     JOBDISCOUNT: 10,
+    CVDISCOUNT: 5,
+    TOKENEXCHANGERATE: 100,
+    REWARDPERCENTAGE: .2, // percentage of tokens to award to jobseekers in search results
     JOBMINPRICE: 49,
+    CVMINPRICE: 20,
     MAXJOBS: 10,
     STANDARDPRICE: 99,
     PREMIUMPRICE: 199
@@ -436,6 +470,7 @@ export function enableCreateJobButton(remaining) {
         elements.createBtn.disabled = true;
     }
 }
+
 
 export function getSelectedOption(sel) {
     if (sel.options[sel.selectedIndex] === undefined) {

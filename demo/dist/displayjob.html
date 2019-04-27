@@ -29,7 +29,23 @@
                 <ul class="navbar-menu navbar__left">
                     <li class="item-1"><a href="recruiter-dashboard.html">Dashboard</a></li>
                     <li><a href="jobcredits.html">Job Credits</a></li>
-                    <li class="signin"><a href="#" class="link-icon">Log Out</a></li>
+
+                </ul>
+                <ul class="navbar__right">
+                    <li id="recruiterlogout" class="signin"><a href="#" class="link-icon">Log Out</a>
+                    </li>
+                    <div id="accountmenu" class="dropdownnavbar" style="display: none;">
+                        <button id="accountmenubtn" class="dropbtn">NOB's account
+                            <i class="left-icon icon far fa-user"></i>
+                            <i class="right-icon fa fa-caret-down"></i>
+                        </button>
+                        <div class="dropdownnavbar-content">
+                            <a href="jobseeker-account.html">Account</a>
+                            <a href="jobseeker-dashboard.html">Profile</a>
+                            <a href="#">Applications</a>
+                            <a id="signoutlink" href="#">Sign Out</a>
+                        </div>
+                    </div>
                 </ul>
             </nav>
             <div id="displayjob" class="container viewjob">
@@ -46,7 +62,7 @@
                                     <p id="joblocation" class="loggy__label"><span></span>, <span></span></p>
                                 </div>
                             </div>
-                           
+
                             <div class="viewjob__parent--item">
                                 <div class="loggy">
                                     <i class="loggy__icon fas fa-pound-sign fa-fw"></i>
@@ -73,11 +89,17 @@
                                 </div>
                             </div>
                             <div class="viewjob__parent--item">
-                                    <div class="loggy">
-                                        <!-- <i class="loggy__icon far fa-clock fa-fw"></i> -->
-                                        <p id="jobviews" class="loggy__label"></p>
-                                    </div>
+                                <div class="loggy2">
+                                    <!-- <i class="loggy__icon far fa-clock fa-fw"></i> -->
+                                    <p id="jobviews" class="loggy__label"></p>
                                 </div>
+                            </div>
+                            <div class="viewjob__parent--item">
+                                <div class="loggy">
+                                    <!-- <i class="loggy__icon far fa-clock fa-fw"></i> -->
+                                    <p id="jobapplications" class="loggy__label"></p>
+                                </div>
+                            </div>
                         </div>
                         <div class="right">
                             <img id="joblogo" src="">
@@ -124,9 +146,9 @@
                         <p>Revere is acting as a talent partner on behalf of this technology company, if you have the
                             right skills for this Senior Node.JS Developer please send us your CV for immediate
                             consideration.</p>
-                            
+
                     </div>
-                    
+
                     <div id="lower" class="lowerpane">
                         <div>
                             <p id="jobcontact"><span>Contact:</span>Mike Richardson</p>
@@ -138,7 +160,7 @@
                             <p id="jobid"> <span>Job ID:</span>24163563</p>
                         </div>
                     </div>
-                    
+
                     <div id="bp" class="buttonpanel">
                         <button id="amendjobbutton" class="btn">Amend Details</button>
                         <button id="expirejobbutton" class="btn">Expire Job</button>

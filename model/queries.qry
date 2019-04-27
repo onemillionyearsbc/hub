@@ -81,3 +81,11 @@ query selectJobApplicationsByJobReferenceAndEmail {
         SELECT io.onemillionyearsbc.hubtutorial.jobs.JobApplication
             WHERE ((jobReference == _$jobReference) AND (email == _$email))
 }
+
+
+query selectJobSeekerByCity {
+ description: "Select HubJobSeeker objects where city matches"
+    statement:
+        SELECT io.onemillionyearsbc.hubtutorial.HubJobSeeker
+            WHERE (params.city == _$city)
+}

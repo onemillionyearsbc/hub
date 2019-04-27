@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css?family=Josefin+Sans:300,400,400i|Nunito:300,300i" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="shortcut icon" type="image/png" href="img/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <script src="scripts/fontawesome-all.js"></script>
+    <title>CV Search Credits</title>
+</head>
+
+<body>
+    <div id="credits" class="jobcredits">
+        <div>
+            <div class="animated slideInTop delay-2s jobcredits__topbar">
+                <div class="topleft">
+                    <a href="index.html">
+                        <img src="img/logo-small.png" alt="1MYBC">
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div>
+            <nav class="navbar animated slideInRight delay-2s">
+                <ul class="navbar__left">
+                    <li class="item-1"><a href="#jobs">Advertise Jobs</a></li>
+                    <li><a href="#companies">Search CVs</a></li>
+                    <li class="signin"><a href="#" class="link-icon">Log Out</a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <div id ="jobadspage" class="container jobcredits__parent">
+            <h1 class="animated slideInLeft delay-2s title">
+                CV Search
+            </h1>
+            <p class="animated slideInLeft delay-2s subtitle">
+                Find the tech talent you want to hire
+            </p>
+            <div class="animated slideInLeft delay-2s jobcredits__parent--mainpanel">
+                <div class="toprow">
+                    <div class="toprow__leftpanel">
+                        <ul class="textlist">
+                            <li class="item-1">1 search: up to 10 users</li>
+                            <li class="item-2">Buy multiple searches to find more users</li>
+                            <li class="item-3">Percentage goes to candidates<br></li>
+                            <li class="item-4">We value user data</li>
+                        </ul>
+                    </div>
+                    <div class="toprow__midpanel">
+                        <p class="title1">
+                            How many job searches do you need <br>(max. 10 hits per search)?
+                        </p>
+                        <div class="jobspanel">
+                            <p id="jobadsnum" class="jobs">
+                                1
+                            </p>
+                        </div>
+                        <div class="slider">
+                            <div class="sliderthings">
+                                <div id="leftsliderbutton" class="leftbutton">
+                                    <p class="lefttext sliderbuttontext">
+                                        -
+                                    </p>
+                                </div>
+                                <div class="range">
+                                    <input id="rangeinput" type="range" min="1" max="10" steps="1" value="1" 22>
+                                </div>
+                                <div id="rightsliderbutton" class="rightbutton">
+                                        <p class="righttext sliderbuttontext">
+                                            +
+                                        </p>
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+                    <span class="toprow__rightpanel">
+                        <p class="title2">
+                            Total Price
+                        </p>
+                        <div class="price">
+                            <span id="jobprice" class="bluebig">£25</span>
+                            <span class="bluesmall">+VAT</span>
+                        </div>
+                        <div id="saving" class="saving">
+                            (saving £0 per ad)
+                        </div>
+                        <div class="bouton">
+                            <button id="buyjobadsbtn" class="btn">BUY NOW</button>
+                        </div>
+                    </span>
+                </div>
+                <div class="midrow">
+                    <p class="banner">
+                    </p>
+                    <div class="bottomrow">
+                        <p class="banner">
+                            <span class="blue">NEW CUSTOMER?</span>
+                            <span class="white">Post your first job for £49 with promotion code</span>
+                            <span class="blue">HUB49</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+</body>
+</html>

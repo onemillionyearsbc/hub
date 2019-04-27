@@ -14,19 +14,23 @@ import * as manageJobAdsView from './views/manageJobAdsView';
 import * as profileView from './views/profileView';
 import * as alertView from './views/alertView';
 import * as accountView from './views/accountView';
+import * as cvSearchView from './views/cvSearchView';
 
 import { getFormFor, clearError, elements, dbelements, elementConsts, inputType, renderLoader, renderLoaderEnd, renderLoaderEndByNumber, renderLoaderByREMFromTop, clearLoader, navBarSetLoggedIn, setLoggedIn, strings, enableCreateJobButton, autocomplete, jobTitles, setButtonHandlers, displayErrorPopup, displaySuccessPopup, updateFavouritesTotal, addFavouritesLinkListener, countriesArray } from './views/base';
-import { setCompanyName, setContactName, getJobAdsData, setJobAdsData, setJobCreditsRemaining } from './views/recruiterDashboardView';
+import { setCompanyName, setContactName, getJobAdsData, setJobAdsData, setCVSearchData, setJobCreditsRemaining } from './views/recruiterDashboardView';
 import { setJobAdsNumber, setTotalJobPrice, restyle, adjustSlider, getBuyJobCreditsData } from './views/jobCreditsView';
+import { setCVSearchNumber, setTotalCVSearchPrice, restyleCV, adjustSliderCV, getBuyCVSearchData, getTokensToMint } from './views/cvCreditsView';
 import DatabaseProcessor from './models/DatabaseProcessor';
 import ImageLoader from './models/ImageLoader';
 import { populateFilterTable, populatePostedBy, setJobStats } from './views/manageJobAdsView';
-import { setJobFields, setJobLogo, getExpireJobData, isExpired } from './views/displayJobView';
+import { setJobFields, setApplications, setJobLogo, getExpireJobData, isExpired } from './views/displayJobView';
 import { renderResults, setTotalJobsBucket, handleNext, handlePrev, applyFilter, filterByWhere, filterByWhat } from './views/searchView';
 import { renderFavouriteResults } from './views/favouritesView';
 import { setPrices } from './views/advertView';
 import { setJobSeekerEmail, setProfileFields } from './views/profileView';
-
+import { displayApplications } from './views/applicationsView'; // list of jobs seeker has applied for
+import { displayRecruiterApplications } from './views/recruiterApplicationsView'; // list of applicants for recruiter to view
+import { renderCVSearchResults } from './views/cvSearchResultsView';
 
 loadObjectStore();
 
@@ -39,6 +43,7 @@ loadObjectStore();
 // });
 
 const state = {};
+state.newCV === false;
 var quill;
 var loggedIn = sessionStorage.getItem('loggedIn');
 state.loggedIn = loggedIn === "true" ? true : false;
@@ -152,8 +157,11 @@ const signOutHandler = async () => {
         } else if (state.page === elementConsts.ALERTPAGE) {
             renderLoader(elements.viewJob);
         } else if (state.page === elementConsts.APPLICATIONPAGE) {
-            console.log("QUACK 99!");
             renderLoader(elements.jobApplications);
+        } else if (state.page === elementConsts.SEARCHRESULTSPAGE) {
+            renderLoader(elements.searchjob);
+        } else if (state.page === elementConsts.CVSEARCHPAGE) {
+            renderLoader(elements.cvpanel);
         }
     }
 
@@ -179,6 +187,53 @@ const signOutHandler = async () => {
     }
 }
 
+const CVSearchHandler = async () => {
+    renderLoader(elements.cvpanel);
+
+    var email = sessionStorage.getItem('myemail');
+    let data = cvSearchView.getFormData(email);
+
+    let tp = new TransactionProcessor(data, strings.cvSearchUrl);
+
+    var candidates = await tp.transaction();
+
+    var err = null;
+    if (candidates.error !== undefined) {
+        err = candidates.error;
+    }
+    if (err != null) {
+        await displayErrorPopup('Failed to search CVs: ' + err.message);
+    } else {
+        sessionStorage.setItem("candidates", JSON.stringify(candidates));
+        window.location = "cvsearchresults.html";
+    }
+    clearLoader();
+}
+
+const buyCVSearchCreditsHandler = async () => {
+    renderLoader(elements.jobadsWindow);
+    var email = sessionStorage.getItem('myemail');
+    var data = getBuyCVSearchData(email);
+    state.login = new TransactionProcessor(data, strings.buyJobAdsUrl);
+    var resp = await state.login.transaction();
+    var err = null;
+    if (resp.error !== undefined) {
+        err = resp.error;
+
+    }
+    if (err != null) {
+        await displayErrorPopup('Failed to buy search credits: ' + err);
+    } else {
+
+        let numNewTokens = getTokensToMint();
+
+        // TODO Mint new ERC20 tokens based on how many searches purchased by recruiter
+        window.location = "recruiter-dashboard.html";
+    }
+
+
+    clearLoader();
+}
 
 // JOB ADS CONTROLLER
 const buyJobCreditsHandler = async () => {
@@ -202,6 +257,7 @@ let cachedData;
 
 // SEARCH CONTROLLER
 const searchJobsHandler = async () => {
+    state.page = elementConsts.SEARCHRESULTSPAGE;
     renderLoader(elements.searchjob);
     getFavourites();
 
@@ -213,80 +269,7 @@ const searchJobsHandler = async () => {
         console.log("SETTING TOTAL JOBS BUCKET...");
         setTotalJobsBucket(cachedData);
     } else {
-        console.log("GOING TO THE BLOCKCHAIN TO GET LIVE JOBS...");
-        var data = {
-            $class: strings.getAllJobPostingsTransaction,
-        };
-        const tp = new TransactionProcessor(data, strings.getAllJobPostingsUrl);
-
-        let rows = await tp.transaction();
-
-        var err = null;
-        if (rows.error !== undefined) {
-            err = rows.error;
-        }
-        if (err != null) {
-            await displayErrorPopup('Search failed: ' + err);
-        } else {
-            let id;
-            try {
-                let results = await imageLoader.getAllImagesFromDatabase();
-
-                console.log("NUMBER OF ROWS RETURNED = " + results.length);
-
-                for (var i = 0; i < rows.length; i++) {
-
-                    console.log("BLOCKCHAIN HASH FOR ROW " + i + " = " + rows[i].logohash);
-
-                    // remove any leading zeroes
-                    id = Number(rows[i].jobReference).toString();
-                    let rowfound = Array.from(results).find(row => row.id === id);
-
-                    console.log("rowfound = " + rowfound);
-                    console.log("CHECKING HASH FOR IMAGE " + id + "; image = " + rowfound.image);
-                    console.log("DB HASH " + i + " = " + rowfound.hash);
-
-                    //     // TODO I would say move this into a crypto class (CryptoProcessor)
-                    await imageLoader.checkHash(id, rowfound.image, rowfound.hash, rows[i].logohash);
-                    // console.log("id: " + id + " => HASHES EQUAL!");
-                    rows[i].logo = rowfound.image;
-
-                }
-                state.label = undefined;
-                console.log("RENDERING ROWS...LEN = " + rows.length);
-                renderResults(rows);
-
-                let cdata = JSON.stringify(rows);
-
-                // TODO look at Max quota for session storage
-                // sessionStorage.setItem("jobs", cdata);
-
-                // save the cache date to indexed db instead of local storage
-                // var store = transaction.objectStore("jobs");
-
-                await addIndexedData(cdata);
-                // request.onerror = function (e) {
-                //     console.log("Error", e.target.error.name);
-                //     //some type of error handler
-                // }
-
-                // request.onsuccess = function (e) {
-                //     console.log("Woot! Did it, jobs saved");
-                // }
-
-
-            } catch (error) {
-                clearLoader();
-                await Swal({
-                    title: 'ERROR PROCESSING JOBS!',
-                    text: error + " jobreference = " + id,
-                    type: 'error',
-                    confirmButtonText: 'OK',
-                    confirmButtonColor: '#cc6d14',
-                });
-            }
-
-        }
+        await loadCache(true);
     }
     clearLoader();
     let what = sessionStorage.getItem("what");
@@ -309,6 +292,86 @@ const searchJobsHandler = async () => {
     clearLoader();
 }
 
+async function loadCache(render = false) {
+    console.log("GOING TO THE BLOCKCHAIN TO GET LIVE JOBS...");
+    var data = {
+        $class: strings.getAllJobPostingsTransaction,
+    };
+    const tp = new TransactionProcessor(data, strings.getAllJobPostingsUrl);
+
+    let rows = await tp.transaction();
+    let cdata;
+    var err = null;
+    if (rows.error !== undefined) {
+        err = rows.error;
+    }
+    if (err != null) {
+        await displayErrorPopup('Search failed: ' + err);
+    } else {
+        let id;
+        try {
+            let results = await imageLoader.getAllImagesFromDatabase();
+
+            console.log("NUMBER OF ROWS RETURNED = " + results.length);
+
+            for (var i = 0; i < rows.length; i++) {
+
+                console.log("BLOCKCHAIN HASH FOR ROW " + i + " = " + rows[i].logohash);
+
+                // remove any leading zeroes
+                id = Number(rows[i].jobReference).toString();
+                let rowfound = Array.from(results).find(row => row.id === id);
+
+                console.log("rowfound = " + rowfound);
+                console.log("CHECKING HASH FOR IMAGE " + id + "; image = " + rowfound.image);
+                console.log("DB HASH " + i + " = " + rowfound.hash);
+
+                //     // TODO I would say move this into a crypto class (CryptoProcessor)
+                await imageLoader.checkHash(id, rowfound.image, rowfound.hash, rows[i].logohash);
+                // console.log("id: " + id + " => HASHES EQUAL!");
+                rows[i].logo = rowfound.image;
+
+            }
+            state.label = undefined;
+            if (render === true) {
+                console.log("RENDERING ROWS...LEN = " + rows.length);
+                renderResults(rows);
+            }
+
+
+            cdata = JSON.stringify(rows);
+
+            // TODO look at Max quota for session storage
+            // sessionStorage.setItem("jobs", cdata);
+
+            // save the cache date to indexed db instead of local storage
+            // var store = transaction.objectStore("jobs");
+
+            await addIndexedData(cdata);
+            // request.onerror = function (e) {
+            //     console.log("Error", e.target.error.name);
+            //     //some type of error handler
+            // }
+
+            // request.onsuccess = function (e) {
+            //     console.log("Woot! Did it, jobs saved");
+            // }
+
+
+        } catch (error) {
+            clearLoader();
+            await Swal({
+                title: 'ERROR PROCESSING JOBS!',
+                text: error + " jobreference = " + id,
+                type: 'error',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#cc6d14',
+            });
+        }
+
+    }
+    return cdata;
+}
 const getFavourites = async () => {
 
     let theEmail = sessionStorage.getItem('myemail');
@@ -381,6 +444,35 @@ const getAlerts = async () => {
     } else {
         sessionStorage.setItem("alerts", JSON.stringify(alerts));
         state.alerts = alerts;
+        console.log("GOT ALERTS, length = " + alerts.length);
+    }
+    clearLoader();
+}
+
+const getApplicationsForJobSeeker = async () => {
+    let theEmail = sessionStorage.getItem('myemail');
+    if (theEmail === null) {
+        return;
+    }
+
+    var data = {
+        $class: strings.getApplicationsForUserTransaction,
+        email: theEmail,
+    };
+    let tp = new TransactionProcessor(data, strings.getApplicationsForUserUrl);
+
+    var applications = await tp.transaction();
+
+    var err = null;
+    if (applications.error !== undefined) {
+        err = applications.error;
+    }
+
+    if (err != null) {
+        await displayErrorPopup('Failed to get applications: ' + err.message);
+    } else {
+        sessionStorage.setItem("apps", JSON.stringify(applications));
+        state.applications = applications;
     }
     clearLoader();
 }
@@ -412,6 +504,14 @@ const expireJobHandler = async () => {
     }
 }
 
+function enableCVSearchButton(searches) {
+    if (searches > 0) {
+        elements.cvSearchBtn.disabled = false;
+    } else {
+        elements.cvSearchBtn.disabled = true;
+    }
+}
+
 const getJobAdsHandler = async () => {
     var email = sessionStorage.getItem('myemail');
     var data = getJobAdsData(email);
@@ -427,7 +527,9 @@ const getJobAdsHandler = async () => {
 
     } else {
         setJobAdsData(resp.remaining);
+        setCVSearchData(resp.searches);
         enableCreateJobButton(resp.remaining);
+        enableCVSearchButton(resp.searches);
         sessionStorage.setItem('remaining', resp.remaining);
     }
 
@@ -588,7 +690,7 @@ const updateProfileHandler = async (transaction, ins) => {
     // 1. Get the blob
 
     // only need to calculate the hash if there is a cv file
-    if (formData.params.cvfile != undefined) {
+    if (formData.params.cvfile != undefined && state.newCV === true) {
         var blob;
         // if (state.newCV === true) {
         blob = await imageLoader.getBlob();
@@ -621,10 +723,19 @@ const updateProfileHandler = async (transaction, ins) => {
             await displayErrorPopup('Database put failed: ' + error);
             return;
         }
+    } else {
+        if (sessionStorage.getItem("cvhash") != undefined) {
+            formData.params.cvhash = sessionStorage.getItem("cvhash");
+        } else {
+            console.log("sorry mate!");
+        }
+       
     }
+
+    
     // if database succeeds...add to the blockchain
     state.login = new TransactionProcessor(formData, strings.updateProfileUrl);
-
+    
     var resp = await state.login.transaction();
 
     var err = null;
@@ -642,6 +753,7 @@ const updateProfileHandler = async (transaction, ins) => {
         setLoggedIn(state, true, resp.params.name.firstName);
         sessionStorage.setItem("userdata", JSON.stringify(formData));
         setProfileFields(formData);
+        state.newCV === false;
     }
 }
 
@@ -670,16 +782,42 @@ const queryAndDisplayJobHandler = async (jobRef) => {
         }
         displayJobHandler();
         elements.buttonPanel.style = "none";
-        if (isExpired() === true) {
-            elements.buttonPanel.innerHTML = `<button id="applyjobbutton" class="btn btn--disabled" disabled>Apply</button>`;
-        } else {
-            elements.buttonPanel.innerHTML = `<button id="applyjobbutton" class="btn btn--orange">Apply</button>`;
-        }
+
+        // TODO if already applied for this job -> disable button
+        applyButtons();
+    }
+}
+
+// test if a job already applied for by user {email}
+function alreadyAppliedFor() {
+    let ref = sessionStorage.getItem("jobReference");
+    let mail = sessionStorage.getItem('myemail');
+    let aData = sessionStorage.getItem("apps");
+    let applicationData = JSON.parse(aData);
+    if (applicationData === undefined || applicationData === null) {
+        return false;
+    }
+    let appliedArray = applicationData.filter(e => e.jobReference === ref);
+    return (appliedArray.length > 0);
+}
+
+async function applyButtons() {
+    // TODO if already applied for this job -> disable button
+    console.log("Setting apply button...");
+    if (isExpired() === true || alreadyAppliedFor() === true) {
+        elements.buttonPanel.innerHTML = `<button id="applyjobbutton" class="btn btn--disabled" disabled>Apply</button>`;
+    } else {
+        elements.buttonPanel.innerHTML = `<button id="applyjobbutton" class="btn btn--orange">Apply</button>`;
+        document.getElementById("applyjobbutton").addEventListener('click', e => {
+            e.preventDefault();
+            applyForJobHandler();
+        });
     }
 }
 
 const displayJobHandler = async () => {
     state.page = elementConsts.DISPLAYJOBPAGE;
+
     const views = sessionStorage.getItem("views");
     let ref = sessionStorage.getItem("jobReference");
     let v = parseInt(views);
@@ -687,14 +825,19 @@ const displayJobHandler = async () => {
     v = v + 1;
 
     sessionStorage.setItem("views", v);
+
     setJobFields();
 
     incrementViews(ref);
 
+    // don't display application info for jobseekers
+    let user = sessionStorage.getItem("user");
+    let type = parseInt(user);
+    setApplications(type);
+
     try {
         const image = await imageLoader.getImageFromDatabase(ref, sessionStorage.getItem("logohash"));
         setJobLogo(image);
-        return;
     }
     catch (error) {
         await Swal({
@@ -704,8 +847,14 @@ const displayJobHandler = async () => {
             confirmButtonText: 'OK',
             confirmButtonColor: '#cc6d14',
         });
+        return;
     }
 
+    console.log("document.getElementById('jobapplications' = " + document.getElementById("jobapplications"));
+    document.getElementById("jobapplications").addEventListener('click', e => {
+        e.preventDefault();
+        window.location = "recruiter-applications.html";
+    });
 
 }
 
@@ -744,6 +893,7 @@ const manageJobAdHandler = async (displayData) => {
         if (err != null) {
             await displayErrorPopup('JobPostings filter failed: ' + err.message);
         } else {
+
             setJobStats(state.rows);
             populateFilterTable(state.rows, "");
         }
@@ -790,8 +940,10 @@ if (document.URL.includes("managejobads")) {
 // VIEW JOB
 if (document.URL.includes("displayjob")) {
 
+    // if the user has clicked here from an email
+    // location.search will have a value (the job ref)
     var x = location.search;
-    console.log("x = " + x);
+
     if (x.length > 0 && x.includes("=")) {
         let jobRef = x.split("=");
         console.log("job ref = " + jobRef[1]);
@@ -817,12 +969,7 @@ if (document.URL.includes("displayjob")) {
 
         } else {
             elements.buttonPanel.style = "none";
-            if (isExpired() === true) {
-                elements.buttonPanel.innerHTML = `<button id="applyjobbutton" class="btn btn--disabled" disabled>Apply</button>`;
-            } else {
-                elements.buttonPanel.innerHTML = `<button id="applyjobbutton" class="btn btn--orange">Apply</button>`;
-            }
-
+            applyButtons();
         }
 
     }
@@ -835,6 +982,60 @@ if (document.URL.includes("displayjob")) {
     });
 
 
+}
+
+async function applyForJobHandler() {
+    renderLoaderEndByNumber(elements.lower, 120);
+    let ref = sessionStorage.getItem("jobReference");
+    let mail = sessionStorage.getItem('myemail');
+    console.log("Applying For Job: " + ref);
+
+    var data = {
+        $class: strings.applyForJobTransaction,
+        jobReference: ref,
+        email: mail
+    };
+    let tp = new TransactionProcessor(data, strings.applyForJobUrl);
+
+    var resp = await tp.transaction();
+
+    var err = null;
+    if (resp.error !== undefined) {
+        err = resp.error;
+    }
+
+    if (err != null) {
+        clearLoader();
+        await displayErrorPopup('Failed to Apply for Job: ' + err.message);
+    } else {
+        clearLoader();
+        elements.buttonPanel.innerHTML = `<button id="applyjobbutton" class="btn btn--disabled" disabled>Apply</button>`;
+        await displaySuccessPopup('Job Application Submitted!');
+    }
+}
+
+// CV SEARCH RESULTS CONTROLLER
+if (document.URL.includes("cvsearchresults.html")) {
+    let candidates = sessionStorage.getItem("candidates");
+
+    if (candidates != null) {
+        candidates = JSON.parse(candidates);
+
+        console.log("CANDIDATES SIZE = " + candidates.results.length);
+
+        if (candidates.results.length > 0) {
+            renderCVSearchResults(candidates.results);
+        } else {
+            console.log("....doing NOTHING");
+        }
+    }
+    let downloadCVButtons = document.querySelectorAll(".downloadcvbutton");
+    for (let i = 0; i < downloadCVButtons.length; i++) {
+        downloadCVButtons[i].addEventListener('click', e => {
+            e.preventDefault();
+            getSeekerAndDownloadCV(e.target.dataset.email);
+        });
+    }
 }
 
 // FAVOURITES CONTROLLER
@@ -1096,11 +1297,83 @@ function createJobController() {
     autocomplete(document.getElementById("jobtitle"), jobTitles);
 }
 
+// RECRUITER APPLICATION CONTROLLER 
+// DISPLAYS ALL APPLICANTS FOR A GIVEN JOB
+async function recruiterJobApplicationsController() {
+    state.page = elementConsts.RECRUITERAPPLICATIONPAGE;
+
+    // get the applications for this job
+    let theEmail = sessionStorage.getItem('myemail');
+    if (theEmail === null) {
+        return;
+    }
+
+    var data = {
+        $class: strings.getApplicationsForJobRefTransaction,
+        jobReference: sessionStorage.getItem("jobReference"),
+    };
+    let tp = new TransactionProcessor(data, strings.getApplicationsForJobRefUrl);
+
+    let resp = await tp.transaction();
+
+    var err = null;
+    if (resp.error !== undefined) {
+        err = resp.error;
+    }
+    if (err != null) {
+        await displayErrorPopup('Failed to get Applications: ' + err.message);
+    } else {
+        displayRecruiterApplications(resp);
+    }
+
+    let downloadCVButtons = document.querySelectorAll(".downloadcvbutton");
+    for (let i = 0; i < downloadCVButtons.length; i++) {
+        downloadCVButtons[i].addEventListener('click', e => {
+            e.preventDefault();
+            // 1. use email of "clicked on" job seeker to get seeker account
+
+            getSeekerAndDownloadCV(e.target.dataset.email);
+        });
+    }
+}
+
+async function getSeekerAndDownloadCV(seekerEmail) {
+    console.log("Looking for jobseeker " + seekerEmail);
+    var data = {
+        $class: elements.getJobSeekerAccountTransaction,
+        email: seekerEmail
+    };
+    let tp = new TransactionProcessor(data, strings.getJobSeekerAccountUrl);
+
+    let resp = await tp.transaction();
+
+    var err = null;
+    if (resp.error !== undefined) {
+        err = resp.error;
+    }
+    if (err != null) {
+        await displayErrorPopup('Failed to get JobSeeker: ' + err.message);
+    } else {
+        downloadCVHandler(resp);
+    }
+}
 // JOBSEEKER APPLICATION CONTROLLER 
-if (document.URL.includes("applications")) {
+async function seekerJobApplicationsController() {
     state.page = elementConsts.APPLICATIONPAGE;
     console.log("set state.page to " + state.page);
+    let aData = sessionStorage.getItem("apps");
+    let applicationData = JSON.parse(aData);
+    if (cachedData != null && cachedData != undefined) {
+        cachedData = JSON.parse(cachedData);
+    } else {
+        let cdata = await loadCache(false);
+        cachedData = JSON.parse(cdata);
+    }
+    console.log("CACHE size = " + cachedData.length);
+    displayApplications(cachedData, applicationData);
 }
+
+
 
 
 // JOBSEEKER ALERT CONTROLLER 
@@ -1203,13 +1476,18 @@ if (document.URL.includes("jobseeker-account.html")) {
         downloadCVHandler(data);
     });
 
-   
-    elements.viewjobappsBtn.addEventListener('click', e => {   
+
+    elements.viewjobappsBtn.addEventListener('click', e => {
         e.preventDefault();
-        window.location = "jobseeker-applications.html";
+        showApplicationsPage();
     });
 }
 
+
+async function showApplicationsPage() {
+    await getApplicationsForJobSeeker();
+    window.location = "jobseeker-applications.html";
+}
 // JOBSEEKER ACCOUNT SETTINGS CONTROLLER 
 if (document.URL.includes("account-settings.html")) {
     elements.backLink.addEventListener('click', e => {
@@ -1304,6 +1582,7 @@ async function testAlertHandler(id) {
 async function downloadCVHandler(data) {
     console.log("CV DOWNLOAD Begin...");
     if (data.params.cvhash != undefined) {
+
         // no need to do this if the user cv field is empty
         sessionStorage.setItem("cvhash", data.params.cvhash);
         let linkSource = await checkCrytpoHashes(data.email);
@@ -1317,6 +1596,8 @@ async function downloadCVHandler(data) {
         downloadLink.href = linkSource;
         downloadLink.download = fileName;
         downloadLink.click();
+    } else {
+        console.log("DOING NOTHING!");
     }
 }
 
@@ -1445,6 +1726,55 @@ if (document.URL.includes("jobcredits")) {
     buyButton.addEventListener("click", (e) => {
         e.preventDefault();
         buyJobCreditsHandler();
+    });
+}
+// CV SEARCH CONTROLLER
+if (document.URL.includes("cvsearches.html")) {
+    state.page = elementConsts.CVSEARCHPAGE;
+    var select = document.getElementById("country");
+    // Populate list with options:
+    for (var i = 0; i < countriesArray.length; i++) {
+        var opt = countriesArray[i];
+        select.innerHTML += "<option value=\"" + opt + "\" style=\"color:black\">" + opt + "</option>";
+    }
+
+    elements.cvsearchesBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        CVSearchHandler();
+    });
+}
+
+// BUY CV SEARCHES PAGE
+if (document.URL.includes("cvsearchcredits")) {
+    state.page = elementConsts.BUYSEARCHESPAGE;
+    var input = elements.slider;
+    setTotalCVSearchPrice(1);
+    document.querySelector('input[type=range]').value = 1;
+    setCVSearchNumber(1);
+    input.oninput = function () {
+        setCVSearchNumber(input.value);
+        setTotalCVSearchPrice(input.value);
+        restyleCV(input.value);
+    };
+    var leftSlider = elements.leftsliderbutton;
+    console.log("leftSlider = " + leftSlider);
+    leftSlider.addEventListener('click', e => {
+        console.log("LEFT");
+        e.preventDefault();
+        adjustSliderCV(-1);
+    });
+    var rightSlider = elements.rightsliderbutton;
+    console.log("rightSlider = " + rightSlider);
+    rightSlider.addEventListener('click', e => {
+        console.log("RIGHT");
+        e.preventDefault();
+        adjustSliderCV(1);
+    });
+
+    var buyButton = elements.buyjobadsbtn;
+    buyButton.addEventListener("click", (e) => {
+        e.preventDefault();
+        buyCVSearchCreditsHandler();
     });
 }
 
@@ -1654,6 +1984,13 @@ async function loadObjectStore() {
                     } else if (document.URL.includes("createjobad")) {
                         console.log("create job controller....")
                         createJobController();
+                    } else if (document.URL.includes("jobseeker-applications")) {
+                        console.log("create jobseeker applications controller....")
+                        seekerJobApplicationsController();
+                    }
+                    else if (document.URL.includes("recruiter-applications")) {
+                        console.log("create recruiter applications controller....")
+                        recruiterJobApplicationsController();
                     }
                 }
 

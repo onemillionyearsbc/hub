@@ -1,5 +1,5 @@
 
-import { elements, strings, getJobTypeFor, getJobTimeFor } from './base';
+import { elements, elementConsts, getJobTypeFor, getJobTimeFor } from './base';
 
 export const setJobFields = () => {
     let description = sessionStorage.getItem("description");
@@ -58,8 +58,18 @@ export const setJobFields = () => {
 
     let jobviews = sessionStorage.getItem("views");
     elements.jobviews.innerHTML = "<span>Views: </span>" + jobviews;
-
 }
+
+export const setApplications = (usertype) => {
+    if (usertype === elementConsts.JOBSEEKER) {
+        elements.jobApplications.innerHTML = "";
+    } else {
+        let numApplications = sessionStorage.getItem("applications");
+        console.log("WOOF: applications = " + numApplications);
+        elements.jobApplications.innerHTML = "<span>Applications: </span>" + numApplications;
+    }
+}
+
 export const setJobLogo = (image) => {
     sessionStorage.setItem("logo", image);
     elements.joblogo.setAttribute('src', image);

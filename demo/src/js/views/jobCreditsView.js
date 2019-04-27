@@ -15,9 +15,9 @@ export const setTotalJobPrice = (num) => {
    var price = getBasePrice();
    var totalPrice = price;
    for (var i = 1; i < num; i++) {
-      price = price - elementConsts.JOBDISCOUNT;
-      if (price < elementConsts.JOBMINPRICE) {
-         price = elementConsts.JOBDISCOUNT;
+      price = price - elementConsts.CVDISCOUNT;
+      if (price < elementConsts.CVMINPRICE) {
+         price = elementConsts.CVDISCOUNT;
       }
       totalPrice += price;
    }

@@ -1,5 +1,6 @@
 
-import { elements, getValueOfRadio, checkStyle, clearError, getSelectedOption, getDaysAgo } from './base';
+import { elements, getValueOfRadio, checkStyle, clearError, getSelectedOption, getDaysAgo, getSkills } from './base';
+import { SSL_OP_NO_SESSION_RESUMPTION_ON_RENEGOTIATION } from 'constants';
 
 
 export const setJobSeekerEmail = (email) => {
@@ -48,7 +49,12 @@ function setWebLink(data) {
     }
 }
 
-
+function setLanguages(data) {
+    if (data.params.languages != undefined) {
+        var newStr = data.params.languages.join(" ");
+        elements.languages.value = newStr;
+    }
+}
 function setITExperience(data) {
     if (data.params.itexperience != undefined) {
         let val = "0";
@@ -188,6 +194,8 @@ export const setProfileFields = (data) => {
 
     setWebLink(data);
 
+    setLanguages(data);
+
     setITExperience(data);
 
     setSkills(data);
@@ -209,6 +217,10 @@ export const setProfileFields = (data) => {
     setCV(data);
 
     setCVDaysAgo(data);
+
+    if (data.params.cvhash != undefined) {
+        sessionStorage.setItem("cvhash", data.params.cvhash);
+    }
 }
 
 function getExperience(element) {
@@ -217,7 +229,7 @@ function getExperience(element) {
     return years;
 }
 
-function getSkills() {
+function getSkillText() {
     let s = elements.personSkills;
     return s.value;
 }
@@ -251,10 +263,11 @@ export const getProfileFormData = (email, transaction) => {
             },
             phone: myData["phone"],
             country: getSelectedOption(elements.personCountry),
-            city: myData["postcode"],
+            city: myData["city"],
             weblink: myData["link1"],
             itexperience: getExperience(elements.itexperience),
-            skills: getSkills(),
+            skills: getSkillText(),
+            languages: getSkills(myData["languages"]),  // use the getSkills method to chop a string into an array
             blockchainUsed: getSelectedOption(elements.blockchainUsed),
             blockexperience: getExperience(elements.yearsBlock),
             newjobsummary: getSummary(),

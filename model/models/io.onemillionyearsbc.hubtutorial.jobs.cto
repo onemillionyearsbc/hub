@@ -6,6 +6,18 @@ asset JobAds identified by email{
   o Integer     live default=0
   o Integer     posted default=0
   o Integer     remaining default=0
+  o Integer     searches default=0
+}
+
+concept CVSearchCriteria {
+  o Boolean   remote default=false
+  o JobTypeSearch   jobType default="ANY"
+  o String    jobTitle optional
+  o String[]  languages optional
+  o String[]  skills 
+  o BlockchainType  blockchainName default="NONE"
+  o String    city optional 
+  o String    country optional
 }
 
 concept AlertCriteria {
@@ -24,6 +36,7 @@ event AlertEvent {
 
 event JobApplicationEvent {
   o String    jobReference
+  o String    name
   o String    email
 }
 
@@ -32,6 +45,20 @@ asset JobAlert identified by alertId {
   o DateTime   datePosted
   o Boolean    alertOn default=true
   o AlertCriteria alertCriteria
+}
+
+concept CandidateResult {
+  o String      email 
+  o String      name
+  o String      location
+  o String      skills
+}
+
+asset CVSearchResults identified by resultId {
+  o String resultId
+  o String email
+  o Integer numResults // can be any number, 10 is the limit to send back
+  o CandidateResult[] results // max 10 
 }
 
 asset JobPosting identified by jobReference {
@@ -67,8 +94,20 @@ asset JobPosting identified by jobReference {
 asset JobApplication identified by applicationId {
   o String      applicationId
   o String      email 
+  o String      name
+  o String      location
   o String      jobReference 
   o DateTime    dateApplied
+}
+
+
+enum JobTypeSearch {
+  o ANY
+  o FULLTIME
+  o CONTRACT
+  o PARTTIME
+  o INTERNSHIP
+  o OTHER
 }
 
 enum JobType {
@@ -97,7 +136,8 @@ enum AccountType {
 
 transaction BuyJobCredits {
   o String    email 
-  o Integer		credits
+  o Integer		credits default = 0
+  o Integer   searches default = 0
 }
 
 concept JobPostingParameters {
@@ -316,5 +356,11 @@ transaction GetJobApplicationsForJobReference {
 transaction TurnAlertOnOff {
   o String alertId
   o Boolean alertOn
+}
+
+@returns(CVSearchResults)
+transaction CVSearch {
+  o String email
+  o CVSearchCriteria searchCriteria
 }
 

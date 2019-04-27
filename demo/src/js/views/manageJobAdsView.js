@@ -39,7 +39,10 @@ export const setJobStats = (rows) => {
             nonremotejobads++;
         }
         jobadviews += rows[i].views;
-        jobadapplications += rows[i].applications;
+
+        if (rows[i].applications != undefined) {
+            jobadapplications += rows[i].applications.length;
+        }
 
         const expDate = new Date(rows[i].expiryDate);
 
@@ -94,7 +97,10 @@ export const populateFilterTable = (rows, bulkt) => {
         const m2 = datePosted.getMonth() <= 8 ? "0" + (datePosted.getMonth() + 1) : (datePosted.getMonth() + 1);
         var dp = d2 + "/" + (m2) + "/" + datePosted.getFullYear();
 
-
+        let apps = 0;
+        if (rows[i].applications != undefined) {
+            apps = rows[i].applications.length;
+        }
         let state = "";
 
         if (expiryDate < now) {
@@ -105,7 +111,7 @@ export const populateFilterTable = (rows, bulkt) => {
 
         let loc = rows[i].location;
         let style = "";
-        
+
         console.log("remote = " + rows[i].remote);
         if (loc === "" && rows[i].remote === true) {
             loc = "REMOTE";
@@ -121,12 +127,12 @@ export const populateFilterTable = (rows, bulkt) => {
             `<td width="300px">${dp}</td>` +
             `<td width="300px">${ed}</td>` +
             `<td width="300px">${rows[i].views}</td>` +
-            `<td width="300px">${rows[i].applications}</td>` +
+            `<td width="300px">${apps}</td>` +
             `<td width="300px">${state}</td>` +
-            '</tr>';  
+            '</tr>';
     }
 
-   
+
     // var myTH = document.getElementsByTagName("th")[1];
     // sorttable.innerSortFunction.apply(myTH, []);
     var trList = table.getElementsByTagName("tr");
@@ -135,10 +141,17 @@ export const populateFilterTable = (rows, bulkt) => {
         trList[index].addEventListener("dblclick", function (event) {
             let rowIndex = i;
             var propValue;
-            let data = rows[rowIndex-1];
-            for(var propName in data) {
+            let data = rows[rowIndex - 1];
+            for (var propName in data) {
                 propValue = data[propName];
                 sessionStorage.setItem(propName, propValue);
+            }
+            if (data.applications === undefined) {
+                console.log("setting applicaton to 0");
+                sessionStorage.setItem("applications", 0);
+            } else {
+                console.log("setting applicatons to " + data.applications.length); 
+                sessionStorage.setItem("applications", data.applications.length);
             }
             window.location = "displayjob.html";
         });

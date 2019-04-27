@@ -162,3 +162,45 @@ async function TransferERC20(credentials) {
     await tokenRegistry.update(sender);
 
 }
+
+
+/**
+ * create a transaction for the ERC20 token like transaction on a bank statement
+ * @param {io.onemillionyearsbc.hubtutorial.tokens.CreateERC20Transaction} credentials
+ * @returns {io.onemillionyearsbc.hubtutorial.tokens.ERC20TokenTransaction} The newly created transaction
+ * @transaction
+ */
+async function CreateERC20Transaction(credentials) {
+    var factory = getFactory();
+    const NSTOK = 'io.onemillionyearsbc.hubtutorial.tokens';
+   
+    const tokenRegistry = await getAssetRegistry(NSTOK + '.ERC20TokenTransaction');
+
+    // // create the transaction asset
+    let id = new Date().getTime().toString().substr(-8);
+    var transaction = factory.newResource(NSTOK, 'ERC20TokenTransaction', id);
+    transaction.type = credentials.type;
+    transaction.date = new Date();
+   
+    if (credentials.newBalance === undefined){
+        let cred1 = {};
+        cred1.email = credentials.email;
+
+        // get the user balance and set to balance +- amount
+        let balance = await GetERC20Balance(cred1);   
+        let cred = {};
+        cred.email = credentials.email;
+        cred.balance = balance + credentials.amount;
+        await SetERC20Balance(cred);   
+        transaction.balance = cred.balance;  
+    } else {
+        transaction.balance = credentials.newBalance;
+    }
+ 
+    transaction.amount = credentials.amount;
+
+    // Update the assets in the asset registries.
+    await tokenRegistry.addAll([transaction]);
+
+    return transaction;
+}
