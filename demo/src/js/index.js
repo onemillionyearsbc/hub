@@ -11,6 +11,8 @@ import * as registerJobSeekerView from './views/registerJobSeekerView';
 import * as loginView from './views/loginView';
 import * as createJobAdView from './views/createJobAdView';
 import * as manageJobAdsView from './views/manageJobAdsView';
+import * as blockchainView from './views/blockchaintoolsView';
+import * as settingsView from './views/accountSettingsView';
 import * as profileView from './views/profileView';
 import * as alertView from './views/alertView';
 import * as accountView from './views/accountView';
@@ -31,6 +33,7 @@ import { setJobSeekerEmail, setProfileFields } from './views/profileView';
 import { displayApplications } from './views/applicationsView'; // list of jobs seeker has applied for
 import { displayRecruiterApplications } from './views/recruiterApplicationsView'; // list of applicants for recruiter to view
 import { renderCVSearchResults } from './views/cvSearchResultsView';
+
 
 loadObjectStore();
 
@@ -224,14 +227,9 @@ const buyCVSearchCreditsHandler = async () => {
     if (err != null) {
         await displayErrorPopup('Failed to buy search credits: ' + err);
     } else {
-
-        let numNewTokens = getTokensToMint();
-
         // TODO Mint new ERC20 tokens based on how many searches purchased by recruiter
         window.location = "recruiter-dashboard.html";
     }
-
-
     clearLoader();
 }
 
@@ -729,13 +727,13 @@ const updateProfileHandler = async (transaction, ins) => {
         } else {
             console.log("sorry mate!");
         }
-       
+
     }
 
-    
+
     // if database succeeds...add to the blockchain
     state.login = new TransactionProcessor(formData, strings.updateProfileUrl);
-    
+
     var resp = await state.login.transaction();
 
     var err = null;
@@ -1297,6 +1295,85 @@ function createJobController() {
     autocomplete(document.getElementById("jobtitle"), jobTitles);
 }
 
+// BLOCKCHAIN TOOLS CONTROLLER
+if (document.URL.includes("blockchaintools.html")) {
+    state.page = elementConsts.BLOCKCHAINPAGE;
+    blockchainToolsHandler();
+}
+
+async function blockchainToolsHandler() {
+    renderLoader(elements.block);
+    let stats = {};
+    var data = {
+        $class: strings.getTokenSupplyTransaction,
+        tokenName: "hub",
+    };
+    let tp = new TransactionProcessor(data, strings.getTokenSupplyUrl);
+
+    let resp = await tp.transaction();
+
+    var err = null;
+    if (resp.error !== undefined) {
+        err = resp.error;
+    }
+    if (err != null) {
+        await displayErrorPopup('Failed to get Token Supply: ' + err.message);
+        clearLoader();
+        return;
+    }
+
+    stats.tokensupply = resp;
+
+    data = {
+        $class: strings.getTokensMintedTransaction,
+        tokenName: "hub",
+    };
+    tp = new TransactionProcessor(data, strings.getTokensMintedUrl);
+
+    resp = await tp.transaction();
+
+    err = null;
+    if (resp.error !== undefined) {
+        err = resp.error;
+    }
+    if (err != null) {
+        await displayErrorPopup('Failed to get Minted Tokens: ' + err.message);
+        clearLoader();
+        return;
+    }
+
+    stats.tokensminted = resp;
+    stats.gbp = parseFloat(stats.tokensminted / elementConsts.TOKENEXCHANGERATE).toFixed(2);
+    data = {
+        $class: strings.getUnusedSearchesTransaction,
+    };
+    tp = new TransactionProcessor(data, strings.getUnusedSearchesUrl);
+
+    resp = await tp.transaction();
+
+    err = null;
+    if (resp.error !== undefined) {
+        err = resp.error;
+    }
+    if (err != null) {
+        await displayErrorPopup('Failed to get Minted Tokens: ' + err.message);
+        clearLoader();
+        return;
+    }
+
+    console.log("UNUSED SEARCHES: resp = " + resp + " len resp = " + resp.length);
+
+
+    // TODO find out why we get this result
+    if (resp.length > 10) {
+        resp = 0;
+    }
+    stats.unusedsearches = resp;
+
+    blockchainView.setJobStats(stats);
+    clearLoader();
+}
+
 // RECRUITER APPLICATION CONTROLLER 
 // DISPLAYS ALL APPLICANTS FOR A GIVEN JOB
 async function recruiterJobApplicationsController() {
@@ -1494,6 +1571,99 @@ if (document.URL.includes("account-settings.html")) {
         e.preventDefault();
         window.location = "jobseeker-account.html";
     });
+    walletHandler();
+
+    elements.addFundsBtn.addEventListener('click', e => {
+        e.preventDefault();
+        console.log("ADD FUNDS! Num = " + elements.addfunds.value);
+        buyTokensHandler(elements.addfunds.value);
+    });
+
+    elements.cashoutBtn.addEventListener('click', e => {
+        e.preventDefault();
+        console.log("CASH OUT! Num = " + elements.cashout.value);
+        cashoutHandler(elements.cashout.value);
+    });
+
+}
+
+async function buyTokensHandler(tokens) {
+    renderLoader(elements.modalname);
+    var myemail = sessionStorage.getItem('myemail');
+    var data = {
+        $class: elements.buyTokensTransaction,
+        email: myemail,
+        amount: tokens
+    };
+    let tp = new TransactionProcessor(data, strings.buyTokensUrl);
+
+    let resp = await tp.transaction();
+
+    var err = null;
+    if (resp.error !== undefined) {
+        err = resp.error;
+    }
+    if (err != null) {
+        clearLoader();
+        await displayErrorPopup('Failed to buy tokens: ' + err.message);
+    } else {
+        console.log("tokens bought!");
+        // read the user hub values to poke into the wallet
+        await walletHandler();
+        clearLoader();
+    }
+}
+
+async function cashoutHandler(tokens) {
+    renderLoader(elements.modalname);
+    var myemail = sessionStorage.getItem('myemail');
+    var data = {
+        $class: elements.CashOutTokens,
+        email: myemail,
+        amount: tokens
+    };
+    let tp = new TransactionProcessor(data, strings.cashoutUrl);
+
+    let resp = await tp.transaction();
+
+    var err = null;
+    if (resp.error !== undefined) {
+        err = resp.error;
+    }
+    if (err != null) {
+        clearLoader();
+        await displayErrorPopup('Failed to cash out tokens: ' + err.message);
+    } else {
+        console.log("tokens cashed out!");
+        // read the user hub values to poke into the wallet
+        await walletHandler();
+        clearLoader();
+    }
+}
+
+async function walletHandler() {
+    var myemail = sessionStorage.getItem('myemail');
+    var data = {
+        $class: elements.getHistoryTransaction,
+        email: myemail
+    };
+    let tp = new TransactionProcessor(data, strings.getHistoryUrl);
+
+    let resp = await tp.transaction();
+
+    var err = null;
+    if (resp.error !== undefined) {
+        err = resp.error;
+    }
+    if (err != null) {
+        await displayErrorPopup('Failed to get transaction history: ' + err.message);
+    } else {
+        console.log("Got transaction history: num rows = " + resp.length);
+        // read the user hub values to poke into the wallet
+        const latestRow = resp[0];
+        settingsView.setWalletStats(latestRow.balance);
+        settingsView.populateFilterTable(resp);
+    }
 }
 
 // JOBSEEKER PROFILE CONTROLLER 

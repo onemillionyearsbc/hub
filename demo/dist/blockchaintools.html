@@ -35,7 +35,7 @@
                     <li id="recruiterlogout" class="signin"><a href="#" class="link-icon">Log Out</a>
                     </li>
 
-                    <div  id="accountmenu" class="dropdownnavbar" style="display: none;">
+                    <div id="accountmenu" class="dropdownnavbar" style="display: none;">
                         <button id="accountmenubtn" class="dropbtn">NOB's account
                             <i class="left-icon icon far fa-user"></i>
                             <i class="right-icon fa fa-caret-down"></i>
@@ -49,8 +49,37 @@
                     </div>
                 </ul>
             </nav>
-            <div id="savedjobs" class="container containerblock favourites">
+            <div id="block" class="container containerblock favourites">
                 <div class="main animated slideInUp delay-2s">
+                    <p class="main__title1">
+                        System Wallet
+                    </p>
+                    <div class="main__yellow">
+                        <div class="panel panel2">
+                            <p class="panel__title">Minted Tokens</p>
+                            <p id="tokensminted" class="panel__number">0.0</p>
+                        </div>
+                        <div class="panel panel2">
+                                <p class="panel__title">Unused Tokens</p>
+                                <p id="tokensupply" class="panel__number">0.0</p>
+                            </div>
+                        <div class="panel panel2">
+                                <p class="panel__title">GBP</p>
+                                <p id="gbp" class="panel__number">0</p>
+                            </div>
+                        <div class="panel panel2">
+                            <p class="panel__title">JobSeeker Tokens</p>
+                            <p id="jstokens" class="panel__number">0</p>
+                        </div>
+                        <div class="panel panel2">
+                            <p class="panel__title">Recruiter Tokens</p>
+                            <p id="rectokens" class="panel__number">0</p>
+                        </div>
+                        <div class="panel panel2">
+                            <p class="panel__title">Searches Unused</p>
+                            <p id="unused" class="panel__number">0</p>
+                        </div>
+                    </div>
                     <p class="main__title1">
                         Blockchain Tools
                     </p>
@@ -62,7 +91,7 @@
                             <div class="items__title--left">
                                 <i class="fa fa-star"></i>
                                 <p class="numbanner">
-                                    
+
                                 </p>
                             </div>
                             <button id="removeallbutton" class="btn">Run Proof</button>

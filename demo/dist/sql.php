@@ -1,5 +1,7 @@
  <?php
     function connectToMySQL($db) {
+        // hard wired ip address, username, password
+        // TODO this needs to come from a (safe) config file
         $mysqli = new mysqli('127.0.0.1', 'root', '', $db);
 
         if ($mysqli->connect_error) {

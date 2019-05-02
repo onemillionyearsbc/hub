@@ -86,7 +86,7 @@
 
                             <div class="settings__main">
                                 <div class="createjobad__parent--form-item">
-                                    <input id="email" class="loginform__textfield form-control glowing-border" required
+                                    <input id="email" class="loginform__textfield form-control glowing-border"
                                         type="text" placeholder="New Email Address" autocomplete="off" />
                                     <label for="email" class="loginform__label">New Email Address</label>
                                 </div>
@@ -106,7 +106,7 @@
                                     </p>
                                     <div class="createjobad__parent--form-item">
                                         <input id="oldpass" class="loginform__textfield form-control glowing-border"
-                                            required type="text" placeholder="Old Password" autocomplete="off" />
+                                            type="text" placeholder="Old Password" autocomplete="off" />
                                         <label for="email" class="loginform__label">Old Password</label>
                                     </div>
                                     <div id="oldpass-error" class="loginform__error">
@@ -115,7 +115,7 @@
                                     </div>
                                     <div class="createjobad__parent--form-item">
                                         <input id="newpass1" class="loginform__textfield form-control glowing-border"
-                                            required type="text" placeholder="New Password" autocomplete="off" />
+                                            type="text" placeholder="New Password" autocomplete="off" />
                                         <label for="newpass1" class="loginform__label">New Password</label>
                                     </div>
                                     <div id="newpass1-error" class="loginform__error">
@@ -124,8 +124,7 @@
                                     </div>
                                     <div class="createjobad__parent--form-item">
                                         <input id="newpass2" class="loginform__textfield form-control glowing-border"
-                                            required type="text" placeholder="Confirm New Password"
-                                            autocomplete="off" />
+                                            type="text" placeholder="Confirm New Password" autocomplete="off" />
                                         <label for="newpass2" class="loginform__label">Confirm New Password</label>
                                     </div>
                                     <div id="newpass2-error" class="loginform__error">
@@ -136,93 +135,216 @@
                                 </div>
                             </div>
                             <p class="profiletitle">My Wallet</p>
-                            <div class="settings__main">
-                                <p id="instr" class="tokentextsummary"><span>HubToken Balance: </span><span
-                                        class="toktotal">15</span>
-                                </p>
-                                <p id="instr" class="tokentext"><span>Token Transaction History</span> </p>
-                                <div class="tableholder">
-                                    <table id="jobtable" class="sortable">
-                                        <thead>
-                                            <tr>
-                                                <th height="30px" width="25rem">Transaction Type</th>
-                                                <th class="sorttable_numeric" height="30px" width="25rem">Num Tokens
-                                                </th>
 
-                                                <th class="sorttable_ddmm" height="30px" width="25rem">Transaction date
-                                                </th>
-
-                                                <th height="30px" width="25rem">Token Action</th>
-                                                <th class="sorttable_numeric" height="30px" width="25rem">Token Balance
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="tablebody">
-                                            <tr>
-                                                <td width="25rem">Cashed Out</td>
-                                                <td width="25rem">10</td>
-                                                <td width="25rem">07.04.19</td>
-                                                <td width="25rem">DEBIT</td>
-                                                <td width="25rem">15</td>
-                                            </tr>
-                                            <tr>
-                                                <td width="25rem">Search Hit</td>
-                                                <td width="25rem">5</td>
-                                                <td width="25rem">03.04.19</td>
-                                                <td width="25rem">CREDIT</td>
-                                                <td width="25rem">25</td>
-                                            </tr>
-                                            <tr>
-                                                <td width="25rem">Search Hit</td>
-                                                <td width="25rem">15</td>
-                                                <td width="25rem">03.04.19</td>
-                                                <td width="25rem">CREDIT</td>
-                                                <td width="25rem">20</td>
-                                            </tr>
-                                            <tr>
-                                                <td width="25rem">Search Hit</td>
-                                                <td width="25rem">5</td>
-                                                <td width="25rem">01.04.19</td>
-                                                <td width="25rem">CREDIT</td>
-                                                <td width="25rem">5</td>
-                                            </tr>
-                                            <tr>
-                                                <td width="25rem">Account Created</td>
-                                                <td width="25rem">0</td>
-                                                <td width="25rem">01.02.19</td>
-                                                <td width="25rem">-</td>
-                                                <td width="25rem">0</td>
-                                            </tr>
-                                        </tbody>
-
-
-                                    </table>
+                            <div class="settings__main wallet">
+                                <div class="account__main--right">
+                                    <!-- Aditional Styles -->
+                                    <p class="texty3">The User Wallet contains information about your HubTokens and
+                                        Transctions
+                                    </p>
+                                    <button id="mainsearchbutton" class="btn btn--orangeandgrey modal-trigger"
+                                        data-modal="modal-name">View Wallet</button>
                                 </div>
 
-                                <!-- </p>
-                                <p id="instr" class="tokentext"><span>Cashed Out 5 HubTokens 07.04.19 (CREDIT USER)</span>
-                                <p id="instr" class="tokentext"><span>Received 20 HubTokens 03.04.19 (SEARCH)</span> -->
+                                <!-- <a href="#" class="btn btn--orange modal-trigger" data-modal="modal-name">Modal open!</a> -->
+                                <!-- Trigger Modal. -->
 
+                                <!-- Modal -->
+                                <div class="modal" id="modal-name">
+                                    <div class="modal-sandbox"></div>
+                                    <div class="modal-box">
+                                        <div class="modal-header">
+                                            <div class="close-modal">&#10006;</div>
+                                            <h1>Your Wallet</h1>
+                                            <div class="hdrtcontent">
+                                                <p id="hubtokens">20.0 HubTokens</p>
+                                                <p id="gbp" class="small">0.20 GBP</p>
+                                            </div>
+
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="tableholder">
+                                                <!-- <p id="instr" class="tokentextsummary"><span>HubToken Balance:
+                                                    </span><span class="toktotal">15</span>
+                                                </p> -->
+                                                <p id="instr" class="tokentext"><span>Token Transaction History</span>
+                                                </p>
+                                                <div id ="wallettable" class="tholder tabley">
+
+                                                    <table id="tokentable" class="sortable">
+                                                        <thead>
+                                                            <tr>
+                                                                <th height="30px" width="25rem">Transaction Type</th>
+                                                                <th class="sorttable_numeric" height="30px"
+                                                                    width="25rem">
+                                                                    Num Tokens
+                                                                </th>
+
+                                                                <th class="sorttable_ddmm" height="30px" width="25rem">
+                                                                    Transaction date
+                                                                </th>
+
+                                                                <th height="30px" width="25rem">Token Action</th>
+                                                                <th class="sorttable_numeric" height="30px"
+                                                                    width="25rem">
+                                                                    Token Balance
+                                                                </th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="tablebody">
+                                                            <!-- <tr>
+                                                                        <td width="25rem">Cashed Out</td>
+                                                                        <td width="25rem">10</td>
+                                                                        <td width="25rem">07.04.19</td>
+                                                                        <td width="25rem">DEBIT</td>
+                                                                        <td width="25rem">15</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td width="25rem">Search Hit</td>
+                                                                        <td width="25rem">5</td>
+                                                                        <td width="25rem">03.04.19</td>
+                                                                        <td width="25rem">CREDIT</td>
+                                                                        <td width="25rem">25</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td width="25rem">Search Hit</td>
+                                                                        <td width="25rem">15</td>
+                                                                        <td width="25rem">03.04.19</td>
+                                                                        <td width="25rem">CREDIT</td>
+                                                                        <td width="25rem">20</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td width="25rem">Search Hit</td>
+                                                                        <td width="25rem">5</td>
+                                                                        <td width="25rem">01.04.19</td>
+                                                                        <td width="25rem">CREDIT</td>
+                                                                        <td width="25rem">5</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td width="25rem">Account Created</td>
+                                                                        <td width="25rem">0</td>
+                                                                        <td width="25rem">01.02.19</td>
+                                                                        <td width="25rem">-</td>
+                                                                        <td width="25rem">0</td>
+                                                                    </tr> -->
+                                                        </tbody>
+
+
+                                                    </table>
+                                                </div>
+
+                                                <!-- <table id="tokentable" class="sortable">
+                                                    <thead>
+                                                        <tr>
+                                                            <th height="30px" width="25rem">Transaction Type</th>
+                                                            <th class="sorttable_numeric" height="30px" width="25rem">
+                                                                Num Tokens
+                                                            </th>
+
+                                                            <th class="sorttable_ddmm" height="30px" width="25rem">
+                                                                Transaction date
+                                                            </th>
+
+                                                            <th height="30px" width="25rem">Token Action</th>
+                                                            <th class="sorttable_numeric" height="30px" width="25rem">
+                                                                Token Balance
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="tablebody">
+                                                    </tbody> -->
+                                                </table>
+                                                <div class="btnpanel">
+                                                    <div class="itemholder2">
+                                                        <div class="itemholder2--item2">
+                                                            <input id="cashout" onkeypress="isInputNumber(event)"
+                                                                class="loginform__textfield glowing-border" type="text"
+                                                                placeholder="Cash Out Tokens" autocomplete="off" />
+                                                        </div>
+                                                        <button id="cashoutbtn" class="btn">SUBMIT
+                                                            <!-- <div id="nested-div"></div> -->
+                                                        </button>
+
+                                                    </div>
+                                                    <div class="itemholder2">
+                                                        <div class="itemholder2--item2">
+                                                            <input id="addfunds"  onkeypress="isInputNumber(event)"
+                                                                class="loginform__textfield glowing-border" type="text"
+                                                                placeholder="Buy Tokens Amount" autocomplete="off" />
+                                                        </div>
+                                                        <button id="addfundsbtn" class="btn">SUBMIT
+                                                            <!-- <div id="nested-div"></div> -->
+                                                        </button>
+
+                                                    </div>
+                                                    <div class="itemholder2">
+                                                        <div class="itemholder2--item2">
+                                                            <input id="buyrank"  onkeypress="isInputNumber(event)"
+                                                                class="loginform__textfield glowing-border" type="text"
+                                                                placeholder="Buy Rank Pts" autocomplete="off" />
+                                                        </div>
+                                                        <button id="buyrankbtn" class="btn">SUBMIT
+                                                            <!-- <div id="nested-div"></div> -->
+                                                        </button>
+
+                                                    </div>
+
+                                                    <!-- <div class="createjobad__parent--form-item tokitem">
+                                                        <input id="cashout"
+                                                            class="loginform__textfield form-control glowing-border"
+                                                            required type="text" placeholder="Cash Out Amount"
+                                                            autocomplete="off" />
+                                                        <label for="cashout" class="loginform__label">Cash Out
+                                                            Amount</label>
+                                                    </div>
+                                                    <button id="cashoutbtn" type="submit" class="btn btn2">SUBMIT</button>
+                                                    <div class="createjobad__parent--form-item tokitem">
+                                                        <input id="last"
+                                                            class="loginform__textfield form-control glowing-border"
+                                                            required type="text" placeholder="Add Funds Amount"
+                                                            autocomplete="off" />
+                                                        <label for="last" class="loginform__label">Add Funds</label>
+                                                    </div>
+                                                    <button id="cashoutbtn" type="submit" class="btn btn2">SUBMIT</button>
+                                                    <div class="createjobad__parent--form-item tokitem">
+                                                        <input id="rank"
+                                                            class="loginform__textfield form-control glowing-border"
+                                                            required type="text" placeholder="Buy Rank Pts"
+                                                            autocomplete="off" />
+                                                        <label for="rank" class="loginform__label">Rank Pts</label>
+                                                        <button id="cashoutbtn" type="submit" class="btn btn2">SUBMIT</button>
+                                                    </div> -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <!-- <p class="profiletitle">Close My Account</p>
+                            <p class="profiletitle">Close My Account</p>
 
-                            <div class="settings__main">
-                                <p class="texty3">By closing your account, you won't be able to access
-                                    your account information, application history and you'll need to open a new account
-                                    to apply.
-                                </p>
+                            <div class="account__main--right">
+                                <div class="settings__main">
+                                    <p class="texty3">By closing your account, you won't be able to access
+                                        your account information, application history and you'll need to open a new
+                                        account
+                                        to apply.
+                                    </p>
 
-                                <button id="closeaccountbtn" class="btn btn--orange">Submit</button>
-                            </div> -->
+                                    <button id="closeaccountbtn" class="btn btn--orange">Submit</button>
+                                </div> -
+                            </div>
+
                             <p class="profiletitle">Close My Account</p>
                             <div class="settings__main">
 
                                 <div class="account__main--right">
-                                    <p id="instr" class="texty texty2">By closing your account, you won't be able to access
-                                            your account information, application history and you'll need to open a new account
-                                            to apply.
+                                    <p id="instr" class="texty texty2">By closing your account, you won't be able to
+                                        access
+                                        your account information, application history and you'll need to open a new
+                                        account
+                                        to apply.
                                     </p>
-                                 
+
                                     <button id="closeaccountbtn" class="btn btn--orange">Close Account</button>
                                 </div>
                             </div>
@@ -232,5 +354,44 @@
             </div>
         </div>
 </body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script>
+    /*
+ ===============================================================
+ 
+ Hi! Welcome to my little playground!
+ 
+ My name is Tobias Bogliolo. 'Open source' by default and always 'responsive',
+ I'm a publicist, visual designer and frontend developer based in Barcelona. 
+ 
+ Here you will find some of my personal experiments. Sometimes usefull,
+ sometimes simply for fun. You are free to use them for whatever you want 
+ but I would appreciate an attribution from my work. I hope you enjoy it.
+ 
+ ===============================================================
+ */
+
+    $(".modal-trigger").click(function (e) {
+        e.preventDefault();
+        dataModal = $(this).attr("data-modal");
+        $("#" + dataModal).css({ "display": "block" });
+        // $("body").css({"overflow-y": "hidden"}); //Prevent double scrollbar.
+    });
+
+    $(".close-modal, .modal-sandbox").click(function () {
+        $(".modal").css({ "display": "none" });
+        // $("body").css({"overflow-y": "auto"}); //Prevent double scrollbar.
+    });
+
+</script>
+<script>
+    function isInputNumber(evt) {
+        let char = String.fromCharCode(evt.which);
+        
+        if (!(/[0-9]/.test(char))) {
+            evt.preventDefault();
+        }
+    }
+</script>
 
 </html>

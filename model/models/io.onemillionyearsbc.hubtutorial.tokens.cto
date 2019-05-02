@@ -1,10 +1,12 @@
 namespace io.onemillionyearsbc.hubtutorial.tokens
 
+
 /* ERC20 Compliant Token For the Hub */
 
 asset ERC20TokenSupply identified by tokenName {
   o String tokenName default = "hub"
   o Double supply
+  o Double totalMinted
 }
 
 asset ERC20Token identified by email {
@@ -17,11 +19,13 @@ enum ERC20TokenTransactionType {
   o CASHOUT
   o SEARCH // tokens received for appearing in search results
   o INITIAL
-  o LOADUP // user buys tokens`
+  o LOADUP // user buys tokens
+  o RANKPOINTS // example of internal transaction to buy ranking points
 } 
 
 asset ERC20TokenTransaction identified by id {
   o String id
+  o String email
   o ERC20TokenTransactionType type
   o DateTime date
   o Double amount
@@ -29,8 +33,13 @@ asset ERC20TokenTransaction identified by id {
 }
 
 
-
+@returns(Double)
 transaction GetERC20TotalSupply {
+  o String tokenName
+}
+
+@returns(Double)
+transaction GetERC20TotalMinted {
   o String tokenName
 }
 
@@ -42,9 +51,11 @@ transaction SetERC20TotalSupply {
 /* add to the total supply */
 transaction MintERC20 {
   o String tokenName default = "hub"
-  o Double amount
+  o Double newSupply
+  o Double newMint // usually new supply and new mint will be the same unless tokens are being given to the person who caused the mint
 }
 
+@returns(Double)
 transaction GetERC20Balance {
   o String email
 }
@@ -58,11 +69,15 @@ transaction SetERC20Balance {
 transaction TransferERC20To {
   o String email
   o Double amount
+  o Double limit default = 0.0 // the new amount for the supply including the transfer amount
+  o Boolean updateSupply default = true
 }
 
+@returns(Double)
 transaction GetERC20Allowance {
   o String email
 }
+
 
 transaction SetERC20Allowance {
   o String email
@@ -84,3 +99,29 @@ transaction CreateERC20Transaction {
 }
 
 
+// this transaction udates the user token balance and adds a new transaction to their history
+transaction UpdateTokensForUser {
+  o String email
+  o Double amount
+  o Double limit default = 0.0
+  o ERC20TokenTransactionType transactionType
+  o Boolean updateSupply default = true
+}
+
+// return sorted array if transactions for user {email}
+@returns(ERC20TokenTransaction[])
+transaction GetTransactionHistoryForUser {
+  o String email
+}
+
+// users can buy tokens...mint plus update
+transaction BuyTokens {
+    o String email
+    o Double amount
+}
+
+// users can sell tokens in exchange for cash
+transaction CashOutTokens {
+    o String email
+    o Double amount
+} 

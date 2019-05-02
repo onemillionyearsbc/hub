@@ -5,17 +5,20 @@
  * @transaction
  */
 async function CVSearch(credentials) {
+    var assetRegistry = await getAssetRegistry('io.onemillionyearsbc.hubtutorial.jobs.JobAds');
+
+    var user = await assetRegistry.get(credentials.email);
+
+    // user.remaining += credentials.credits;
+    if (user.searches === 0) {
+        throw new Error("No CVSearch Credits for user: " + credentials.email)
+    }
+
     var filter = {};
 
     var predicate = ` WHERE ((params.visibility == true) AND (params.newjobremote == _$remote)`;
 
     filter.remote = credentials.searchCriteria.remote;
-
-    // if (credentials.searchCriteria.skills != undefined && credentials.searchCriteria.skills.length > 0) {
-    //     predicate += ` AND (params.skills CONTAINS _$skills)`;
-    //     filter.skills = credentials.searchCriteria.skills;
-    // }
-
 
     if (credentials.searchCriteria.languages != undefined && credentials.searchCriteria.languages.length > 0) {
         predicate += ` AND (params.languages CONTAINS _$languages)`;
@@ -58,15 +61,31 @@ async function CVSearch(credentials) {
 
     results = results.filter(e => containsAll(e.params.skills, credentials.searchCriteria.skills) === true);
 
-    let searchResults = buildSearchResults(results, credentials.email);
-    var NSJOBS = 'io.onemillionyearsbc.hubtutorial.jobs';
-    const searchResultsRegistry = await getAssetRegistry(NSJOBS + '.CVSearchResults');
-    await searchResultsRegistry.addAll([searchResults]);
+    // distribute tokens to users based on total availability and number of results
 
-    return searchResults;
+
+    if (results.length > 0) {
+        let resultsCount = Math.min(results.length, credentials.maxResults);
+        let amountPerUser = credentials.totalTokensAvail / resultsCount;
+        
+        amountPerUser = Math.round(amountPerUser); // round to nearest integer
+
+        let searchResults = await buildSearchResults(results, credentials.email, amountPerUser, credentials.totalTokensAvail, credentials.maxResults);
+
+        
+        var NSJOBS = 'io.onemillionyearsbc.hubtutorial.jobs';
+        const searchResultsRegistry = await getAssetRegistry(NSJOBS + '.CVSearchResults');
+        await searchResultsRegistry.addAll([searchResults]);
+
+        user.searches -= 1;
+        await assetRegistry.update(user);
+        return searchResults;
+    } else {
+        return undefined;
+    }
 }
 
-function buildSearchResults(candidates, email) {
+async function buildSearchResults(candidates, email, amountPerUser, totalAmount, maxResults) {
     var NSJOBS = 'io.onemillionyearsbc.hubtutorial.jobs';
     var factory = getFactory();
 
@@ -75,8 +94,8 @@ function buildSearchResults(candidates, email) {
     var searchResults = factory.newResource(NSJOBS, 'CVSearchResults', resultId);
 
     let candidatesArray = new Array();
-    let count = 10; // max num search results allowed 
-    if (candidates.length < 10) {
+    let count = maxResults; // max num search results allowed 
+    if (candidates.length < maxResults) {
         count = candidates.length;
     }
     for (let i = 0; i < count; i++) {
@@ -90,7 +109,23 @@ function buildSearchResults(candidates, email) {
         candidate.location = candidates[i].params.city + comma + candidates[i].params.country;
         candidate.skills = candidates[i].params.skills;
         candidatesArray.push(candidate);
+
+        // update tokens for this user
+        let cred = {};
+        cred.email = candidate.email;
+        cred.transactionType = "SEARCH";
+        cred.amount = amountPerUser;
+        cred.updateSupply = false;
+        await UpdateTokensForUser(cred);
     }
+    const NSTOK = 'io.onemillionyearsbc.hubtutorial.tokens';
+    // reduce the overall supply by the total amount
+    const erc20Registry = await getAssetRegistry(NSTOK + '.ERC20TokenSupply');
+
+    let tokenSupply = await erc20Registry.get("hub");
+    tokenSupply.supply -= totalAmount;
+    await erc20Registry.update(tokenSupply);
+
     searchResults.results = candidatesArray;
     searchResults.numResults = count;
     searchResults.email = email;

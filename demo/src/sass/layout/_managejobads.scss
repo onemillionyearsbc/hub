@@ -155,11 +155,9 @@
         padding-bottom: 2rem;
       
         .yellow {
-            display: flex;
-            height: 8rem;
-            background: $color-yellow;
-            border: 1px solid $color-yellow-border;
+           @include yellow;
         }
+        
         .white {
             background: white;
             border: none;

@@ -1,5 +1,5 @@
 
-import { elements, elementConsts, getJobTypeFor, getJobTimeFor } from './base';
+import { elements, elementConsts, getJobTypeFor, getJobTimeFor, strings } from './base';
 
 export const setJobFields = () => {
     let description = sessionStorage.getItem("description");

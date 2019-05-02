@@ -1,0 +1,6 @@
+@mixin yellow {
+    display: flex;
+    height: 8rem;
+    background: $color-yellow;
+    border: 1px solid $color-yellow-border;
+}

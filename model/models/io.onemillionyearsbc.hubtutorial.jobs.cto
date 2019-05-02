@@ -138,6 +138,7 @@ transaction BuyJobCredits {
   o String    email 
   o Integer		credits default = 0
   o Integer   searches default = 0
+  o Integer   tokensPerSearch default = 0
 }
 
 concept JobPostingParameters {
@@ -361,6 +362,10 @@ transaction TurnAlertOnOff {
 @returns(CVSearchResults)
 transaction CVSearch {
   o String email
+  o Integer maxResults default = 10 // the max number of results to return
+  o Integer totalTokensAvail default = 400 // num results * min price per search * percent to users = 10 * 200 * 0.2 
   o CVSearchCriteria searchCriteria
 }
+
+
 

@@ -39,11 +39,6 @@ abstract participant HubUser identified by email {
   --> ERC20TokenTransaction[] history optional
 }
 
-transaction addToTransactionHistory {
-  o String email
-  o ERC20TokenTransactionType type
-  o Integer amount
-}
 
 participant HubRecruiter extends HubUser {
   o String name
@@ -103,12 +98,11 @@ asset HubAccount identified by email {
   o DateTime    dateCreated
 }
 
-
 abstract transaction CreateAccount {
-  o String      email 
-  o String      password
+  o String     email 
+  o String     password
   o Double     balance default=0.0
-  o Double     allowance default=0.0
+  o Double     allowance default=10000.0
 }
 
 transaction CreateRecruiterAccount extends CreateAccount {
@@ -189,3 +183,8 @@ transaction AddERC20TokenTransactionToHistory {
 transaction CreateSearchResults {
   o HubJobSeeker[] candidates
 }
+
+@returns(Integer)
+transaction GetUnusedSearches {
+}
+

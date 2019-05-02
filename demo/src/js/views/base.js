@@ -148,8 +148,14 @@ export const elements = {
     viewjobappsBtn: document.getElementById("viewjobappsbtn"),
     applyjobBtn: document.getElementById("applyjobbutton"),
     ref: document.getElementById("jobreftitle"),
-    cvpanel:  document.getElementById("cv"),
-    cvsearchesBtn:  document.getElementById("cvsearchbtn")
+    cvpanel: document.getElementById("cv"),
+    cvsearchesBtn: document.getElementById("cvsearchbtn"),
+    block: document.getElementById("block"),
+    addFundsBtn: document.getElementById("addfundsbtn"),
+    cashoutBtn: document.getElementById("cashoutbtn"),
+    addfunds: document.getElementById("addfunds"),
+    cashout: document.getElementById("cashout"),
+    modalname: document.getElementById("wallettable"),
 };
 
 export const dbelements = {
@@ -171,6 +177,7 @@ export const dbelements = {
 
 // localhost (Windows)
 var ipAddress = "localhost";
+var port = "3000";
 //-------------------------------------------------------------------
 
 var recruiterLoginTransaction = 'io.onemillionyearsbc.hubtutorial.GetHubRecruiter';
@@ -203,7 +210,12 @@ var getApplicationsForUserTransaction = "io.onemillionyearsbc.hubtutorial.jobs.G
 var getApplicationsForJobRefTransaction = "io.onemillionyearsbc.hubtutorial.jobs.GetJobApplicationsForJobReference";
 var getJobSeekerAccountTransaction = 'io.onemillionyearsbc.hubtutorial.GetHubJobSeekerByEmail';
 var cvSearchTransaction = 'io.onemillionyearsbc.hubtutorial.jobs.CVSearch';
-
+var getTokenSupplyTransaction = 'io.onemillionyearsbc.hubtutorial.tokens.GetERC20TotalSupply';
+var getTokensMintedTransaction = 'io.onemillionyearsbc.hubtutorial.tokens.GetERC20TotalMinted';
+var getUnusedSearchesTransaction = 'io.onemillionyearsbc.hubtutorial.GetUnusedSearches';
+var getHistoryTransaction = 'io.onemillionyearsbc.hubtutorial.tokens.GetTransactionHistoryForUser';
+var buyTokensTransaction = 'io.onemillionyearsbc.hubtutorial.tokens.BuyTokens';
+var cashoutTransaction = 'io.onemillionyearsbc.hubtutorial.tokens.CashOutTokens';
 
 export const strings = {
     loader: 'loader',
@@ -239,39 +251,52 @@ export const strings = {
     getApplicationsForJobRefTransaction: `${getApplicationsForJobRefTransaction}`,
     getJobSeekerAccountTransaction: `${getJobSeekerAccountTransaction}`,
     cvSearchTransaction: `${cvSearchTransaction}`,
+    getTokenSupplyTransaction: `${getTokenSupplyTransaction}`,
+    getTokensMintedTransaction: `${getTokensMintedTransaction}`,
+    getUnusedSearchesTransaction: `${getUnusedSearchesTransaction}`,
+    getHistoryTransaction: `${getHistoryTransaction}`,
+    buyTokensTransaction: `${buyTokensTransaction}`,
+    cashoutTransaction: `${cashoutTransaction}`,
     
-    loginRecruiterUrl: `http://${ipAddress}:3000/api/${recruiterLoginTransaction}`,
-    loginJobSeekerUrl: `http://${ipAddress}:3000/api/${jobSeekerLoginTransaction}`,
-    registerRecruiterUrl: `http://${ipAddress}:3000/api/${recruiterRegisterTransaction}`,
-    registerJobSeekerUrl: `http://${ipAddress}:3000/api/${jobSeekerRegisterTransaction}`,
-    setLoggedInUrl: `http://${ipAddress}:3000/api/${setLoggedInTransaction}`,
-    buyJobAdsUrl: `http://${ipAddress}:3000/api/${buyJobAdsTransaction}`,
-    getJobAdsurl: `http://${ipAddress}:3000/api/${getJobAdsTransaction}`,
-    createJobAdUrl: `http://${ipAddress}:3000/api/${createJobAdTransaction}`,
-    updateJobAdUrl: `http://${ipAddress}:3000/api/${updateJobAdTransaction}`,
-    expireJobAdUrl: `http://${ipAddress}:3000/api/${expireJobAdTransaction}`,
-    getJobPostingsUrl: `http://${ipAddress}:3000/api/${getJobPostingsTransaction}`,
-    getAllJobPostingsUrl: `http://${ipAddress}:3000/api/${getAllJobPostingsTransaction}`,
-    addToFavouritesUrl: `http://${ipAddress}:3000/api/${addToFavouritesTransaction}`,
-    getFavouritesTransactionUrl: `http://${ipAddress}:3000/api/${getAllFavouritesTransaction}`,
-    removeFromFavouritesUrl: `http://${ipAddress}:3000/api/${removeFromFavouritesTransaction}`,
-    removeAllFavouritesUrl: `http://${ipAddress}:3000/api/${removeAllFavouritesTransaction}`,
-    incrementViewsUrl: `http://${ipAddress}:3000/api/${incrementViewsTransaction}`,
-    incrementApplicationsUrl: `http://${ipAddress}:3000/api/${incrementApplicationsTransaction}`,
-    updateProfileUrl: `http://${ipAddress}:3000/api/${updateProfileTransaction}`,
-    createAlertUrl: `http://${ipAddress}:3000/api/${createAlertTransaction}`,
-    updateAlertUrl: `http://${ipAddress}:3000/api/${updateAlertTransaction}`,
-    removeAlertUrl: `http://${ipAddress}:3000/api/${removeAlertTransaction}`,
-    testAlertUrl: `http://${ipAddress}:3000/api/${testAlertTransaction}`,
-    getAlertsUrl: `http://${ipAddress}:3000/api/${getAlertsTransaction}`,
-    getJobByRefUrl: `http://${ipAddress}:3000/api/${getJobByRefTransaction}`,
-    applyForJobUrl: `http://${ipAddress}:3000/api/${applyForJobTransaction}`,
-    getApplicationsForUserUrl: `http://${ipAddress}:3000/api/${getApplicationsForUserTransaction}`,
-    getApplicationsForJobRefUrl: `http://${ipAddress}:3000/api/${getApplicationsForJobRefTransaction}`,
-    getJobSeekerAccountUrl: `http://${ipAddress}:3000/api/${getJobSeekerAccountTransaction}`,
-    cvSearchUrl: `http://${ipAddress}:3000/api/${cvSearchTransaction}`,
+    
+    loginRecruiterUrl: `http://${ipAddress}:${port}/api/${recruiterLoginTransaction}`,
+    loginJobSeekerUrl: `http://${ipAddress}:${port}/api/${jobSeekerLoginTransaction}`,
+    registerRecruiterUrl: `http://${ipAddress}:${port}/api/${recruiterRegisterTransaction}`,
+    registerJobSeekerUrl: `http://${ipAddress}:${port}/api/${jobSeekerRegisterTransaction}`,
+    setLoggedInUrl: `http://${ipAddress}:${port}/api/${setLoggedInTransaction}`,
+    buyJobAdsUrl: `http://${ipAddress}:${port}/api/${buyJobAdsTransaction}`,
+    getJobAdsurl: `http://${ipAddress}:${port}/api/${getJobAdsTransaction}`,
+    createJobAdUrl: `http://${ipAddress}:${port}/api/${createJobAdTransaction}`,
+    updateJobAdUrl: `http://${ipAddress}:${port}/api/${updateJobAdTransaction}`,
+    expireJobAdUrl: `http://${ipAddress}:${port}/api/${expireJobAdTransaction}`,
+    getJobPostingsUrl: `http://${ipAddress}:${port}/api/${getJobPostingsTransaction}`,
+    getAllJobPostingsUrl: `http://${ipAddress}:${port}/api/${getAllJobPostingsTransaction}`,
+    addToFavouritesUrl: `http://${ipAddress}:${port}/api/${addToFavouritesTransaction}`,
+    getFavouritesTransactionUrl: `http://${ipAddress}:${port}/api/${getAllFavouritesTransaction}`,
+    removeFromFavouritesUrl: `http://${ipAddress}:${port}/api/${removeFromFavouritesTransaction}`,
+    removeAllFavouritesUrl: `http://${ipAddress}:${port}/api/${removeAllFavouritesTransaction}`,
+    incrementViewsUrl: `http://${ipAddress}:${port}/api/${incrementViewsTransaction}`,
+    incrementApplicationsUrl: `http://${ipAddress}:${port}/api/${incrementApplicationsTransaction}`,
+    updateProfileUrl: `http://${ipAddress}:${port}/api/${updateProfileTransaction}`,
+    createAlertUrl: `http://${ipAddress}:${port}/api/${createAlertTransaction}`,
+    updateAlertUrl: `http://${ipAddress}:${port}/api/${updateAlertTransaction}`,
+    removeAlertUrl: `http://${ipAddress}:${port}/api/${removeAlertTransaction}`,
+    testAlertUrl: `http://${ipAddress}:${port}/api/${testAlertTransaction}`,
+    getAlertsUrl: `http://${ipAddress}:${port}/api/${getAlertsTransaction}`,
+    getJobByRefUrl: `http://${ipAddress}:${port}/api/${getJobByRefTransaction}`,
+    applyForJobUrl: `http://${ipAddress}:${port}/api/${applyForJobTransaction}`,
+    getApplicationsForUserUrl: `http://${ipAddress}:${port}/api/${getApplicationsForUserTransaction}`,
+    getApplicationsForJobRefUrl: `http://${ipAddress}:${port}/api/${getApplicationsForJobRefTransaction}`,
+    getJobSeekerAccountUrl: `http://${ipAddress}:${port}/api/${getJobSeekerAccountTransaction}`,
+    cvSearchUrl: `http://${ipAddress}:${port}/api/${cvSearchTransaction}`,
+    getTokenSupplyUrl: `http://${ipAddress}:${port}/api/${getTokenSupplyTransaction}`,
+    getTokensMintedUrl: `http://${ipAddress}:${port}/api/${getTokensMintedTransaction}`,
+    getUnusedSearchesUrl: `http://${ipAddress}:${port}/api/${getUnusedSearchesTransaction}`,
+    getHistoryUrl: `http://${ipAddress}:${port}/api/${getHistoryTransaction}`,
+    buyTokensUrl: `http://${ipAddress}:${port}/api/${buyTokensTransaction}`,
+    cashoutUrl: `http://${ipAddress}:${port}/api/${cashoutTransaction}`,
+    
 
-    
     beginningOfTime: "1970-01-01T15:11:47.728Z",
     endOfTime: "3070-01-01T15:11:47.728Z",
     blockchainFilter: 'blockchaintotals',
@@ -302,11 +327,12 @@ export const elementConsts = {
     RECRUITERAPPLICATIONPAGE: 13,
     BUYSEARCHESPAGE: 14,
     CVSEARCHPAGE: 15,
+    BLOCKCHAINPAGE: 16,
     JOBADPRICE: 99,
     CVSEARCHPRICE: 25,
     JOBDISCOUNT: 10,
     CVDISCOUNT: 5,
-    TOKENEXCHANGERATE: 100,
+    TOKENEXCHANGERATE: 100.0,
     REWARDPERCENTAGE: .2, // percentage of tokens to award to jobseekers in search results
     JOBMINPRICE: 49,
     CVMINPRICE: 20,

@@ -2,7 +2,6 @@
  * Populates the jobseeker Registries with data
  * 
  */
-
 const bnUtil = require('../bn-connection-util');
 const arrays = require('./arrays');
 
@@ -92,6 +91,21 @@ async function main(){
             }
             params.skills = skills;
 
+            i = getRandomIndex(1, 3);
+            let language;
+            let languages = "";
+            chosen = [];
+            for (let j = 0; j < i; j++) { 
+                do {
+                    language = getRandomArrayElement(languagesArray);
+                } while (chosen.includes(language) != false);              
+                languages = languages + language;
+                if (j < i-1) {
+                    languages = languages + ", ";
+                }
+                chosen.push(language)
+            }
+            params.languages = chosen;
             // concept HubJobSeekerParameters {
             //   
             //     o String cvhash optional
@@ -132,6 +146,7 @@ async function main(){
             params.newjobtype = getRandomArrayElement(arrays.jobTypeArray);
             params.newjobsummary = newjobsummary;
 
+
             // Submit the transaction
          
             console.log(">>> generating job seeker with id: " + email);
@@ -151,6 +166,7 @@ async function main(){
             console.log("   => preferred job description =  " + params.newjobsummary);;
             console.log("   => new job remote =  " + params.newjobremote);
             console.log("   => cv visible =  " + params.visibility);
+            console.log("   => languages =  " + params.languages);
            
 
             try {
@@ -189,6 +205,16 @@ function getRandomIndex(min, max) {
 }
 
 
+var languagesArray = new Array(
+    "English",
+    "French",
+    "Dutch",
+    "German",
+    "Spanish",
+    "Chinese",
+    "Italian",
+    "Romanian"
+);
 
 var skillsArray = new Array(
     "Java/J2EE",

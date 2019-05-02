@@ -5,17 +5,16 @@ export const setCVSearchNumber = (num) => {
    jobAdsNum.innerHTML = num;
 }
 
-export const getTokensToMint = () => {
-   // example: total price for searches = £45 (two searches)
+export const getTokensPerSearch = () => {
+   // example: min price for searches = £20 
 
-   // number of tokens to mint = total price * EXCHANGE RATE (100 tokens per pound)
+   // number of tokens per search =  EXCHANGE RATE (100 tokens per pound) * REWARD * MINPRICE
 
-   // 45 * 100 = 4500 new tokens
-   let totalPrice = sessionStorage.getItem("totalprice");
-   console.log("price = " + totalPrice);
-   let newTokens = totalPrice * elementConsts.TOKENEXCHANGERATE * elementConsts.REWARDPERCENTAGE;
-   console.log("Number of new tokens to mint: " + newTokens);
-   return newTokens;
+   // 100 * 20 * 0.2 = 400 tokens per search
+ 
+   let tokensPerSearch = elementConsts.TOKENEXCHANGERATE * elementConsts.REWARDPERCENTAGE * elementConsts.CVMINPRICE;
+   console.log("Number of new tokens per search: " + tokensPerSearch);
+   return tokensPerSearch;
 }
 
 export const setTotalCVSearchPrice = (num) => {
@@ -96,6 +95,7 @@ export const getBuyCVSearchData = (mail) => {
        $class: strings.buyJobAdsTransaction,
        email: mail,
        searches: parseInt(input.value),
+       tokensPerSearch: getTokensPerSearch()
    };
    return buyCreditsData;
 }

@@ -134,7 +134,6 @@ async function CreateJobSeekerAccount(accountData) {
     await erc20Registry.addAll([token]);
 
     seeker.hubToken = token;
-
   
     // 5 Add the new account to the HubAccount registry
     const accountRegistry = await getAssetRegistry(NS + '.HubAccount');
@@ -358,6 +357,18 @@ async function BuyJobCredits(credentials) {
 
     user.remaining += credentials.credits;
     user.searches += credentials.searches;
+
+    // we need to convert searches into tokens minted
+    // say tokens per search = 2000
+    // user buys 3 searches
+    // so mint 6000 new tokens
+
+    let cred = {};
+    cred.newSupply = credentials.tokensPerSearch * credentials.searches;
+    cred.newMint = cred.newSupply;
+    cred.tokenName = "hub";
+
+    await MintERC20(cred);
 
     // Update the asset in the asset registry.
     await assetRegistry.update(user);
@@ -756,7 +767,6 @@ async function RemoveJobFromFavourites(credentials) {
 
     await participantRegistry.update(recruiter);
 }
-
 /**
  * Create a new JobPosting and attach to its owning (Recruiter) participant
  * @param {io.onemillionyearsbc.hubtutorial.jobs.CreateJobPosting} credentials
@@ -933,6 +943,23 @@ async function GetAllLiveJobPostings(credentials) {
 
     return liveJobs;
 }
+/**
+ * Return all JobPosting objects
+ * @param {io.onemillionyearsbc.hubtutorial.GetUnusedSearches} credentials
+ * @return {Integer}
+ * @transaction
+ */
+async function GetUnusedSearches(credentials) {
+    let results = await query('selectAllJobAds', {
+    });
+
+    let count = 0;
+    for (let i = 0; i < results.length; i++) {
+        count = count + results[i].searches;
+    }
+  
+    return count;
+}
 
 /**
  * Return JobApplication array of records for given ref (job posting)
@@ -1056,6 +1083,7 @@ async function AddERC20TokenTransactionToHistory(credentials) {
     "weblink": "http://tanks.de",
     "itexperience": 1,
     "skills": "Tanks Are MEEEEEE",
+     "languages": ["Dutch", "French"],
     "blockchainUsed": "CORDA",
     "blockexperience": 1,
     "newjobsummary": "BIG TANKS AND ARTILLERY",
@@ -1088,6 +1116,7 @@ async function AddERC20TokenTransactionToHistory(credentials) {
     "weblink": "http://tanks.de",
     "itexperience": 1,
     "skills": "Tanks Are MEEEEEE",
+    "languages": ["Dutch", "French"],
     "blockchainUsed": "CORDA",
     "blockexperience": 1,
     "newjobsummary": "PANZER BOY",
@@ -1099,7 +1128,7 @@ async function AddERC20TokenTransactionToHistory(credentials) {
   "accountType": "JOBSEEKER",
   "email": "e.rommel@wehrmacht.de",
   "password": "fluffy",
-  "balance": 2,
-  "allowance": 50
+  "balance": 0,
+  "allowance": 0
 }
   */

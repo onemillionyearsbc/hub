@@ -12,8 +12,19 @@
             `hash` CHAR(64) NOT NULL,
             `image` LONGTEXT NOT NULL,
             INDEX `key_email` (`email`),
-            INDEX `key_id` (`id`)
+            PRIMARY KEY (`id`)
+        );
+
+        DROP TABLE IF EXISTS `profile_cv`;
+
+        CREATE TABLE `profile_cv` (
+            `email` VARCHAR(100) NOT NULL,
+            `hash` CHAR(64) NOT NULL,
+            `image` LONGTEXT NOT NULL,
+            INDEX `key_email` (`email`),
+            PRIMARY KEY(`email`)
         )
+        ";
         return $dbhub_all_sql;
     }
 
@@ -26,12 +37,11 @@
 
     foreach ($mySQLArray as $element)
     {
-        //print "<br>$element";
         $sqlstatement = trim($element);
 
         if ($sqlstatement != '')
         {
-            $status = doSQLStatement($db, $sqlstatement);
+            $status = doInsertStatement($db, $sqlstatement);
 
             if ($status == 'error')
             {

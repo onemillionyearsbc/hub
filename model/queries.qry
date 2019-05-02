@@ -21,7 +21,18 @@ query selectHubJobSeekerByEmail {
         SELECT io.onemillionyearsbc.hubtutorial.HubJobSeeker
             WHERE (email == _$email) 
 }
-            
+query selectAllHubJobSeekers {
+ description: "Select all HubJobSeeker objects in the registry"
+    statement:      
+        SELECT io.onemillionyearsbc.hubtutorial.HubJobSeeker
+} 
+
+query selectAllJobAds {
+ description: "Select all JobAds objects in the registry"
+    statement:      
+        SELECT io.onemillionyearsbc.hubtutorial.jobs.JobAds
+}      
+
 query selectAllAccounts {
   	description: "Returns all accounts in the registry"
   	statement:
@@ -88,4 +99,12 @@ query selectJobSeekerByCity {
     statement:
         SELECT io.onemillionyearsbc.hubtutorial.HubJobSeeker
             WHERE (params.city == _$city)
+}
+
+
+query selectERC20TokenTransactionsByEmail {
+ description: "Select ERC20TokenTransaction objects where username (email) matches"
+    statement:
+        SELECT io.onemillionyearsbc.hubtutorial.tokens.ERC20TokenTransaction
+            WHERE (email == _$email)
 }
