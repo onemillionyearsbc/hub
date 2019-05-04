@@ -94,6 +94,16 @@ async function buildSearchResults(candidates, email, amountPerUser, totalAmount,
     var searchResults = factory.newResource(NSJOBS, 'CVSearchResults', resultId);
 
     let candidatesArray = new Array();
+
+    // first order the candidates by ranking points 
+    // then potentially lop off the first 10 (if more than 10 results)
+    candidates.sort(function(a, b) {
+        const rankingA = a.params.rankingpoints;
+        const rankingB = b.params.rankingpoints;
+        
+        return rankingB - rankingA;
+    });
+
     let count = maxResults; // max num search results allowed 
     if (candidates.length < maxResults) {
         count = candidates.length;
@@ -108,6 +118,10 @@ async function buildSearchResults(candidates, email, amountPerUser, totalAmount,
         }
         candidate.location = candidates[i].params.city + comma + candidates[i].params.country;
         candidate.skills = candidates[i].params.skills;
+        candidate.hasCV = false;
+        if (candidates[i].params.cvfile != undefined) {
+            candidate.hasCV = true;
+        }
         candidatesArray.push(candidate);
 
         // update tokens for this user

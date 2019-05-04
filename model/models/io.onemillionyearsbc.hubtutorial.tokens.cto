@@ -125,3 +125,10 @@ transaction CashOutTokens {
     o String email
     o Double amount
 } 
+
+// users can sell tokens in exchange for ranking points
+// to appear higher up in search results
+transaction BuyRankingPoints {
+    o String email
+    o Double amount
+}

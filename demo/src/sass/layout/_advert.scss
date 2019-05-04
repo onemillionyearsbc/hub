@@ -1,4 +1,4 @@
-.advertpanel {
+.advertpanel2 {
     padding-left: $site-global-margin;
     padding-right: $site-global-margin;
    
@@ -10,7 +10,7 @@
     text-transform: uppercase;
     color:black;
     text-align: center;
-    &__title {
+    &__title2 {
         padding-top: 2rem;
         padding-bottom: 2rem;
     }
@@ -19,7 +19,7 @@
         font-weight: 600;
         text-transform: uppercase;
     }
-    .main {
+    .main2 {
        margin-top: 1.5rem;
         display:flex;
         h1 {
@@ -29,7 +29,7 @@
             font-size: 2.5rem;
             font-weight: 900;
         }
-        .panel {
+        .panel2 {
             padding: 1rem;
             background: black;
             margin: 1rem;

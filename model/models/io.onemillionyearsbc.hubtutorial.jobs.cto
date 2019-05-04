@@ -52,6 +52,7 @@ concept CandidateResult {
   o String      name
   o String      location
   o String      skills
+  o Boolean     hasCV default = false
 }
 
 asset CVSearchResults identified by resultId {

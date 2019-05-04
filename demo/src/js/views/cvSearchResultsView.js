@@ -1,32 +1,29 @@
 import { elements } from './base';
 
 export const renderCVSearchResults = (candidates) => {
-    console.log(">>> READY TO GO...result size = " + candidates.length);
-
     for (let i = 0; i < candidates.length; i++) {
-        renderCVSearchResult(candidates[i]);
+        renderCVSearchResult(candidates[i], i);
     }
     let title = document.getElementById("numres");
     title.innerHTML = `Here are the ${candidates.length} candidates matching your search:`;
     
 }
 
-function renderCVSearchResult(candidate) {
-    
-    // o String      email 
-    // o String      name
-    // o String      locationy
-    // o String      skills
-//     <div id="jobtitle" class="title">
-//     <p>${candidate.name}</p>
-//     <button class="downloadcvbutton btn">Download CV</button>
-// </div>
+function renderCVSearchResult(candidate, index) {
+
+    let buttonText = 'Download CV';
+    let disabledStr = "";
+    if (candidate.hasCV === false) {
+        buttonText = "No CV Found";
+        disabledStr = "disabled";
+    }
+
     let markup = ` <li>
         <div class="item-job">
             <div class="mainbody">
                 <div id="jobtitle" class="title">
-                    <p class=candidatetitle>${candidate.name}</p>
-                    <button class="downloadcvbutton btn" data-email=${candidate.email}>Download CV</button>
+                    <p id="cantitle-${index}" class="candidatetitle"  data-email=${candidate.email}>${candidate.name}</p>
+                    <button id="cvbtn-${index}" class="downloadcvbutton btn" ${disabledStr} data-email=${candidate.email}>${buttonText}</button>
                 </div>
                 
                 <div class="top">

@@ -157,8 +157,8 @@
                                             <div class="close-modal">&#10006;</div>
                                             <h1>Your Wallet</h1>
                                             <div class="hdrtcontent">
-                                                <p id="hubtokens">20.0 HubTokens</p>
-                                                <p id="gbp" class="small">0.20 GBP</p>
+                                                <p id="hubtokens">0.0 HubTokens</p>
+                                                <p id="gbp" class="small">0.00 GBP</p>
                                             </div>
 
                                         </div>
@@ -167,8 +167,13 @@
                                                 <!-- <p id="instr" class="tokentextsummary"><span>HubToken Balance:
                                                     </span><span class="toktotal">15</span>
                                                 </p> -->
-                                                <p id="instr" class="tokentext"><span>Token Transaction History</span>
-                                                </p>
+                                                <div class="wallettop">
+                                                    <p id="instr" class="tokentext"><span>Token Transaction History</span>
+                                                    </p>
+                                                    <p id="instr2" class="tokentext"><span></span>
+                                                    </p>
+                                                </div>
+                                                
                                                 <div id ="wallettable" class="tholder tabley">
 
                                                     <table id="tokentable" class="sortable">
@@ -180,7 +185,7 @@
                                                                     Num Tokens
                                                                 </th>
 
-                                                                <th class="sorttable_ddmm" height="30px" width="25rem">
+                                                                <th height="30px" width="25rem">
                                                                     Transaction date
                                                                 </th>
 
@@ -356,20 +361,6 @@
 <script type="text/javascript" src="js/bundle.js"></script></body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script>
-    /*
- ===============================================================
- 
- Hi! Welcome to my little playground!
- 
- My name is Tobias Bogliolo. 'Open source' by default and always 'responsive',
- I'm a publicist, visual designer and frontend developer based in Barcelona. 
- 
- Here you will find some of my personal experiments. Sometimes usefull,
- sometimes simply for fun. You are free to use them for whatever you want 
- but I would appreciate an attribution from my work. I hope you enjoy it.
- 
- ===============================================================
- */
 
     $(".modal-trigger").click(function (e) {
         e.preventDefault();

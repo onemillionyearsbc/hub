@@ -107,6 +107,7 @@ export const elements = {
     jobApplications: document.getElementById("jobapplications"),
     abtn: document.getElementById("abtn"),
     bbtn: document.getElementById("bbtn"),
+    cvbtn: document.getElementById("cvbtn"),
     price1: document.getElementById("p1"),
     price2: document.getElementById("p2"),
     jobadviews: document.getElementById("jobadviews"),
@@ -135,6 +136,12 @@ export const elements = {
     personJobType: document.getElementById("desiredjobtype"),
     cvDaysAgo: document.getElementById("cvimg"),
     accBanner: document.getElementById("instr"),
+    rankPtsLabel: document.getElementById("instr2"),
+    profileTitle:  document.getElementById("profiletitle"),
+    ptitle:   document.getElementById("ptitle"),
+    pwexp:   document.getElementById("pwexp"),
+    preq:   document.getElementById("preq"),
+    vis:   document.getElementById("vis"),
     changeEmail: document.getElementById("changeemail"),
     changePref: document.getElementById("changepref"),
     manageTok: document.getElementById("managetok"),
@@ -151,11 +158,16 @@ export const elements = {
     cvpanel: document.getElementById("cv"),
     cvsearchesBtn: document.getElementById("cvsearchbtn"),
     block: document.getElementById("block"),
-    addFundsBtn: document.getElementById("addfundsbtn"),
     cashoutBtn: document.getElementById("cashoutbtn"),
-    addfunds: document.getElementById("addfunds"),
     cashout: document.getElementById("cashout"),
+    addFundsBtn: document.getElementById("addfundsbtn"),
+    addfunds: document.getElementById("addfunds"),
+    buyrankBtn: document.getElementById("buyrankbtn"),
+    buyrank: document.getElementById("buyrank"),
     modalname: document.getElementById("wallettable"),
+    candidatetitle: document.getElementById("candidatetitle"),
+    proofBtn: document.getElementById("proofbutton"),
+    bc: document.getElementById("bc"),
 };
 
 export const dbelements = {
@@ -216,6 +228,7 @@ var getUnusedSearchesTransaction = 'io.onemillionyearsbc.hubtutorial.GetUnusedSe
 var getHistoryTransaction = 'io.onemillionyearsbc.hubtutorial.tokens.GetTransactionHistoryForUser';
 var buyTokensTransaction = 'io.onemillionyearsbc.hubtutorial.tokens.BuyTokens';
 var cashoutTransaction = 'io.onemillionyearsbc.hubtutorial.tokens.CashOutTokens';
+var buyRankPtsTransaction = 'io.onemillionyearsbc.hubtutorial.tokens.BuyRankingPoints';
 
 export const strings = {
     loader: 'loader',
@@ -257,7 +270,7 @@ export const strings = {
     getHistoryTransaction: `${getHistoryTransaction}`,
     buyTokensTransaction: `${buyTokensTransaction}`,
     cashoutTransaction: `${cashoutTransaction}`,
-    
+    buyRankPtsTransaction: `${buyRankPtsTransaction}`,
     
     loginRecruiterUrl: `http://${ipAddress}:${port}/api/${recruiterLoginTransaction}`,
     loginJobSeekerUrl: `http://${ipAddress}:${port}/api/${jobSeekerLoginTransaction}`,
@@ -295,6 +308,7 @@ export const strings = {
     getHistoryUrl: `http://${ipAddress}:${port}/api/${getHistoryTransaction}`,
     buyTokensUrl: `http://${ipAddress}:${port}/api/${buyTokensTransaction}`,
     cashoutUrl: `http://${ipAddress}:${port}/api/${cashoutTransaction}`,
+    buyRankPtsUrl: `http://${ipAddress}:${port}/api/${buyRankPtsTransaction}`,
     
 
     beginningOfTime: "1970-01-01T15:11:47.728Z",

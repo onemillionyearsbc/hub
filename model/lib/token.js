@@ -352,3 +352,51 @@ async function CashOutTokens(credentials) {
 
     await CreateERC20Transaction(tcred);    
 }
+
+/**
+ * users can exchange tokens for "ranking" points to push them up the list of search results
+ * @param {io.onemillionyearsbc.hubtutorial.tokens.BuyRankingPoints} credentials
+ * @transaction
+ */
+async function BuyRankingPoints(credentials) {
+    // 1. get the user balance
+    let cred = {};
+    cred.email = credentials.email;
+
+    let balance = await GetERC20Balance(cred);
+
+    // 2. if the amount does not make the new balance -ve deduct amount from balance
+    if (credentials.amount > balance) {
+        throw new Error("Cannot cash out: amount is greater than balance (" + balance + ")");
+    }
+
+    // 3. update registry with new balance
+    let newcred = {};
+    newcred.email = credentials.email;
+    newcred.balance = parseFloat(balance - credentials.amount);
+    await SetERC20Balance(newcred);
+
+    // 4. create a transaction
+    let tcred = {};
+    tcred.email = credentials.email;
+    tcred.type = "RANKPOINTS";
+    
+    tcred.amount = parseFloat(credentials.amount);
+    tcred.amount = -tcred.amount;
+
+    let transaction = await CreateERC20Transaction(tcred);    
+
+    var NS = 'io.onemillionyearsbc.hubtutorial';
+   
+    const participantRegistry = await getParticipantRegistry(NS + '.HubJobSeeker');
+    var seeker = await participantRegistry.get(credentials.email);
+
+    if (seeker.history == undefined) {
+        seeker.history = new Array();
+        seeker.history[0] = transaction;
+    } else {
+        seeker.history.push(transaction);
+    }
+    seeker.params.rankingpoints += credentials.amount;
+    await participantRegistry.update(seeker);
+}

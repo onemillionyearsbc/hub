@@ -68,20 +68,18 @@
             </nav>
             <div class="container profileparent">
                 <div class="profileparent__top animated zoomIn delay-2s">
-                    <p class="title">My Profile</p>
-                    <p class="instructions">Improve your chances of getting the job you want.<br>
+                    <p id="profiletitle" class="title">My Profile</p>
+                    <p id="instr" class="instructions">Improve your chances of getting the job you want.<br>
                         Creating a profile only takes a couple of minutes and makes you visible to potential employers.
                         <br>
                         (Fields marked * must be completed)
                     </p>
-
-
                 </div>
                 <div class="profileparent__bottom animated zoomIn delay-2s">
 
                     <div id="profilepage" class="createjobad__parent">
                         <form autocomplete="off" id="adform" class="myForm" top="false">
-                            <p class="profiletitle">My Details</p>
+                            <p id="ptitle" class="profiletitle">My Details</p>
                             <div class="loginform bollocksform">
                                 <div id="login-error" class="job-error loginform__error">
                                     <p><i class="icon fas fa-exclamation-triangle"></i>
@@ -194,7 +192,7 @@
                                             autocomplete="off" />
                                         <label for="link1" class="loginform__label">Languages</label>
                                     </div>
-                                <p class="profiletitle">My Work Experience</p>
+                                <p id="pwexp" class="profiletitle">My Work Experience</p>
                                 <div class="search_categories">
                                     <div class="select">
                                         <select class="dropdown"
@@ -248,7 +246,7 @@
                                 </div>
                                 <p id="dd3" class="mybollocks">Years Blockchain Experience</p>
 
-                                <p class="profiletitle">New Job Requirements</p>
+                                <p id="preq" class="profiletitle">New Job Requirements</p>
                                 <textarea id="psummary" class="createjobad__parent--textarea glowing-border" rows="5"
                                     cols="93"
                                     placeholder="Personal Summary. The text you enter into your key skills and personal summary is used to match you to keyword searches made by recruiters."></textarea>
@@ -288,17 +286,20 @@
                                     </p>
                                 </div>
                                 <p id="dd4" class="mybollocks">Desired Job Type</p>
-                                <p class="profiletitle">Visibility</p>
-                                <div class="toggle">
-                                    <input type="radio" name="share" value="true" id="yesshare" checked="checked" />
-                                    <label for="yesshare">Share My Details</label>
-                                    <input type="radio" name="share" value="false" id="noshare" />
-                                    <label for="noshare">Do Not Share My Details</label>
+                                <div id="vis">
+                                    <p class="profiletitle">Visibility</p>
+                                    <div class="toggle">
+                                        <input type="radio" name="share" value="true" id="yesshare" checked="checked" />
+                                        <label for="yesshare">Share My Details</label>
+                                        <input type="radio" name="share" value="false" id="noshare" />
+                                        <label for="noshare">Do Not Share My Details</label>
+                                    </div>
+                                    <p class="tokentext">It is recommended you allow your details to be viewed to maximise
+                                        your visibility to recruiters. </p>
+                                    <p class="tokentext">Note: you will be rewarded with Hub Tokens each time your details
+                                        are viewed by a recruiter. </p>
                                 </div>
-                                <p class="tokentext">It is recommended you allow your details to be viewed to maximise
-                                    your visibility to recruiters. </p>
-                                <p class="tokentext">Note: you will be rewarded with Hub Tokens each time your details
-                                    are viewed by a recruiter. </p>
+                               
                                 <div class="createjobad__parent--buttonpanel">
                                     <button id="createprofilebutton" type="submit" class="btn btn--orange">SAVE MY
                                         PROFILE</button>

@@ -204,13 +204,19 @@ const CVSearchHandler = async () => {
     if (candidates.error !== undefined) {
         err = candidates.error;
     }
+    clearLoader();
     if (err != null) {
-        await displayErrorPopup('Failed to search CVs: ' + err.message);
+        if (err.message.includes("type CVSearchResults was expected")) {
+            await displayErrorPopup('No Results Found! Try repeating your search');
+        } else {
+            await displayErrorPopup('Failed to search CVs: ' + err.message);
+        }
+
     } else {
         sessionStorage.setItem("candidates", JSON.stringify(candidates));
         window.location = "cvsearchresults.html";
     }
-    clearLoader();
+
 }
 
 const buyCVSearchCreditsHandler = async () => {
@@ -1031,7 +1037,22 @@ if (document.URL.includes("cvsearchresults.html")) {
     for (let i = 0; i < downloadCVButtons.length; i++) {
         downloadCVButtons[i].addEventListener('click', e => {
             e.preventDefault();
+
+            let ele = document.getElementById(e.target.id);
+            renderLoaderEndByNumber(ele, -5);
             getSeekerAndDownloadCV(e.target.dataset.email);
+        });
+    }
+
+    let candidateLinks = document.querySelectorAll(".candidatetitle");
+    for (let i = 0; i < candidateLinks.length; i++) {
+        candidateLinks[i].addEventListener('click', e => {
+            e.preventDefault();
+            console.log("Clicked: " + e.target.id + "; email = " + e.target.dataset.email);
+
+            let ele = document.getElementById(e.target.id);
+            renderLoaderEndByNumber(ele, -5);
+            getSeekerAndShowProfile(e.target.dataset.email);
         });
     }
 }
@@ -1299,6 +1320,13 @@ function createJobController() {
 if (document.URL.includes("blockchaintools.html")) {
     state.page = elementConsts.BLOCKCHAINPAGE;
     blockchainToolsHandler();
+
+    elements.proofBtn.addEventListener('click', e => {
+        console.log(">>> BLOCK BTN CLICKED!");
+        e.preventDefault();
+       
+        elements.bc.style.display = "block";
+    });
 }
 
 async function blockchainToolsHandler() {
@@ -1312,6 +1340,7 @@ async function blockchainToolsHandler() {
 
     let resp = await tp.transaction();
 
+
     var err = null;
     if (resp.error !== undefined) {
         err = resp.error;
@@ -1321,7 +1350,11 @@ async function blockchainToolsHandler() {
         clearLoader();
         return;
     }
-
+    console.log("** TOKEN SUPPLY: resp = " + resp + " len resp = " + resp.length);
+    // TODO find out why we get this result
+    if (resp.length > 10) {
+        resp = 0.0;
+    }
     stats.tokensupply = resp;
 
     data = {
@@ -1337,7 +1370,7 @@ async function blockchainToolsHandler() {
         err = resp.error;
     }
     if (err != null) {
-        await displayErrorPopup('Failed to get Minted Tokens: ' + err.message);
+        await displayErrorPopuple('Failed to get Minted Tokens: ' + err.message);
         clearLoader();
         return;
     }
@@ -1361,7 +1394,6 @@ async function blockchainToolsHandler() {
         return;
     }
 
-    console.log("UNUSED SEARCHES: resp = " + resp + " len resp = " + resp.length);
 
 
     // TODO find out why we get this result
@@ -1414,6 +1446,31 @@ async function recruiterJobApplicationsController() {
     }
 }
 
+
+async function getSeekerAndShowProfile(seekerEmail) {
+    console.log("Looking for jobseeker " + seekerEmail);
+    var data = {
+        $class: elements.getJobSeekerAccountTransaction,
+        email: seekerEmail
+    };
+    let tp = new TransactionProcessor(data, strings.getJobSeekerAccountUrl);
+
+    let resp = await tp.transaction();
+
+    var err = null;
+    if (resp.error !== undefined) {
+        err = resp.error;
+    }
+    clearLoader();
+    if (err != null) {
+        await displayErrorPopup('Failed to get JobSeeker: ' + err.message);
+    } else {
+        sessionStorage.setItem("readonly", true); // ensures that the profile is read only
+        sessionStorage.setItem("userdata", JSON.stringify(resp));
+        window.location = "jobseeker-dashboard.html";
+    }
+}
+
 async function getSeekerAndDownloadCV(seekerEmail) {
     console.log("Looking for jobseeker " + seekerEmail);
     var data = {
@@ -1428,6 +1485,7 @@ async function getSeekerAndDownloadCV(seekerEmail) {
     if (resp.error !== undefined) {
         err = resp.error;
     }
+    clearLoader();
     if (err != null) {
         await displayErrorPopup('Failed to get JobSeeker: ' + err.message);
     } else {
@@ -1575,19 +1633,24 @@ if (document.URL.includes("account-settings.html")) {
 
     elements.addFundsBtn.addEventListener('click', e => {
         e.preventDefault();
-        console.log("ADD FUNDS! Num = " + elements.addfunds.value);
-        buyTokensHandler(elements.addfunds.value);
+        buyTokensHandler(elements.addfunds, elements.addfunds.value);
+        e.target.value = "";
     });
 
     elements.cashoutBtn.addEventListener('click', e => {
         e.preventDefault();
-        console.log("CASH OUT! Num = " + elements.cashout.value);
-        cashoutHandler(elements.cashout.value);
+        cashoutHandler(elements.cashout, elements.cashout.value);
+        e.target.value = "";
+    });
+
+    elements.buyrankBtn.addEventListener('click', e => {
+        e.preventDefault();
+        buyRankPtsHandler(elements.buyrank, elements.buyrank.value);
     });
 
 }
 
-async function buyTokensHandler(tokens) {
+async function buyTokensHandler(element, tokens) {
     renderLoader(elements.modalname);
     var myemail = sessionStorage.getItem('myemail');
     var data = {
@@ -1612,13 +1675,48 @@ async function buyTokensHandler(tokens) {
         await walletHandler();
         clearLoader();
     }
+    element.value = "";
 }
 
-async function cashoutHandler(tokens) {
+async function buyRankPtsHandler(element, tokens) {
     renderLoader(elements.modalname);
     var myemail = sessionStorage.getItem('myemail');
     var data = {
-        $class: elements.CashOutTokens,
+        $class: elements.buyRankPtsTransaction,
+        email: myemail,
+        amount: tokens
+    };
+    let tp = new TransactionProcessor(data, strings.buyRankPtsUrl);
+
+    let resp = await tp.transaction();
+
+    var err = null;
+    if (resp.error !== undefined) {
+        err = resp.error;
+    }
+    if (err != null) {
+        clearLoader();
+        await displayErrorPopup('Failed to buy ranking points: ' + err.message);
+    } else {
+        // read the user hub values to poke into the wallet
+        let userData = sessionStorage.getItem("userdata");
+        let data = JSON.parse(userData);
+       
+        // update cache with new value for user ranking points
+        data.params.rankingpoints = data.params.rankingpoints + parseFloat(tokens);
+        sessionStorage.setItem("userdata", JSON.stringify(data));
+        await walletHandler();
+        clearLoader();
+    }
+    element.value = "";
+}
+
+
+async function cashoutHandler(element, tokens) {
+    renderLoader(elements.modalname);
+    var myemail = sessionStorage.getItem('myemail');
+    var data = {
+        $class: elements.cashoutTransaction,
         email: myemail,
         amount: tokens
     };
@@ -1639,6 +1737,7 @@ async function cashoutHandler(tokens) {
         await walletHandler();
         clearLoader();
     }
+    element.value = "";
 }
 
 async function walletHandler() {
@@ -1661,91 +1760,112 @@ async function walletHandler() {
         console.log("Got transaction history: num rows = " + resp.length);
         // read the user hub values to poke into the wallet
         const latestRow = resp[0];
-        settingsView.setWalletStats(latestRow.balance);
+       
+        let userData = sessionStorage.getItem("userdata");
+        let data = JSON.parse(userData);
+        let rankpts = 0.0;
+        if (data.params.rankingpoints != undefined) {
+            rankpts = data.params.rankingpoints;
+        }
+        settingsView.setWalletStats(latestRow.balance, rankpts);
         settingsView.populateFilterTable(resp);
     }
 }
 
-// JOBSEEKER PROFILE CONTROLLER 
-if (document.URL.includes("jobseeker-dashboard.html")) {
-    state.page = elementConsts.PROFILEPAGE;
-    autocomplete(document.getElementById("desiredjobtitle"), jobTitles);
-    var email = sessionStorage.getItem('myemail');
-    var submitProfileBtn = elements.createprofilebutton;
+function displayProfileForRecruiter() {
     let userData = sessionStorage.getItem("userdata");
     let data = JSON.parse(userData);
+    console.log("QUACK !!!!!! userData = " + userData);
+    setJobSeekerEmail(data.email);
+    data.readonly = true;
+    setProfileFields(data);
+}
 
+// JOBSEEKER PROFILE CONTROLLER 
+if (document.URL.includes("jobseeker-dashboard.html")) {
+    let readonly = sessionStorage.getItem("readonly");
+
+    // Populate country list with options:
     var select = document.getElementById("country");
-
-    // Populate list with options:
     for (var i = 0; i < countriesArray.length; i++) {
         var opt = countriesArray[i];
         select.innerHTML += "<option value=\"" + opt + "\" style=\"color:black\">" + opt + "</option>";
     }
-
-    if (email != null && email != undefined) {
-        setJobSeekerEmail(email);
-        setProfileFields(data);
-        // save hash for later use in the crypto check
-        sessionStorage.setItem("cvhash", data.params.cvhash);
-    }
-
-    if (data.params.cvhash != undefined) {
-        // no need to do this if the user cv field is empty
-        checkCrytpoHashes(email);
-        console.log("CV CRYPTO CHECK OK!");
-    }
-
-    submitProfileBtn.addEventListener('click', e => {
-        e.preventDefault();
-        let transaction = strings.updateProfileTransaction;
-        let insert = true;
-        if (sessionStorage.getItem("amend") === "true") {
-            insert = false;
-        }
-        updateProfileHandler(transaction, insert);
-    });
-
-    document.querySelector("#file-1").addEventListener('change', function () {
-
-        // set the file name in the view text field
-        var path = this.value;
-        path = path.substring(path.lastIndexOf('\\') + 1);
-        try {
-            imageLoader.loadImage(this.files[0]);
-            profileView.setCVFile(path, data);
-            state.newCV = true;
-        } catch (error) {
-            console.log("Error loading image: " + error);
-            // TODO display popup? 
-        }
-    });
-}
-
-async function testAlertHandler(id) {
-    renderLoaderByREMFromTop(elements.adForm, 100);
-    let userData = sessionStorage.getItem("userdata");
-    let udata = JSON.parse(userData);
-    var data = {
-        $class: elements.testAlertTransaction,
-        alertId: id,
-        name: udata.params.name.firstName
-    };
-
-    let tp = new TransactionProcessor(data, strings.testAlertUrl);
-
-    let resp = await tp.transaction();
-
-    clearLoader();
-    var err = null;
-    if (resp.error !== undefined) {
-        err = resp.error;
-    }
-    if (err != null) {
-        await displayErrorPopup('Failed to test alert: ' + err.message);
+    if (readonly === "true") {
+        displayProfileForRecruiter();
     } else {
-        await displaySuccessPopup('Job alert search successful. Please check your email!');
+        state.page = elementConsts.PROFILEPAGE;
+        autocomplete(document.getElementById("desiredjobtitle"), jobTitles);
+        var email = sessionStorage.getItem('myemail');
+        var submitProfileBtn = elements.createprofilebutton;
+        let userData = sessionStorage.getItem("userdata");
+        let data = JSON.parse(userData);
+
+        if (email != null && email != undefined) {
+            setJobSeekerEmail(email);
+            setProfileFields(data);
+            // save hash for later use in the crypto check
+            sessionStorage.setItem("cvhash", data.params.cvhash);
+        }
+
+        if (data.params.cvhash != undefined) {
+            // no need to do this if the user cv field is empty
+            checkCrytpoHashes(email);
+            console.log("CV CRYPTO CHECK OK!");
+        }
+
+        submitProfileBtn.addEventListener('click', e => {
+            e.preventDefault();
+            let transaction = strings.updateProfileTransaction;
+            let insert = true;
+            if (sessionStorage.getItem("amend") === "true") {
+                insert = false;
+            }
+            updateProfileHandler(transaction, insert);
+        });
+
+        document.querySelector("#file-1").addEventListener('change', function () {
+
+            // set the file name in the view text field
+            var path = this.value;
+            path = path.substring(path.lastIndexOf('\\') + 1);
+            try {
+                imageLoader.loadImage(this.files[0]);
+                profileView.setCVFile(path, data);
+                state.newCV = true;
+            } catch (error) {
+                console.log("Error loading image: " + error);
+                // TODO display popup? 
+            }
+        });
     }
+
+    async function testAlertHandler(id) {
+        renderLoaderByREMFromTop(elements.adForm, 100);
+        let userData = sessionStorage.getItem("userdata");
+        let udata = JSON.parse(userData);
+        var data = {
+            $class: elements.testAlertTransaction,
+            alertId: id,
+            name: udata.params.name.firstName
+        };
+
+        let tp = new TransactionProcessor(data, strings.testAlertUrl);
+
+        let resp = await tp.transaction();
+
+        clearLoader();
+        var err = null;
+        if (resp.error !== undefined) {
+            err = resp.error;
+        }
+        if (err != null) {
+            await displayErrorPopup('Failed to test alert: ' + err.message);
+        } else {
+            await displaySuccessPopup('Job alert search successful. Please check your email!');
+        }
+    }
+
 
 }
 
@@ -1866,7 +1986,10 @@ if (document.URL.includes("advert.html")) {
         sessionStorage.setItem("price", elementConsts.PREMIUMPRICE);
         window.location = "jobcredits.html";
     });
-
+    cvbtn.addEventListener('click', e => {
+        e.preventDefault();
+        window.location = "cvsearchcredits.html";
+    });
 }
 
 // BUY CREDITS PAGE

@@ -18,12 +18,19 @@ function setPersonTitle(data) {
         placeholder.style.display = "block";
         title.style.color = 'black';
     }
+    if (data.readonly === true) {
+        setReadOnly(title);
+        title.disabled = true;
+    }
 }
 
 function setPhone(data) {
     if (data.params.phone != undefined) {
         var phone = elements.phone;
         phone.value = data.params.phone;
+    }
+    if (data.readonly === true) {
+        setReadOnly(phone);
     }
 }
 
@@ -32,14 +39,22 @@ function setCity(data) {
         var city = elements.city;
         city.value = data.params.city;
     }
+    if (data.readonly === true) {
+        setReadOnly(city);
+    }
 }
 
 function setCountry(data) {
     var country = elements.country;
+
     country.value = data.params.country;
     let placeholder = document.getElementById("dd5");
     placeholder.style.display = "block";
     country.style.color = 'black';
+    if (data.readonly === true) {
+        setReadOnly(country);
+        country.disabled = true;
+    }
 }
 
 function setWebLink(data) {
@@ -47,12 +62,18 @@ function setWebLink(data) {
         var link1 = elements.link1;
         link1.value = data.params.weblink;
     }
+    if (data.readonly === true) {
+        setReadOnly(link1);
+    }
 }
 
 function setLanguages(data) {
     if (data.params.languages != undefined) {
         var newStr = data.params.languages.join(" ");
         elements.languages.value = newStr;
+    }
+    if (data.readonly === true) {
+        setReadOnly(elements.languages);
     }
 }
 function setITExperience(data) {
@@ -80,6 +101,10 @@ function setITExperience(data) {
         placeholder.style.display = "block";
         experience.style.color = 'black';
     }
+    if (data.readonly === true) {
+        setReadOnly(experience);
+        experience.disabled = true;
+    }
 }
 
 function setBlockExperience(data) {
@@ -95,12 +120,19 @@ function setBlockExperience(data) {
         placeholder.style.display = "block";
         yb.style.color = 'black';
     }
+    if (data.readonly === true) {
+        setReadOnly(yb);
+        yb.disabled = true;
+    }
 }
 
 function setSkills(data) {
     if (data.params.skills != undefined) {
         var skills = elements.keySkills;
         skills.value = data.params.skills;
+    }
+    if (data.readonly === true) {
+        setReadOnly(skills);
     }
 }
 function setBlockchainUsed(data) {
@@ -110,6 +142,10 @@ function setBlockchainUsed(data) {
         var placeholder = document.getElementById("dd2");
         placeholder.style.display = "block";
         blockchainUsed.style.color = 'black';
+    }
+    if (data.readonly === true) {
+        setReadOnly(blockchainUsed);
+        blockchainUsed.disabled = true;
     }
 }
 
@@ -121,14 +157,19 @@ function setDesiredJobType(data) {
         jobType.value = data.params.newjobtype;
         elements.personJobType.style.color = 'black';
     }
+    if (data.readonly === true) {
+        setReadOnly(jobType);
+        jobType.disabled = true;
+    }
 }
 
 function setDesiredJobTitle(data) {
-    console.log("desired job title = " + data.params.newjobtitle);
     if (data.params.newjobtitle != undefined) {
         var newjobtitle = elements.desiredJobTitle;
-        console.log("newjobtitle = " + newjobtitle);
         newjobtitle.value = data.params.newjobtitle;
+    }
+    if (data.readonly === true) {
+        setReadOnly(newjobtitle);
     }
 }
 
@@ -136,6 +177,9 @@ function setDesiredJobSummary(data) {
     if (data.params.newjobsummary != undefined) {
         var psummary = elements.personSummary;
         psummary.value = data.params.newjobsummary;
+    }
+    if (data.readonly === true) {
+        setReadOnly(psummary);
     }
 }
 
@@ -145,12 +189,26 @@ function setFirstAndLastName(data) {
 
     var lastElement = elements.lastName;
     lastElement.value = data.params.name.lastName;
+    if (data.readonly === true) {
+        setReadOnly(firstElement);
+        setReadOnly(lastElement);
+    }
 }
+
+function setReadOnly(element) {
+    element.readOnly = true;
+    element.style.color = "#aaa";
+}
+
 function setRemote(data) {
     if (data.params.newjobremote === true) {
         document.getElementById("yesremote").checked = true;
     } else {
         document.getElementById("noremote").checked = true;
+    }
+    if (data.readonly === true) {
+        document.getElementById("yesremote").disabled = true;
+        document.getElementById("noremote").disabled = true;
     }
 }
 
@@ -159,6 +217,10 @@ function setVisibility(data) {
         document.getElementById("yesshare").checked = true;
     } else {
         document.getElementById("noshare").checked = true;
+    }
+    if (data.readonly === true) {
+        document.getElementById("yesshare").disabled = true;
+        document.getElementById("noshare").disabled = true;
     }
 }
 
@@ -169,19 +231,30 @@ function setCV(data) {
     } else {
         sessionStorage.setItem("amend", "false");
     }
+    if (data.readonly === true) {
+        document.getElementById("pbox1").style.display = "none";
+        document.getElementById("pbox2").style.display = "none";
+    }
 }
 
 function setCVDaysAgo(data) {
-    let daysAgoElement = elements.cvDaysAgo;
-    if (data.params.cvdate != undefined) {
-        let daysAgo = getDaysAgo(data.params.cvdate);
-        daysAgoElement.innerHTML = "Uploaded " + daysAgo;
-    } else {
-        daysAgoElement.innerHTML = "Uploaded today";
+    if (data.readonly != true) {
+        let daysAgoElement = elements.cvDaysAgo;
+        if (data.params.cvdate != undefined) {
+            let daysAgo = getDaysAgo(data.params.cvdate);
+            daysAgoElement.innerHTML = "Uploaded " + daysAgo;
+        } else {
+            daysAgoElement.innerHTML = "Uploaded today";
+        }
     }
 }
 
 export const setProfileFields = (data) => {
+    if (data.readonly === undefined) {
+        data.readonly = false;
+    } else {
+        data.readonly = true;
+    }
     setFirstAndLastName(data);
 
     setPersonTitle(data);
@@ -220,6 +293,16 @@ export const setProfileFields = (data) => {
 
     if (data.params.cvhash != undefined) {
         sessionStorage.setItem("cvhash", data.params.cvhash);
+    }
+
+    if (data.readonly === true) {
+        elements.createprofilebutton.style.display = "none";
+        elements.profileTitle.innerHTML = `${data.params.name.firstName} ${data.params.name.lastName}'s Profile`
+        elements.accBanner.innerHTML= "";
+        elements.ptitle.innerHTML = `${data.params.name.firstName}'s Details`;
+        elements.pwexp.innerHTML = `${data.params.name.firstName}'s Work Experience`
+        elements.preq.innerHTML = `${data.params.name.firstName}'s New Job Requirements`;
+        elements.vis.style.display = "none";
     }
 }
 

@@ -72,6 +72,7 @@ concept HubJobSeekerParameters {
   o Boolean newjobremote default=false
   o JobType newjobtype default = "FULLTIME"
   o Boolean visibility default=false
+  o Double rankingpoints default = 0.0
 }
   
 concept Name {

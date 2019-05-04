@@ -1,0 +1,119 @@
+.blockchain {
+
+  margin-top: 2rem;
+  svg {
+    width: 30px;
+    display: block;
+    // margin: 40px auto 0;
+  }
+
+  .path {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 0;
+    &.circle {
+      -webkit-animation: dash .9s ease-in-out;
+      animation: dash .9s ease-in-out;
+    }
+    &.line {
+      stroke-dashoffset: 1000;
+      -webkit-animation: dash .9s .35s ease-in-out forwards;
+      animation: dash .9s .35s ease-in-out forwards;
+    }
+    &.check {
+      stroke-dashoffset: -100;
+      -webkit-animation: dash-check .9s .35s ease-in-out forwards;
+      animation: dash-check .9s .35s ease-in-out forwards;
+    }
+  }
+
+
+
+
+  @-webkit-keyframes dash {
+    0% {
+      stroke-dashoffset: 1000;
+    }
+    100% {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @keyframes dash {
+    0% {
+      stroke-dashoffset: 1000;
+    }
+    100% {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @-webkit-keyframes dash-check {
+    0% {
+      stroke-dashoffset: -100;
+    }
+    100% {
+      stroke-dashoffset: 900;
+    }
+  }
+
+  @keyframes dash-check {
+    0% {
+      stroke-dashoffset: -100;
+    }
+    100% {
+      stroke-dashoffset: 900;
+    }
+  }
+
+  .placeholder {
+    display: flex;
+    margin-left: 2rem;
+    border: 1px solid darkgrey;
+    border-radius: 6px;
+    max-width: 33%;
+    background: rgb(236, 252, 226);
+   
+    transition: transform .2s; /* Animation */
+  }
+  .placeholder:hover {
+    transform: scale(2.5); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+    cursor: pointer;
+  }
+  .fail {
+    background: rgb(245, 207, 207);
+  }
+  p {
+    // text-align: center;
+    // margin: 20px 0 60px;
+    min-width: 26rem;
+    font-size: 1.22em;
+    margin-left: 0.4px;
+    &.success {
+      color: #73AF55;
+    }
+    &.error {
+      color: #D06079;
+      text-align: center;
+    }
+  }
+  .svgicon {
+    margin-top: 1.0rem;
+    margin-right: 0.5rem;
+    margin-left: 0.5rem;
+  }
+
+  .row {
+    display: flex;
+    margin-bottom: 1.5rem;
+  }
+  .hashbox {
+    margin-left: 1rem;
+    margin-top: 1rem;
+    .hash {
+      font-size: 0.6rem;
+    }
+  
+    font-size: 1rem;
+    line-height: 1.2rem;
+  }
+}

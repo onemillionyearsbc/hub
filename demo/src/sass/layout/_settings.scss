@@ -37,7 +37,11 @@
 .tableholder {
     margin-top: 6rem;
     height: 15rem;
-   
+    .wallettop {
+        display: flex;
+        justify-content: space-between;
+        margin-right: 2rem;
+    }
 }
 
 .tholder {
