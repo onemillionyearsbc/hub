@@ -142,7 +142,6 @@ export default class ImageLoader {
         }
         const row0 = result[0];
         try {
-           
             await this.checkHash(jobReference, row0["image"], row0["hash"], logohash);3
         }
         catch (error) {
@@ -155,6 +154,8 @@ export default class ImageLoader {
         // get hash from blockchain
         // hash the image again...
         // 1. compare with hash from db
+
+        console.log("CheckHash: id = " + id + "; image = " + image + "; dbhash = " + dbhash + "; logohash = " + logohash);
         // 2. compare with hash from blockchain
         const myhash = crypto.createHash('sha256') // enables digest
             .update(image) // create the hash

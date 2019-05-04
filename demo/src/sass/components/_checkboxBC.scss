@@ -85,15 +85,18 @@
   p {
     // text-align: center;
     // margin: 20px 0 60px;
-    min-width: 26rem;
+    width: 27rem;
     font-size: 1.22em;
     margin-left: 0.4px;
     &.success {
       color: #73AF55;
+      text-align: center;
+      margin-left: 39rem;
     }
     &.error {
       color: #D06079;
       text-align: center;
+      margin-left: 39rem;
     }
   }
   .svgicon {

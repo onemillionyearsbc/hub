@@ -663,6 +663,13 @@ const createJobAdHandler = async (transaction, ins) => {
                 let data = JSON.parse(cachedData);
                 console.log("OLD CACHE SIZE = " + data.length);
                 state.rows[0].logo = blob;
+               
+                // if this is an update, remove the previous version of the job posting
+                // from the cache
+                if (sessionStorage.getItem("amend") === "true") {
+                    data = data.filter(e => e.jobReference != state.rows[0].jobReference);
+                }
+               
                 data.push(state.rows[0])
                 let cdata = JSON.stringify(data);
                 await addIndexedData(cdata);
@@ -672,7 +679,7 @@ const createJobAdHandler = async (transaction, ins) => {
         }
         clearLoader();
         await displaySuccessPopup('Job Ad Successfully Posted!');
-        window.location = "recruiter-dashboard.html";
+        // window.location = "recruiter-dashboard.html";
     }
 }
 const updateProfileHandler = async (transaction, ins) => {
@@ -1269,6 +1276,7 @@ function createJobController() {
         e.preventDefault();
         let transaction = strings.createJobAdTransaction;
         let insert = true;
+        console.log("AMENDING JOB...");
         if (sessionStorage.getItem("amend") === "true") {
             transaction = strings.updateJobAdTransaction;
             insert = false;
@@ -1324,9 +1332,89 @@ if (document.URL.includes("blockchaintools.html")) {
     elements.proofBtn.addEventListener('click', e => {
         console.log(">>> BLOCK BTN CLICKED!");
         e.preventDefault();
-       
-        elements.bc.style.display = "block";
+
+        // document.getElementById("bc").style.display = "block";
+        doProofHandler();
     });
+}
+
+async function doProofHandler() {
+    // 1. read in all jobs from blockchain
+
+    let success = true;
+
+    renderLoader(elements.blockchain);
+    // 2. for each job 
+    //     read in job from database
+    //     check hashes
+    //     pass id, hashes and result to blockchain tools view to render
+    console.log("GOING TO THE BLOCKCHAIN TO GET LIVE JOBS...");
+    var data = {
+        $class: strings.getAllJobPostingsTransaction,
+    };
+    const tp = new TransactionProcessor(data, strings.getAllJobPostingsUrl);
+
+    let rows = await tp.transaction();
+    var err = null;
+    if (rows.error !== undefined) {
+        err = rows.error;
+    }
+    if (err != null) {
+        await displayErrorPopup('Search failed: ' + err);
+    } else {
+        let id;
+
+        let results = await imageLoader.getAllImagesFromDatabase();
+
+        console.log("NUMBER OF ROWS RETURNED = " + results.length);
+        let rowItems = [];
+        blockchainView.clearHTML();
+        let success =true;
+        for (var i = 0; i < rows.length; i++) {
+           
+            // remove any leading zeroes
+            id = Number(rows[i].jobReference).toString();
+            let rowfound = Array.from(results).find(row => row.id === id);
+
+            let hashdb = rowfound.hash;
+            let hashbc = rows[i].logohash;
+           
+            let item = {};
+            item.id = id;
+            item.hashdb = hashdb;
+            item.hashbc = hashbc;
+            item.success = true;
+
+            try {
+                console.log("CHECKING HASH FOR IMAGE " + id + "; image = " + rowfound.image);
+                console.log("BC HASH FOR ROW " + i + " = " + rows[i].logohash);
+                console.log("DB HASH FOR ROW " + i + " = " + rowfound.hash);
+                await imageLoader.checkHash(id, rowfound.image, hashdb, hashbc); db
+                rows[i].logo = rowfound.image;
+            } catch (error) {
+                console.log("Error loading image: " + error);
+                item.success = false;
+                success = false;
+            }
+            rowItems.push(item);
+            if (i % 3 == 2) {
+                blockchainView.renderProofItem(rowItems);
+                rowItems = [];
+            }
+        }
+        if (rowItems.length > 0) {
+            blockchainView.renderProofItem(rowItems);
+        }
+        blockchainView.addFooter(success);
+    } 
+    clearLoader();
+}
+
+
+
+
+const sleep = (milliseconds) => {
+    return new Promise(resolve => setTimeout(resolve, milliseconds))
 }
 
 async function blockchainToolsHandler() {
@@ -1701,7 +1789,7 @@ async function buyRankPtsHandler(element, tokens) {
         // read the user hub values to poke into the wallet
         let userData = sessionStorage.getItem("userdata");
         let data = JSON.parse(userData);
-       
+
         // update cache with new value for user ranking points
         data.params.rankingpoints = data.params.rankingpoints + parseFloat(tokens);
         sessionStorage.setItem("userdata", JSON.stringify(data));
@@ -1760,7 +1848,7 @@ async function walletHandler() {
         console.log("Got transaction history: num rows = " + resp.length);
         // read the user hub values to poke into the wallet
         const latestRow = resp[0];
-       
+
         let userData = sessionStorage.getItem("userdata");
         let data = JSON.parse(userData);
         let rankpts = 0.0;
@@ -1839,35 +1927,33 @@ if (document.URL.includes("jobseeker-dashboard.html")) {
             }
         });
     }
-
-    async function testAlertHandler(id) {
-        renderLoaderByREMFromTop(elements.adForm, 100);
-        let userData = sessionStorage.getItem("userdata");
-        let udata = JSON.parse(userData);
-        var data = {
-            $class: elements.testAlertTransaction,
-            alertId: id,
-            name: udata.params.name.firstName
-        };
-
-        let tp = new TransactionProcessor(data, strings.testAlertUrl);
-
-        let resp = await tp.transaction();
-
-        clearLoader();
-        var err = null;
-        if (resp.error !== undefined) {
-            err = resp.error;
-        }
-        if (err != null) {
-            await displayErrorPopup('Failed to test alert: ' + err.message);
-        } else {
-            await displaySuccessPopup('Job alert search successful. Please check your email!');
-        }
-    }
-
-
 }
+async function testAlertHandler(id) {
+    renderLoaderByREMFromTop(elements.adForm, 100);
+    let userData = sessionStorage.getItem("userdata");
+    let udata = JSON.parse(userData);
+    var data = {
+        $class: elements.testAlertTransaction,
+        alertId: id,
+        name: udata.params.name.firstName
+    };
+
+    let tp = new TransactionProcessor(data, strings.testAlertUrl);
+
+    let resp = await tp.transaction();
+
+    clearLoader();
+    var err = null;
+    if (resp.error !== undefined) {
+        err = resp.error;
+    }
+    if (err != null) {
+        await displayErrorPopup('Failed to test alert: ' + err.message);
+    } else {
+        await displaySuccessPopup('Job alert search successful. Please check your email!');
+    }
+}
+
 
 async function downloadCVHandler(data) {
     console.log("CV DOWNLOAD Begin...");
@@ -2326,6 +2412,6 @@ let C = document.URL.includes("register") === false;
 let D = document.URL.includes("display") === false;
 let E = document.URL.includes("advert") === false;
 let F = document.URL.includes("search") === false;
-if (A && B && C && D && F) {
+if (A && B && C && D && E && F) {
     window.location = "register.html";
 } 
