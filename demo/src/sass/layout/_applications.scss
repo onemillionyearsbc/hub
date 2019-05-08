@@ -85,7 +85,6 @@
         }
         
         .title {
-            // padding-top: 0.5rem;
             margin-left: 2rem;
             margin-bottom: 0.5rem;
             font-size: 2rem;
@@ -119,4 +118,8 @@
         
     }
 
+}
+
+.container {
+    min-height: 720vh;
 }

@@ -24,152 +24,32 @@
             </div>
         </div>
         <div>
-            <nav class="navbar">
-                <ul class="navbar-menu navbar__left">
+            <nav class="navbar animated slideInRight delay-2s">
+                <ul id="seekernav" class="navbar-menu navbar__left">
+                    <li><a href="jobseeker-account.html">My Account</a></li>
+                    <li> <a href="jobseeker-dashboard.html">My Profile</a></li>
+                    <li><a href="jobseeker-applications.html">My Applications</a></li>
+                </ul>
+                <ul id="recruiternav" class="navbar-menu navbar__left">
                     <li class="item-1"><a href="recruiter-dashboard.html">Dashboard</a></li>
                     <li><a href="jobcredits.html">Job Credits</a></li>
                     <li><a href="managejobads.html">Job Ads</a></li>
+                    <li><a href="cvsearchcredits.html">Search CVs</a></li>
                 </ul>
                 <ul class="navbar__right">
-                    <!-- <li class="signin"><a href="#" class="link-icon">Log Out</a></li> -->
-                    <li id="recruiterlogout" class="signin"><a href="#" class="link-icon">Log Out</a>
+                    <li id="saved">
+                        <a href="favourites.html" class="link-icon"><i class="starwithnocircle fa fa-star"></i>Saved
+                            Jobs</a>
                     </li>
-
-                    <div  id="accountmenu" class="dropdownnavbar" style="display: none;">
-                        <button id="accountmenubtn" class="dropbtn">NOB's account
-                            <i class="left-icon icon far fa-user"></i>
-                            <i class="right-icon fa fa-caret-down"></i>
-                        </button>
-                        <div class="dropdownnavbar-content">
-                            <a href="jobseeker-account.html">Account</a>
-                            <a href="jobseeker-dashboard.html">Profile</a>
-                            <a href="jobseeker-applications.html">Applications</a>
-                            <a id="signoutlink" href="#">Sign Out</a>
-                        </div>
-                    </div>
+                    <li id="allsignin" class="signin" style="display: none;"><a href="register.html"
+                            class="link-icon"><i class="icon far fa-user"></i>Sign
+                            In</a>
+                    </li>
+                    <li class="signin signout"> <a id="signoutlink" class="signin signout" href="#">Sign Out</a></li>
                 </ul>
             </nav>
             <div id="jobapplications" class="container applications">
-                <div class="main animated slideInUp delay-2s">
-                    <p class="main__title1">
-                        My Blockchain Hub++ Applications
-                    </p>
-                    <p class="main__title2">
-                        Here are the jobs you have applied for within the last three months:
-                    </p>
-                    <div class="items">
-                        <div class="items__title">
-                           
-                        </div>
-                        <ul style="list-style: none;" class="results_list">
-                            <!-- <li>
-                                <div class="item-job">
-                                    <div class="mainbody">
-                                        <div id="jobtitle" class="title">
-                                            <p>Senior Node.JS Developer</p>
-                                        </div>
-                                        <div class="top">
-                                            <div class="left">
-                                                <div class="left__item">
-                                                    <div class="loggy">
-                                                        <i class="loggy__icon fas fa-map-marker-alt fa-fw"></i>
-                                                        <p id="joblocation" class="loggy__label">West London</p>
-                                                    </div>
-                                                </div>
-                                                <div class="left__item">
-                                                    <div class="loggy">
-                                                        <i class="loggy__icon fas fa-pound-sign fa-fw"></i>
-                                                        <p id="jobsalary" class="loggy__label">From £75,000 to £90,000
-                                                            per annum
-                                                            +
-                                                            superb
-                                                            benefits as
-                                                            listed
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                                <div class="left__item">
-                                                    <div class="loggy">
-                                                        <i class="loggy__icon fas fa-table fa-fw"></i>
-                                                        <p id="jobcompany" class="loggy__label applieddate">           Applied 20/04/2019</p>
-                                                    </div>
-                                                </div>
-                                                <div class="left__item">
-                                                    <div class="loggy">
-                                                        <i class="loggy__icon fas fa-user-alt fa-fw"></i>
-                                                        <p id="jobtype" class="loggy__label">Permanent</a>
-                                                    </div>
-                                                </div>
-                                                <div class="left__item">
-                                                    <div class="loggy">
-                                                        <i class="loggy__icon far fa-clock fa-fw"></i>
-                                                        <p id="jobtime" class="loggy__label">Posted 2 days ago</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                           
-                                        </div>
-
-                                    </div>
-                                </div>
-
-                            </li>
-                            <li>
-                                    <div class="item-job">
-                                        <div class="mainbody">
-                                            <div id="jobtitle" class="title">
-                                                <p>Senior Node.JS Developer</p>
-                                            </div>
-                                            <div class="top">
-                                                <div class="left">
-                                                    <div class="left__item">
-                                                        <div class="loggy">
-                                                            <i class="loggy__icon fas fa-map-marker-alt fa-fw"></i>
-                                                            <p id="joblocation" class="loggy__label">West London</p>
-                                                        </div>
-                                                    </div>
-                                                    <div class="left__item">
-                                                        <div class="loggy">
-                                                            <i class="loggy__icon fas fa-pound-sign fa-fw"></i>
-                                                            <p id="jobsalary" class="loggy__label">From £75,000 to £90,000
-                                                                per annum
-                                                                +
-                                                                superb
-                                                                benefits as
-                                                                listed
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                    <div class="left__item">
-                                                        <div class="loggy">
-                                                            <i class="loggy__icon fas fa-table fa-fw"></i>
-                                                            <p id="jobcompany" class="loggy__label applieddate">Applied 31/03/2019</p>
-                                                        </div>
-                                                    </div>
-                                                    <div class="left__item">
-                                                        <div class="loggy">
-                                                            <i class="loggy__icon fas fa-user-alt fa-fw"></i>
-                                                            <p id="jobtype" class="loggy__label">Permanent</a>
-                                                        </div>
-                                                    </div>
-                                                    <div class="left__item">
-                                                        <div class="loggy">
-                                                            <i class="loggy__icon far fa-clock fa-fw"></i>
-                                                            <p id="jobtime" class="loggy__label">Posted 2 days ago</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                               
-                                            </div>
-    
-                                        </div>
-                                    </div>
-    
-                                </li> -->
-    
-                        </ul>
-                    </div>
-                </div>
+               
 
             </div>
         </div>

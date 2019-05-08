@@ -1,8 +1,7 @@
 const crypto = require('crypto');
 
-import { dbelements } from '../views/base';
+import { dbelements, elementConsts } from '../views/base';
 import DatabaseProcessor from './DatabaseProcessor';
-
 
 export default class ImageLoader {
 
@@ -26,7 +25,7 @@ export default class ImageLoader {
         }
 
         // validate file size
-        if (afile.size > 2 * 1024 * 1024) {
+        if (afile.size > elementConsts.MAXIMAGESIZE) {
             throw Error('Error : Exceeded size 2MB');
         }
 
@@ -155,7 +154,6 @@ export default class ImageLoader {
         // hash the image again...
         // 1. compare with hash from db
 
-        console.log("CheckHash: id = " + id + "; image = " + image + "; dbhash = " + dbhash + "; logohash = " + logohash);
         // 2. compare with hash from blockchain
         const myhash = crypto.createHash('sha256') // enables digest
             .update(image) // create the hash

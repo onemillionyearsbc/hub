@@ -61,12 +61,12 @@ export const setJobFields = () => {
 }
 
 export const setApplications = (usertype) => {
-    if (usertype === elementConsts.JOBSEEKER) {
-        elements.jobApplications.innerHTML = "";
-    } else {
+    console.log("USER TYPE = " + usertype);
+    if (usertype === elementConsts.RECRUITER) {
         let numApplications = sessionStorage.getItem("applications");
-        console.log("WOOF: applications = " + numApplications);
         elements.jobApplications.innerHTML = "<span>Applications: </span>" + numApplications;
+    } else {
+        elements.jobApplications.innerHTML = ""; 
     }
 }
 

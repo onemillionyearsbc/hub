@@ -1,13 +1,33 @@
 import { elements, getJobTypeFor } from './base';
 
 export const displayApplications = (cachedData, applications) => {
-    console.log(">>> READY TO GO...cache size = " + cachedData.length);
-   
+
+    let markup = `
+    <div id="mainpanel" class="main">
+        <p class="main__title1">
+            My Blockchain Hub++ Applications
+        </p>
+        <p class="main__title2">
+            Here are the jobs you have applied for within the last three months:
+        </p>
+        <div class="items animated slideInUp delay-2s">
+            <div class="items__title">
+            
+            </div>
+            <ul style="list-style: none;" class="results_list">
+                
+            </ul>
+        </div>
+    </div>
+  
+    `;
+    let ele = document.getElementById("jobapplications");
+    ele.insertAdjacentHTML("beforeend", markup);
+
     for (let i = 0; i < applications.length; i++) {
         // get the jobposting data from cache
         let jobPostings = cachedData.filter(e => e.jobReference === applications[i].jobReference);
 
-        console.log("NUTS! jobpostings size = " + jobPostings.length);
         // render this job 
 
         // display if applied date is within last 3 months
@@ -15,10 +35,29 @@ export const displayApplications = (cachedData, applications) => {
         let now = new Date();
         let current_datetime = new Date(jobApplication.dateApplied);
         let mdiff = monthDiff(current_datetime, now);
-        console.log("Num months difference = " + mdiff);
         if (mdiff < 3) {
             renderJobApplication(jobPostings[0], jobApplication);
         }
+    }
+    let jobtitles = document.getElementsByClassName("ptitle");
+    for (let p of jobtitles) {
+        p.addEventListener("click", (e) => {
+
+            // job ref of clicked job
+            let jobReference = p.dataset.ref;
+
+            // get that job posting
+            let data = cachedData.filter(e => e.jobReference === jobReference)[0];
+
+
+            // set properties for the job display page
+            var propValue;
+            for (var propName in data) {
+                propValue = data[propName];
+                sessionStorage.setItem(propName, propValue);
+            }
+            window.location = "displayjob.html";
+        });
     }
 }
 
@@ -64,8 +103,8 @@ function renderJobApplication(job, jobApp) {
     let markup = ` <li>
         <div class="item-job">
             <div class="mainbody">
-                <div id="jobtitle" class="title">
-                    <p>${job.jobTitle}</p>
+                <div id="jobtitle"  class="title">
+                    <p class="ptitle" data-ref=${job.jobReference} >${job.jobTitle}</p>
                 </div>
                 <div class="top">
                     <div class="left">
@@ -107,5 +146,6 @@ function renderJobApplication(job, jobApp) {
         </div>
     </li>`
 
-    elements.searchResList.insertAdjacentHTML("beforeend", markup);
+    let ele = document.querySelector(".results_list");
+    ele.insertAdjacentHTML("beforeend", markup);
 }

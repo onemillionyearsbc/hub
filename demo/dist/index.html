@@ -31,7 +31,7 @@
         </header>
 
         <div class="content">
-            <nav class="navbar">
+            <!-- <nav class="navbar">
                 <ul class="navbar__left">
                     <li class="item-1"><a href="#jobs">IT Jobs</a></li>
                     <li><a href="#companies">Companies Hiring</a></li>
@@ -57,13 +57,37 @@
                         <div class="dropdownnavbar-content">
                             <a href="jobseeker-account.html">Account</a>
                             <a href="jobseeker-dashboard.html">Profile</a>
-                            <a href="#">Applications</a>
+                            <a href="jobseeker-applications.html">Applications</a>
                             <a id="signoutlink" href="#">Sign Out</a>
                         </div>
                     </div>
                 </ul>
+            </nav> -->
+            <nav class="navbar animated slideInRight delay-2s">
+                <ul id="seekernav" class="navbar-menu navbar__left">
+                    <li><a href="jobseeker-account.html">My Account</a></li>
+                    <li> <a href="jobseeker-dashboard.html">My Profile</a></li>
+                    <li><a href="jobseeker-applications.html">My Applications</a></li>
+                </ul>
+                <ul id="recruiternav" class="navbar-menu navbar__left">
+                    <li class="item-1"><a href="recruiter-dashboard.html">Dashboard</a></li>
+                    <li><a href="jobcredits.html">Job Credits</a></li>
+                    <li><a href="managejobads.html">Job Ads</a></li>
+                    <li><a href="cvsearchcredits.html">Search CVs</a></li>
+                    <li><a href="blockchaintools.html">Blockchain tools</a></li>
+                </ul>
+                <ul class="navbar__right">
+                    <li id="saved">
+                        <a href="favourites.html" class="link-icon"><i class="starwithnocircle fa fa-star"></i>Saved
+                            Jobs</a>
+                    </li>
+                    <li id="allsignin" class="signin" style="display: none;"><a href="register.html"
+                            class="link-icon"><i class="icon far fa-user"></i>Sign
+                            In</a>
+                    </li>
+                    <li class="signin signout"> <a id="signoutlink" class="signin signout" href="#">Sign Out</a></li>
+                </ul>
             </nav>
-
             <div class="searchpanel">
                 <p class="searchpanel__bollocks animated zoomIn delay-2s">Blockchain Hub++</p>
                 <p class="searchpanel__slogan animated zoomIn delay-2s">Back to the Future of Recruitment</p>
@@ -95,28 +119,39 @@
                 <div id="blobpanel" class="searchpanel__container" display="off">
                     <div class="searchpanel__container--blob">
                         <div class="left">
-                            <p>Salary Type</p>
                             <div class="left__blob">
-                                <p class="left__blob--box item-1">Any</p>
-                                <p class="left__blob--box">Annual</p>
-                                <p class="left__blob--box">Daily</p>
-                                <p class="left__blob--box">Hourly</p>
+                                <div class="toggle">
+                                    <input type="radio" name="remote" value="false" id="noremote" />
+                                    <label for="noremote">Non Remote</label>
+                                    <input type="radio" name="remote" value="true" id="yesremote" checked="checked" />
+                                    <label for="yesremote">Remote</label>
+                                    <input type="radio" name="remote" value="all" id="allremote" />
+                                    <label for="allremote">Any</label>
+                                </div>
                             </div>
                         </div>
                         <div class="mid">
-                            <p>Job Type</p>
                             <div class="mid__blob">
-                                <p class="mid__blob--box item-1">All</p>
-                                <p class="mid__blob--box">Permanent</p>
-                                <p class="mid__blob--box">Contract</p>
+                                <div class="toggle">
+                                    <input type="radio" name="type" value="FULLTIME" id="permanent" />
+                                    <label for="permanent">Permanent</label>
+                                    <input type="radio" name="type" value="CONTRACT" id="contract" checked="checked" />
+                                    <label for="contract">Contract</label>
+                                    <input type="radio" name="type" value="all" id="alltypes" />
+                                    <label for="alltypes">Any</label>
+                                </div>
                             </div>
                         </div>
                         <div class="right">
-                            <p>Recruiter Type</p>
                             <div class="right__blob">
-                                <p class="left__blob--box item-1">Any</p>
-                                <p class="left__blob--box">Employer</p>
-                                <p class="left__blob--box">Agency</p>
+                                <div class="toggle blobright">
+                                    <input type="radio" name="employer" value="false" id="agency" />
+                                    <label for="agency">Agency</label>
+                                    <input type="radio" name="employer" value="true" id="employer" checked="checked" />
+                                    <label for="employer">Employer</label>
+                                    <input type="radio" name="employer" value="all" id="all" />
+                                    <label for="all">Any</label>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -125,11 +160,8 @@
                     More Options
                 </button>
             </div>
-
         </div>
 <script type="text/javascript" src="js/bundle.js"></script></body>
-<!-- <script src="sweetalert2.all.min.js"></script> -->
-<!-- <script src="https://cdn.jsdelivr.net/npm/promise-polyfill"></script> -->
 
 <script>
     var toggleButton = document.getElementById('btn2');
@@ -142,12 +174,14 @@
         if (displayAttr == "off") {
             panel.style.height = "100px";
             panel.setAttribute('display', 'on');
+            toggleButton.setAttribute("display", "off");
             toggleButton.innerHTML = "Fewer Options";
             toggleButton.style.top = "-76px";
         } else {
 
             panel.style.height = "0px";
             panel.setAttribute('display', 'off');
+            toggleButton.setAttribute("display", "on");
             toggleButton.innerHTML = "More Options";
             toggleButton.style.top = "-100px";
         }
@@ -155,6 +189,5 @@
     }
 
 </script>
-
 
 </html>

@@ -721,11 +721,14 @@ async function ApplyForJob(credentials) {
 
     await jobPostingRegistry.update(jobPosting);
 
-    // var factory = getFactory();
-    // let appEvent = factory.newEvent(NSJOBS, 'JobApplicationEvent');
-    // appEvent.jobReference = appEvent.email;
-    // appEvent.jobReference = credentials.jobReference;
-    // emit(appEvent);
+    var factory = getFactory();
+    let appEvent = factory.newEvent(NSJOBS, 'JobApplicationEvent');
+    appEvent.email = jobPosting.email;
+    appEvent.name = seeker.params.name.firstName + " " + seeker.params.name.lastName;
+    appEvent.jobTitle = jobPosting.jobTitle;
+    appEvent.jobReference = jobPosting.jobReference;
+    appEvent.contact = jobPosting.contact;
+    emit(appEvent);
 }
 
 // replace this with apply for job...adds an id to the list of applicants

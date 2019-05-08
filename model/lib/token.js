@@ -29,7 +29,22 @@ async function GetERC20TotalSupply(tokenData) {
     return token.supply;
 }
 
+/**
+ * Get the total supply in circulation of an ERC20 Token
+ * @param {io.onemillionyearsbc.hubtutorial.tokens.GetERC20TokenTotal} tokenData
+ * @returns {Double} the ERC20 supply in circulation
+ * @transaction
+ */
+async function GetERC20TokenTotal(tokenData) {
+    let results = await query('selectERC20Token', {
+    });
 
+    let total = 0.0;
+    for (let i = 0; i < results.length; i++) {
+        total += results[i].balance;
+    }
+    return total;
+}
 
 /**
  * Get the total minted (historic total supply) of an ERC20 Token

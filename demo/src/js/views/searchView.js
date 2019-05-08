@@ -1,5 +1,7 @@
 import { elements, strings, getJobTypeFor, getJobTimeFor, getDaySincePosted, renderLoader, clearLoader, setButtonHandlers, setGlobalCached } from './base';
 import FilterProcessor from '../models/FilterProcessor';
+import { timingSafeEqual } from 'crypto';
+import { inflate } from 'zlib';
 
 
 let state = {};
@@ -44,10 +46,9 @@ const renderJobItem = (jobItem, count) => {
     let pdisp = "none";
 
     if (isInFavourites(jobItem.jobReference)) {
-       
         bdisp = "none";
         pdisp = "block";
-    } 
+    }
 
     let savedItemB = `<button style="display: ${bdisp};" id="savefavouritesbutton" data-id=${jobItem.jobReference} class="saveBtn"><i class="far fa-star"></i>Save</button>`;
     let savedItemP = `<p id="p-${jobItem.jobReference}" style="display: ${pdisp};" class="savedlabel">Saved</>`;
@@ -128,7 +129,7 @@ const clearResults = () => {
 };
 
 
-function isInFavourites(ref) { 
+function isInFavourites(ref) {
     if (state.favourites != undefined && state.favourites.filter(e => e.jobReference === ref).length > 0) {
         return true;
     }
@@ -218,8 +219,6 @@ export const renderResults = (jobs, page = 1, resPerPage = 10) => {
         p.addEventListener("click", (e) => {
             let data = pageOfJobs[p.dataset.index];
 
-            // XXXX move intomethod to be reused when we query for job
-            // MJR TODO
             var propValue;
             for (var propName in data) {
                 propValue = data[propName];
@@ -233,7 +232,7 @@ export const renderResults = (jobs, page = 1, resPerPage = 10) => {
                 } else {
                     sessionStorage.setItem(propName, propValue);
                 }
-               
+
             }
             window.location = "displayjob.html";
         });
@@ -402,7 +401,7 @@ function renderPopularCompanyTotals(companies) {
     }
 }
 
-export const filterByWhat = (item) => {   
+export const filterByWhat = (item) => {
     if (state.jobs != undefined) {
         state.filteredjobs = state.jobs;
     }
@@ -440,6 +439,11 @@ export const applyFilter = async (filter, item, name) => {
         console.log("item = " + item);
         console.log("name = " + name);
         if (name === "REMOTE") {
+            if (item === "false") {
+                state.filteredjobs = fp.filterByLocationType("false");
+            } else {
+                state.filteredjobs = fp.filterByLocationType("true");
+            }
             state.filteredjobs = fp.filterByLocationType("true");
             state.label = "REMOTE";
         } else {
@@ -512,18 +516,27 @@ export const applyFilter = async (filter, item, name) => {
             state.label = bcname;
         }
 
-        // display the filter label in the filter panel
-        elements.filterButtons.style.display = "block";
-        renderFilterButton(filter, name);
+        if (state.filters.length > 0) {
+            // display the filter label in the filter panel
+            elements.filterButtons.style.display = "block";
+            renderFilterButton(filter, name);
+        }
+
     } else if (filter === strings.jobTypeFilter) {
+        console.log(">>>>>>>>>> filter by job type item = " + item);
+        console.log("state.filters = " + state.filters);
         state.filteredjobs = fp.filterByJobType(item);
         if (state.label === '') {
             state.label = bcname;
         }
 
-        // display the filter label in the filter panel
-        elements.filterButtons.style.display = "block";
-        renderFilterButton(filter, name);
+        if (state.filters.length > 0) {
+            // display the filter label in the filter panel
+            elements.filterButtons.style.display = "block";
+            console.log(">>>>>>> DOING REALLY BAD STUFF!");
+            renderFilterButton(filter, name);
+        }
+
     } else if (filter === strings.onSiteFilter) {
         state.filteredjobs = fp.filterByLocationType(item);
         if (state.label === '') {
@@ -534,7 +547,6 @@ export const applyFilter = async (filter, item, name) => {
             elements.filterButtons.style.display = "block";
             renderFilterButton(filter, name);
         }
-
     }
 
     clearResults();
@@ -759,6 +771,10 @@ function reapplyRemainingFilters() {
     state.filteredjobs = state.jobs
 
     if (state.filters.length === 0) {
+        // clear out the filters from the front screen
+        sessionStorage.setItem("filterremote", "all");
+        sessionStorage.setItem("filtertype", "all");
+        sessionStorage.setItem("filteremployer", "all");
         resetPage();
         return;
     }

@@ -24,6 +24,7 @@ async function getGithubData(location) {
     return {longitude: long1, latitude: lat1};
 }
 
+console.log("createHubJobPostings [numpostings] [recruiteremail]");
 const participantNamespace = 'io.onemillionyearsbc.hubtutorial';
 const recruiterResourceName = 'HubRecruiter';
 
@@ -36,7 +37,16 @@ var refCount = [0, 0, 0, 0, 0];
 bnUtil.cardName = 'admin@hubtutorial';
 
 // bnUtil.connect(removeRecruitersAndJobSeekers);
+let NUMPOSTINGS = 30;
 
+if (process.argv.length === 3) {
+    NUMPOSTINGS = process.argv[2];
+}
+
+if (process.argv.length == 4) {
+    console.log("using email: " + process.argv[3]);
+    email = process.argv[3];
+}
 
 try {
     bnUtil.connect(main);
@@ -60,10 +70,7 @@ async function main() {
 
     var email = "";
     var randEmail = true;
-    if (process.argv.length == 3) {
-        console.log("using email: " + process.argv[2]);
-        email = process.argv[2];
-    }
+   
     // start();
     const bnDef = bnUtil.connection.getBusinessNetwork();
     const factory = bnDef.getFactory();
@@ -116,10 +123,10 @@ async function main() {
         generate: false,
         includeOptionalFields: false
     }
+    
+    console.log("Creating " + NUMPOSTINGS + " new job postings");
 
-
-
-    for (var i = 0; i < 35; i++) {
+    for (var i = 0; i < NUMPOSTINGS; i++) {
 
         let accountIndex = getRandomIndex(0, recruiters.length - 1);
         if (randEmail === true) {

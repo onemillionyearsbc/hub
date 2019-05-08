@@ -35,12 +35,18 @@ asset ERC20TokenTransaction identified by id {
 
 @returns(Double)
 transaction GetERC20TotalSupply {
-  o String tokenName
+ o String tokenName default = "hub"
 }
 
 @returns(Double)
 transaction GetERC20TotalMinted {
-  o String tokenName
+   o String tokenName default = "hub"
+}
+
+// add up all tokens in circulation...this is temporary...TODO...create token stats object
+@returns(Double)
+transaction GetERC20TokenTotal {
+   o String tokenName default = "hub"
 }
 
 transaction SetERC20TotalSupply {
@@ -132,3 +138,4 @@ transaction BuyRankingPoints {
     o String email
     o Double amount
 }
+

@@ -108,3 +108,9 @@ query selectERC20TokenTransactionsByEmail {
         SELECT io.onemillionyearsbc.hubtutorial.tokens.ERC20TokenTransaction
             WHERE (email == _$email)
 }
+
+query selectERC20Token {
+ description: "Select all ERC20Token objects"
+    statement:
+        SELECT io.onemillionyearsbc.hubtutorial.tokens.ERC20Token
+}

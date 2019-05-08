@@ -35,9 +35,11 @@ event AlertEvent {
 }
 
 event JobApplicationEvent {
-  o String    jobReference
-  o String    name
   o String    email
+  o String    name
+  o String    jobTitle
+  o String    jobReference
+  o String    contact
 }
 
 asset JobAlert identified by alertId {

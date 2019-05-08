@@ -18,7 +18,7 @@ import * as alertView from './views/alertView';
 import * as accountView from './views/accountView';
 import * as cvSearchView from './views/cvSearchView';
 
-import { getFormFor, clearError, elements, dbelements, elementConsts, inputType, renderLoader, renderLoaderEnd, renderLoaderEndByNumber, renderLoaderByREMFromTop, clearLoader, navBarSetLoggedIn, setLoggedIn, strings, enableCreateJobButton, autocomplete, jobTitles, setButtonHandlers, displayErrorPopup, displaySuccessPopup, updateFavouritesTotal, addFavouritesLinkListener, countriesArray } from './views/base';
+import { getFormFor, clearError, elements, dbelements, elementConsts, inputType, renderLoader, renderLoaderEnd, renderLoaderEndByNumber, renderLoaderByREMFromTop, renderLoaderFromBottom, clearLoader, navBarSetLoggedIn, setLoggedIn, strings, enableCreateJobButton, autocomplete, jobTitles, setButtonHandlers, displayErrorPopup, displaySuccessPopup, updateFavouritesTotal, addFavouritesLinkListener, countriesArray } from './views/base';
 import { setCompanyName, setContactName, getJobAdsData, setJobAdsData, setCVSearchData, setJobCreditsRemaining } from './views/recruiterDashboardView';
 import { setJobAdsNumber, setTotalJobPrice, restyle, adjustSlider, getBuyJobCreditsData } from './views/jobCreditsView';
 import { setCVSearchNumber, setTotalCVSearchPrice, restyleCV, adjustSliderCV, getBuyCVSearchData, getTokensToMint } from './views/cvCreditsView';
@@ -165,6 +165,8 @@ const signOutHandler = async () => {
             renderLoader(elements.searchjob);
         } else if (state.page === elementConsts.CVSEARCHPAGE) {
             renderLoader(elements.cvpanel);
+        } else if (state.page === elementConsts.FAVOURITESPAGE) {
+            renderLoader(elements.savedJobs);
         }
     }
 
@@ -293,6 +295,23 @@ const searchJobsHandler = async () => {
 
         applyFilter(strings.locationFilter, where, "");
     }
+    let remote = sessionStorage.getItem("filterremote");
+    console.log("remote = " + remote);
+    if (remote != null && remote != "all") {
+        state.filters = [];
+        applyFilter(strings.locationFilter, remote, "REMOTE");
+    }
+    let type = sessionStorage.getItem("filtertype");
+    if (type != null && type != "all") {
+        state.filters = [];
+        applyFilter(strings.jobTypeFilter, type, "");
+    }
+    let employer = sessionStorage.getItem("filteremployer");
+    if (employer != null && employer != "all") {
+        state.filters = [];
+        applyFilter(strings.employerTypeFilter, type, "");
+    }
+
     clearLoader();
 }
 
@@ -327,7 +346,7 @@ async function loadCache(render = false) {
                 let rowfound = Array.from(results).find(row => row.id === id);
 
                 console.log("rowfound = " + rowfound);
-                console.log("CHECKING HASH FOR IMAGE " + id + "; image = " + rowfound.image);
+                console.log("CHECKING HASH FOR IMAGE " + id);
                 console.log("DB HASH " + i + " = " + rowfound.hash);
 
                 //     // TODO I would say move this into a crypto class (CryptoProcessor)
@@ -663,13 +682,13 @@ const createJobAdHandler = async (transaction, ins) => {
                 let data = JSON.parse(cachedData);
                 console.log("OLD CACHE SIZE = " + data.length);
                 state.rows[0].logo = blob;
-               
+
                 // if this is an update, remove the previous version of the job posting
                 // from the cache
                 if (sessionStorage.getItem("amend") === "true") {
                     data = data.filter(e => e.jobReference != state.rows[0].jobReference);
                 }
-               
+
                 data.push(state.rows[0])
                 let cdata = JSON.stringify(data);
                 await addIndexedData(cdata);
@@ -679,7 +698,7 @@ const createJobAdHandler = async (transaction, ins) => {
         }
         clearLoader();
         await displaySuccessPopup('Job Ad Successfully Posted!');
-        // window.location = "recruiter-dashboard.html";
+        window.location = "recruiter-dashboard.html";
     }
 }
 const updateProfileHandler = async (transaction, ins) => {
@@ -785,7 +804,6 @@ const queryAndDisplayJobHandler = async (jobRef) => {
         return;
     } else {
         //set the storage items and display
-        console.log("got a job!");
         var propValue;
         for (var propName in resp) {
             propValue = resp[propName];
@@ -794,30 +812,36 @@ const queryAndDisplayJobHandler = async (jobRef) => {
         displayJobHandler();
         elements.buttonPanel.style = "none";
 
-        // TODO if already applied for this job -> disable button
         applyButtons();
     }
 }
 
 // test if a job already applied for by user {email}
-function alreadyAppliedFor() {
+async function alreadyAppliedFor() {
     let ref = sessionStorage.getItem("jobReference");
-    let mail = sessionStorage.getItem('myemail');
     let aData = sessionStorage.getItem("apps");
-    let applicationData = JSON.parse(aData);
-    if (applicationData === undefined || applicationData === null) {
-        return false;
+
+    let applicationData;
+    if (aData === null) {
+        renderLoader(elements.jobApplications);
+        await getApplicationsForJobSeeker();
+        applicationData = state.applications;
+    } else {
+        applicationData = JSON.parse(aData);
     }
+
     let appliedArray = applicationData.filter(e => e.jobReference === ref);
     return (appliedArray.length > 0);
 }
 
 async function applyButtons() {
-    // TODO if already applied for this job -> disable button
-    console.log("Setting apply button...");
-    if (isExpired() === true || alreadyAppliedFor() === true) {
-        elements.buttonPanel.innerHTML = `<button id="applyjobbutton" class="btn btn--disabled" disabled>Apply</button>`;
+    let already = await alreadyAppliedFor();
+    if (isExpired() === true || already === true) {
+        console.log("YAY")
+        elements.buttonPanel.innerHTML = `<button id="applyjobbutton" class="btn btn--disabled" disabled>Already Applied
+        </button>`;
     } else {
+        console.log("BOOO")
         elements.buttonPanel.innerHTML = `<button id="applyjobbutton" class="btn btn--orange">Apply</button>`;
         document.getElementById("applyjobbutton").addEventListener('click', e => {
             e.preventDefault();
@@ -861,7 +885,6 @@ const displayJobHandler = async () => {
         return;
     }
 
-    console.log("document.getElementById('jobapplications' = " + document.getElementById("jobapplications"));
     document.getElementById("jobapplications").addEventListener('click', e => {
         e.preventDefault();
         window.location = "recruiter-applications.html";
@@ -951,6 +974,8 @@ if (document.URL.includes("managejobads")) {
 // VIEW JOB
 if (document.URL.includes("displayjob")) {
 
+    getFavourites();
+    
     // if the user has clicked here from an email
     // location.search will have a value (the job ref)
     var x = location.search;
@@ -996,7 +1021,9 @@ if (document.URL.includes("displayjob")) {
 }
 
 async function applyForJobHandler() {
-    renderLoaderEndByNumber(elements.lower, 120);
+    var clientHeight = document.getElementById('jobdescription').clientHeight;
+    renderLoaderByREMFromTop(elements.lower, (clientHeight / 10) + 30);
+
     let ref = sessionStorage.getItem("jobReference");
     let mail = sessionStorage.getItem('myemail');
     console.log("Applying For Job: " + ref);
@@ -1022,6 +1049,7 @@ async function applyForJobHandler() {
         clearLoader();
         elements.buttonPanel.innerHTML = `<button id="applyjobbutton" class="btn btn--disabled" disabled>Apply</button>`;
         await displaySuccessPopup('Job Application Submitted!');
+        await getApplicationsForJobSeeker();  // force cache update
     }
 }
 
@@ -1051,6 +1079,10 @@ if (document.URL.includes("cvsearchresults.html")) {
         });
     }
 
+    addShowCandidateProfileHandler();
+}
+
+function addShowCandidateProfileHandler() {
     let candidateLinks = document.querySelectorAll(".candidatetitle");
     for (let i = 0; i < candidateLinks.length; i++) {
         candidateLinks[i].addEventListener('click', e => {
@@ -1066,6 +1098,8 @@ if (document.URL.includes("cvsearchresults.html")) {
 
 // FAVOURITES CONTROLLER
 if (document.URL.includes("favourites")) {
+
+    state.page = elementConsts.FAVOURITESPAGE;
 
     let favourites = sessionStorage.getItem("favourites");
 
@@ -1369,16 +1403,16 @@ async function doProofHandler() {
         console.log("NUMBER OF ROWS RETURNED = " + results.length);
         let rowItems = [];
         blockchainView.clearHTML();
-        let success =true;
+        let success = true;
         for (var i = 0; i < rows.length; i++) {
-           
+
             // remove any leading zeroes
             id = Number(rows[i].jobReference).toString();
             let rowfound = Array.from(results).find(row => row.id === id);
 
             let hashdb = rowfound.hash;
             let hashbc = rows[i].logohash;
-           
+
             let item = {};
             item.id = id;
             item.hashdb = hashdb;
@@ -1406,7 +1440,7 @@ async function doProofHandler() {
             blockchainView.renderProofItem(rowItems);
         }
         blockchainView.addFooter(success);
-    } 
+    }
     clearLoader();
 }
 
@@ -1458,13 +1492,15 @@ async function blockchainToolsHandler() {
         err = resp.error;
     }
     if (err != null) {
-        await displayErrorPopuple('Failed to get Minted Tokens: ' + err.message);
+        await displayErrorPopup('Failed to get Minted Tokens: ' + err.message);
         clearLoader();
         return;
     }
 
     stats.tokensminted = resp;
     stats.gbp = parseFloat(stats.tokensminted / elementConsts.TOKENEXCHANGERATE).toFixed(2);
+
+    // GET UNUSED SEARCHES
     data = {
         $class: strings.getUnusedSearchesTransaction,
     };
@@ -1482,14 +1518,31 @@ async function blockchainToolsHandler() {
         return;
     }
 
-
-
     // TODO find out why we get this result
     if (resp.length > 10) {
         resp = 0;
     }
     stats.unusedsearches = resp;
 
+    // GET UNUSED JOB SEEKER TOTAL
+    data = {
+        $class: strings.getERC20TotalTransaction,
+    };
+    tp = new TransactionProcessor(data, strings.getERC20TotalUrl);
+
+    resp = await tp.transaction();
+
+    err = null;
+    if (resp.error !== undefined) {
+        err = resp.error;
+    }
+    if (err != null) {
+        await displayErrorPopup('Failed to get ERC20 Total Unused Tokens: ' + err.message);
+        clearLoader();
+        return;
+    }
+
+    stats.jstokens = resp;
     blockchainView.setJobStats(stats);
     clearLoader();
 }
@@ -1497,6 +1550,7 @@ async function blockchainToolsHandler() {
 // RECRUITER APPLICATION CONTROLLER 
 // DISPLAYS ALL APPLICANTS FOR A GIVEN JOB
 async function recruiterJobApplicationsController() {
+    getFavourites();
     state.page = elementConsts.RECRUITERAPPLICATIONPAGE;
 
     // get the applications for this job
@@ -1527,11 +1581,13 @@ async function recruiterJobApplicationsController() {
     for (let i = 0; i < downloadCVButtons.length; i++) {
         downloadCVButtons[i].addEventListener('click', e => {
             e.preventDefault();
-            // 1. use email of "clicked on" job seeker to get seeker account
-
+            let ele = document.getElementById(e.target.id);
+            console.log("ele = " + ele + "; e.target.id " + e.target.id);
+            renderLoaderEndByNumber(ele, -5);
             getSeekerAndDownloadCV(e.target.dataset.email);
         });
     }
+    addShowCandidateProfileHandler();
 }
 
 
@@ -1583,20 +1639,23 @@ async function getSeekerAndDownloadCV(seekerEmail) {
 // JOBSEEKER APPLICATION CONTROLLER 
 async function seekerJobApplicationsController() {
     state.page = elementConsts.APPLICATIONPAGE;
-    console.log("set state.page to " + state.page);
     let aData = sessionStorage.getItem("apps");
     let applicationData = JSON.parse(aData);
+
     if (cachedData != null && cachedData != undefined) {
         cachedData = JSON.parse(cachedData);
     } else {
         let cdata = await loadCache(false);
         cachedData = JSON.parse(cdata);
     }
-    console.log("CACHE size = " + cachedData.length);
+    if (applicationData === null) {
+        renderLoader(elements.jobApplications);
+        await getApplicationsForJobSeeker();
+        applicationData = state.applications;
+        clearLoader();
+    }
     displayApplications(cachedData, applicationData);
 }
-
-
 
 
 // JOBSEEKER ALERT CONTROLLER 
@@ -1871,6 +1930,7 @@ function displayProfileForRecruiter() {
 
 // JOBSEEKER PROFILE CONTROLLER 
 if (document.URL.includes("jobseeker-dashboard.html")) {
+    getFavourites();
     let readonly = sessionStorage.getItem("readonly");
 
     // Populate country list with options:
@@ -1913,21 +1973,28 @@ if (document.URL.includes("jobseeker-dashboard.html")) {
         });
 
         document.querySelector("#file-1").addEventListener('change', function () {
-
-            // set the file name in the view text field
-            var path = this.value;
-            path = path.substring(path.lastIndexOf('\\') + 1);
-            try {
-                imageLoader.loadImage(this.files[0]);
-                profileView.setCVFile(path, data);
-                state.newCV = true;
-            } catch (error) {
-                console.log("Error loading image: " + error);
-                // TODO display popup? 
-            }
+            logoHandler(this.files[0], data, this.value);
         });
     }
 }
+
+async function logoHandler(file, data, path) {
+    // set the file name in the view text field
+
+    path = path.substring(path.lastIndexOf('\\') + 1);
+    try {
+        if (file.size > elementConsts.MAXIMAGESIZE) {
+            await displayErrorPopup('CV File is bigger than 2MB. Please use a different file' + err.message);
+            return;
+        }
+        imageLoader.loadImage(file);
+        profileView.setCVFile(path, data);
+        state.newCV = true;
+    } catch (error) {
+        console.log("Error loading image: " + error);
+    }
+}
+
 async function testAlertHandler(id) {
     renderLoaderByREMFromTop(elements.adForm, 100);
     let userData = sessionStorage.getItem("userdata");
@@ -2080,6 +2147,7 @@ if (document.URL.includes("advert.html")) {
 
 // BUY CREDITS PAGE
 if (document.URL.includes("jobcredits")) {
+    getFavourites();
     state.page = elementConsts.BUYCREDITSPAGE;
     var input = elements.slider;
     setTotalJobPrice(1);
@@ -2125,6 +2193,7 @@ if (document.URL.includes("cvsearches.html")) {
 
 // BUY CV SEARCHES PAGE
 if (document.URL.includes("cvsearchcredits")) {
+    getFavourites();
     state.page = elementConsts.BUYSEARCHESPAGE;
     var input = elements.slider;
     setTotalCVSearchPrice(1);
@@ -2158,6 +2227,7 @@ if (document.URL.includes("cvsearchcredits")) {
 }
 
 if (document.URL.includes("recruiter-dashboard")) {
+    getFavourites();
     state.page = elementConsts.DASHBOARDPAGE;
 
     setCompanyName(sessionStorage.getItem('mycompany'));
@@ -2180,6 +2250,10 @@ if (document.URL.includes("index")) {
         let where = document.getElementById("location");
         sessionStorage.setItem("what", what.value);
         sessionStorage.setItem("where", where.value);
+        sessionStorage.setItem("filterremote", state.remote);
+        sessionStorage.setItem("filtertype", state.type);
+        sessionStorage.setItem("filteremployer", state.employer);
+
         window.location = "search.html";
     });
     const advertBtn = elements.advertBtn;
@@ -2190,6 +2264,58 @@ if (document.URL.includes("index")) {
     getFavourites();
 
     addFavouritesLinkListener();
+
+    state.remote = "all";
+    state.type = "all";
+    state.employer = "all";
+
+    // this is a hack to ensure the selected radio buttons are colored correctly
+    // as far as I can see the zero height panel seems to be causing a problem
+    var btn = document.getElementById("btn2");
+    btn.addEventListener('click', e => {
+        let display = e.target.getAttribute("display");
+        var rad = document.getElementById("allremote");
+        rad.checked = true;
+        var rad = document.getElementById("alltypes");
+        rad.checked = true;
+        var rad = document.getElementById("all");
+        rad.checked = true;
+        if (display === "off") {
+            console.log("Resetting buttons...");
+            var rad = document.getElementById("yesremote");
+            rad.checked = true;
+            var rad = document.getElementById("contract");
+            rad.checked = true;
+            var rad = document.getElementById("employer");
+            rad.checked = true;
+        }
+
+    });
+    btn.setAttribute("display", "on");
+
+
+
+    var remoteradios = document.querySelectorAll('input[type=radio][name="remote"]');
+    var typeradios = document.querySelectorAll('input[type=radio][name="type"]');
+    var employerradios = document.querySelectorAll('input[type=radio][name="employer"]');
+    function changeHandlerRemote(event) {
+        state.remote = this.value;
+    }
+    Array.prototype.forEach.call(remoteradios, function (radio) {
+        radio.addEventListener('change', changeHandlerRemote);
+    });
+    function changeHandlerType(event) {
+        state.type = this.value;
+    }
+    Array.prototype.forEach.call(typeradios, function (type) {
+        type.addEventListener('change', changeHandlerType);
+    });
+    function changeHandlerEmployer(event) {
+        state.employer = this.value;
+    }
+    Array.prototype.forEach.call(employerradios, function (employer) {
+        employer.addEventListener('change', changeHandlerEmployer);
+    });
 }
 
 if (document.URL.includes("register")) {
@@ -2275,11 +2401,11 @@ window.onload = () => {
 }
 
 var el = document.getElementById('signoutlink');
-let user = sessionStorage.getItem("user");
-let type = parseInt(user);
-if (type === elementConsts.RECRUITER) {
-    el = document.getElementById('recruiterlogout');
-}
+// let user = sessionStorage.getItem("user");
+// let type = parseInt(user);
+// if (type === elementConsts.RECRUITER) {
+//     el = document.getElementById('recruiterlogout');
+// }
 if (el != null) {
     el.onclick = function () {
         console.log("SIGN OUT CLICKED...!!");
@@ -2401,7 +2527,7 @@ async function addIndexedData(data) {
 
     // When this new request succeeds, run the displayData() function again to update the display
     updateTitleRequest.onsuccess = function () {
-        console.log("SUCCESS!!!! WOOOHOOOO");
+        console.log("SUCCESS! data added to cache");
     };
 }
 

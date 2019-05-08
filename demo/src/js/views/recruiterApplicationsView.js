@@ -9,11 +9,11 @@ export const displayRecruiterApplications = (applications) => {
     console.log("Number of applications = " + applications.length);
 
     for (let i = 0; i < applications.length; i++) {
-        renderJobApplication(applications[i]);
+        renderJobApplication(applications[i], i);
     }
 }
 
-function renderJobApplication(application) {
+function renderJobApplication(application, index) {
     let current_datetime = new Date(application.dateApplied);
 
     let month = current_datetime.getMonth() + 1;
@@ -39,8 +39,8 @@ function renderJobApplication(application) {
                 <div class="item-job">
                     <div class="mainbody recapplications">
                         <div id="jobtitle" class="titley">
-                            <p>${application.name}</p>
-                            <button class="downloadcvbutton btn" data-email=${application.email}>Download CV</button>
+                            <p id="cantitle-${index}" class="candidatetitle"  data-email=${application.email}>${application.name}</p>
+                            <button id="cvbtn-${index}" class="downloadcvbutton btn" data-email=${application.email}>Download CV</button>
                         </div>
                         <div class="top">
                             <div class="left">

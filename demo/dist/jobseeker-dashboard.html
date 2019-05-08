@@ -25,45 +25,28 @@
             </div>
         </div>
         <div>
-            <nav class="navbar">
-                <ul class="navbar__left">
-                    <li class="item-1"><a href="#jobs">Dashboard</a></li>
-                    <li><a href="#companies">Job Ads</a></li>
-
+            <nav class="navbar animated slideInRight delay-2s">
+                <ul id="seekernav" class="navbar-menu navbar__left">
+                    <li><a href="jobseeker-account.html">My Account</a></li>
+                    <li> <a href="jobseeker-dashboard.html">My Profile</a></li>
+                    <li><a href="jobseeker-applications.html">My Applications</a></li>
+                </ul>
+                <ul id="recruiternav" class="navbar-menu navbar__left">
+                    <li class="item-1"><a href="recruiter-dashboard.html">Dashboard</a></li>
+                    <li><a href="jobcredits.html">Job Credits</a></li>
+                    <li><a href="managejobads.html">Job Ads</a></li>
+                    <li><a href="cvsearchcredits.html">Search CVs</a></li>
                 </ul>
                 <ul class="navbar__right">
                     <li id="saved">
                         <a href="favourites.html" class="link-icon"><i class="starwithnocircle fa fa-star"></i>Saved
                             Jobs</a>
                     </li>
-                    <li class="signin"><a href="register.html" class="link-icon"><i class="icon far fa-user"></i>Sign
-                            In</a></li>
-                    <div id="accountmenu" class="dropdownnavbar" style="display: none;">
-                        <button id="accountmenubtn" class="dropbtn">NOB's account
-                            <i class="left-icon icon far fa-user"></i>
-                            <i class="right-icon fa fa-caret-down"></i>
-                        </button>
-                        <div class="dropdownnavbar-content">
-                            <a href="jobseeker-account.html">Account</a>
-                            <a href="jobseeker-dashboard.html">Profile</a>
-                            <a href="#">Applications</a>
-                            <a id="signoutlink" href="#">Sign Out</a>
-                        </div>
-                    </div>
-
+                    <li id="allsignin" class="signin" style="display: none;"><a href="register.html"
+                            class="link-icon"><i class="icon far fa-user"></i>Sign
+                            In</a>
                     </li>
-                    <div id="accountmenu" class="dropdown" style="display: none;">
-                        <button id="accountmenubtn" class="dropbtn">NOB's account
-                            <i class="left-icon icon far fa-user"></i>
-                            <i class="right-icon fa fa-caret-down"></i>
-                        </button>
-                        <div class="dropdown-content">
-                            <a href="#">Account</a>
-                            <a href="jobseeker-dashboard.html">Profile</a>
-                            <a href="#">Applications</a>
-                            <a id="signoutlink" href="#">Sign Out</a>
-                        </div>
-                    </div>
+                    <li class="signin signout"> <a id="signoutlink" class="signin signout" href="#">Sign Out</a></li>
                 </ul>
             </nav>
             <div class="container profileparent">
@@ -131,7 +114,6 @@
                                     <p><i class="icon fas fa-exclamation-triangle"></i>Please enter your phone number
                                     </p>
                                 </div>
-
                                 <div class="search_categories">
                                     <div class="select">
                                         <select class="dropdown"
@@ -143,6 +125,7 @@
                                     </div>
                                 </div>
                                 <p id="dd5" class="mybollocks">Country of Residence</p>
+
                                 <div class="createjobad__parent--form-item">
                                     <input id="city" class="loginform__textfield form-control glowing-border"
                                         type="text" placeholder="City of Residence" autocomplete="off" />
@@ -158,28 +141,30 @@
                                 <div id="pbox1" class="createjobad__parent--form-item box parentbox">
                                     <input type="file" name="file-1[]" id="file-1" class="inputfile inputfile-1"
                                         multiple style="display: none;" />
+
                                     <label for="file-1"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17"
                                             viewBox="0 0 20 17">
                                             <path
                                                 d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z" />
                                         </svg>
                                         <span>Choose File&hellip;</span></label>
+
                                     <span id="cvtext" class=text>Upload CV. Word, PDF or Richtext. Max. size 2MB.</span>
                                     </label>
                                 </div>
                                 <div id="pbox2" style="display: none;" class="createjobad__parent--form-item box">
-                                        <span id="cvtext2" class="box__logotext text"></span>
-                                        <input type="file" name="file-1[]" id="file-1" class="inputfile inputfile-1"
-                                            data-multiple-caption="{count} files selected" onchange="imgchange(this)" multiple
-                                            style="display: none;" />
-                                        <label class="updatelogo" for="file-1"><svg xmlns="http://www.w3.org/2000/svg"
-                                                width="20" height="17" viewBox="0 0 20 17">
-                                                <path
-                                                    d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z" />
-                                            </svg>
-                                            <span>Update CV&hellip;</span></label>
-                                        <span id="cvimg" class="child">Uploaded 80 days ago</span>
-                                    </div>
+                                    <span id="cvtext2" class="box__logotext text"></span>
+                                    <input type="file" name="file-1[]" id="file-1" class="inputfile inputfile-1"
+                                        data-multiple-caption="{count} files selected" onchange="imgchange(this)"
+                                        multiple style="display: none;" />
+                                    <label class="updatelogo" for="file-1"><svg xmlns="http://www.w3.org/2000/svg"
+                                            width="20" height="17" viewBox="0 0 20 17">
+                                            <path
+                                                d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z" />
+                                        </svg>
+                                        <span>Update CV&hellip;</span></label>
+                                    <span id="cvimg" class="child">Uploaded 80 days ago</span>
+                                </div>
                                 <div class="createjobad__parent--form-item">
                                     <input id="link1" class="loginform__textfield form-control glowing-border"
                                         type="text" placeholder="Website Link (e.g., LinkedIn, Facebook etc)"
@@ -187,11 +172,10 @@
                                     <label for="link1" class="loginform__label">Website Link 1</label>
                                 </div>
                                 <div class="createjobad__parent--form-item">
-                                        <input id="languages" class="loginform__textfield form-control glowing-border"
-                                            type="text" placeholder="Languages (separated by spaces)"
-                                            autocomplete="off" />
-                                        <label for="link1" class="loginform__label">Languages</label>
-                                    </div>
+                                    <input id="languages" class="loginform__textfield form-control glowing-border"
+                                        type="text" placeholder="Languages (separated by spaces)" autocomplete="off" />
+                                    <label for="link1" class="loginform__label">Languages</label>
+                                </div>
                                 <p id="pwexp" class="profiletitle">My Work Experience</p>
                                 <div class="search_categories">
                                     <div class="select">
@@ -294,12 +278,14 @@
                                         <input type="radio" name="share" value="false" id="noshare" />
                                         <label for="noshare">Do Not Share My Details</label>
                                     </div>
-                                    <p class="tokentext">It is recommended you allow your details to be viewed to maximise
+                                    <p class="tokentext">It is recommended you allow your details to be viewed to
+                                        maximise
                                         your visibility to recruiters. </p>
-                                    <p class="tokentext">Note: you will be rewarded with Hub Tokens each time your details
+                                    <p class="tokentext">Note: you will be rewarded with Hub Tokens each time your
+                                        details
                                         are viewed by a recruiter. </p>
                                 </div>
-                               
+
                                 <div class="createjobad__parent--buttonpanel">
                                     <button id="createprofilebutton" type="submit" class="btn btn--orange">SAVE MY
                                         PROFILE</button>
@@ -307,15 +293,15 @@
                             </div>
                             <!-- <div style="top:160rem" class="loader"></div> -->
                         </form>
-                      
+
                     </div>
-                  
+
                 </div>
-               
+
             </div>
-           
+
         </div>
-       
+
 <script type="text/javascript" src="js/bundle.js"></script></body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 
@@ -342,12 +328,12 @@
         element.style.display = "block";
     });
 </script>
-   
+
 <script></script>
-    var currentValue = "true";
-    function handleClick(myRadio) {
-        currentValue = myRadio.value;
-    }
+var currentValue = "true";
+function handleClick(myRadio) {
+currentValue = myRadio.value;
+}
 </script>
 
 </html>

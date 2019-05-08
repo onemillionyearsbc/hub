@@ -24,14 +24,14 @@
             </div>
         </div>
         <div>
-            <nav class="navbar navbarred">
+            <!-- <nav class="navbar navbarred">
                 <ul class="navbar-menu navbar__left">
                     <li class="item-1"><a href="recruiter-dashboard.html">Dashboard</a></li>
                     <li><a href="jobcredits.html">Job Credits</a></li>
                     <li><a href="managejobads.html">Job Ads</a></li>
                 </ul>
                 <ul class="navbar__right">
-                    <!-- <li class="signin"><a href="#" class="link-icon">Log Out</a></li> -->
+                    
                     <li id="recruiterlogout" class="signin"><a href="#" class="link-icon">Log Out</a>
                     </li>
 
@@ -47,6 +47,26 @@
                             <a id="signoutlink" href="#">Sign Out</a>
                         </div>
                     </div>
+                </ul>
+            </nav> -->
+            <nav class="navbar animated slideInRight delay-2s">
+                <ul id="seekernav" class="navbar-menu navbar__left">
+                    <li><a href="jobseeker-account.html">My Account</a></li>
+                    <li> <a href="jobseeker-dashboard.html">My Profile</a></li>
+                    <li><a href="jobseeker-applications.html">My Applications</a></li>
+                </ul>
+                <ul id="recruiternav" class="navbar-menu navbar__left">
+                    <li class="item-1"><a href="recruiter-dashboard.html">Dashboard</a></li>
+                    <li><a href="jobcredits.html">Job Credits</a></li>
+                    <li><a href="managejobads.html">Job Ads</a></li>
+                    <li><a href="cvsearchcredits.html">Search CVs</a></li>
+                </ul>
+                <ul class="navbar__right">
+                    <li id="allsignin" class="signin" style="display: none;"><a href="register.html"
+                            class="link-icon"><i class="icon far fa-user"></i>Sign
+                            In</a>
+                    </li>
+                    <li class="signin signout"> <a id="signoutlink" class="signin signout" href="#">Sign Out</a></li>
                 </ul>
             </nav>
             <div id="block" class="container containerblock favourites">
@@ -106,4 +126,5 @@
 </body>
 <!-- <p class="success">Hash check Passed!</p>
 <p class="error">Hash check Failed!</p> -->
+
 </html>

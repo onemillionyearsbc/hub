@@ -137,11 +137,11 @@ export const elements = {
     cvDaysAgo: document.getElementById("cvimg"),
     accBanner: document.getElementById("instr"),
     rankPtsLabel: document.getElementById("instr2"),
-    profileTitle:  document.getElementById("profiletitle"),
-    ptitle:   document.getElementById("ptitle"),
-    pwexp:   document.getElementById("pwexp"),
-    preq:   document.getElementById("preq"),
-    vis:   document.getElementById("vis"),
+    profileTitle: document.getElementById("profiletitle"),
+    ptitle: document.getElementById("ptitle"),
+    pwexp: document.getElementById("pwexp"),
+    preq: document.getElementById("preq"),
+    vis: document.getElementById("vis"),
     changeEmail: document.getElementById("changeemail"),
     changePref: document.getElementById("changepref"),
     manageTok: document.getElementById("managetok"),
@@ -168,6 +168,8 @@ export const elements = {
     candidatetitle: document.getElementById("candidatetitle"),
     proofBtn: document.getElementById("proofbutton"),
     bc: document.getElementById("bc"),
+    signoutlink: document.getElementById("signoutlink")
+
 };
 
 export const dbelements = {
@@ -229,6 +231,8 @@ var getHistoryTransaction = 'io.onemillionyearsbc.hubtutorial.tokens.GetTransact
 var buyTokensTransaction = 'io.onemillionyearsbc.hubtutorial.tokens.BuyTokens';
 var cashoutTransaction = 'io.onemillionyearsbc.hubtutorial.tokens.CashOutTokens';
 var buyRankPtsTransaction = 'io.onemillionyearsbc.hubtutorial.tokens.BuyRankingPoints';
+var getERC20TotalTransaction = 'io.onemillionyearsbc.hubtutorial.tokens.GetERC20TokenTotal';
+
 
 export const strings = {
     loader: 'loader',
@@ -271,7 +275,9 @@ export const strings = {
     buyTokensTransaction: `${buyTokensTransaction}`,
     cashoutTransaction: `${cashoutTransaction}`,
     buyRankPtsTransaction: `${buyRankPtsTransaction}`,
+    getERC20TotalTransaction: `${getERC20TotalTransaction}`,
     
+
     loginRecruiterUrl: `http://${ipAddress}:${port}/api/${recruiterLoginTransaction}`,
     loginJobSeekerUrl: `http://${ipAddress}:${port}/api/${jobSeekerLoginTransaction}`,
     registerRecruiterUrl: `http://${ipAddress}:${port}/api/${recruiterRegisterTransaction}`,
@@ -309,6 +315,7 @@ export const strings = {
     buyTokensUrl: `http://${ipAddress}:${port}/api/${buyTokensTransaction}`,
     cashoutUrl: `http://${ipAddress}:${port}/api/${cashoutTransaction}`,
     buyRankPtsUrl: `http://${ipAddress}:${port}/api/${buyRankPtsTransaction}`,
+    getERC20TotalUrl: `http://${ipAddress}:${port}/api/${getERC20TotalTransaction}`,
     
 
     beginningOfTime: "1970-01-01T15:11:47.728Z",
@@ -342,6 +349,7 @@ export const elementConsts = {
     BUYSEARCHESPAGE: 14,
     CVSEARCHPAGE: 15,
     BLOCKCHAINPAGE: 16,
+    FAVOURITESPAGE: 17,
     JOBADPRICE: 99,
     CVSEARCHPRICE: 25,
     JOBDISCOUNT: 10,
@@ -352,7 +360,8 @@ export const elementConsts = {
     CVMINPRICE: 20,
     MAXJOBS: 10,
     STANDARDPRICE: 99,
-    PREMIUMPRICE: 199
+    PREMIUMPRICE: 199,
+    MAXIMAGESIZE: 2 * 1024 * 1024 // 2MB
 }
 
 export const jobTypeConsts = {
@@ -433,11 +442,6 @@ export const getFormFor = (btn) => {
 
 export const navBarSetLoggedIn = (loggedIn, name) => {
 
-//     <li class="signin" style="display: none;"><a href="register.html" class="link-icon"><i class="icon far fa-user"></i>Sign
-//     In</a>
-//      </li>
-//      <li id="recruiterlogout" class="signin"><a href="#" class="link-icon">Log Out</a>
-//      </li>
 
     var signins = elements.signins;
 
@@ -445,39 +449,76 @@ export const navBarSetLoggedIn = (loggedIn, name) => {
     let type = parseInt(user);
 
     let dropdown = document.getElementById("accountmenu");
-    for (var i = 0; i < signins.length; i++) {
-        console.log("*** loggedIn = " + loggedIn);
-        if (loggedIn) {
+    let seekernav = document.getElementById("seekernav");
+    let recruiternav = document.getElementById("recruiternav");
+
+    if (loggedIn === true) {
+        document.getElementById("signoutlink").style.display = "block";
+
+        // document.getElementById("allsignin").style.display = "none";
+        // if (document.URL.includes("index.html") === false) {
             if (type === elementConsts.JOBSEEKER) {
-               
-                let markup = `${name}'s account
-                    <i class="left-icon icon far fa-user"></i>
-                    <i class="right-icon fa fa-caret-down"></i>`
-                signins[i].style.display = "none";
-                let button = document.getElementById("accountmenubtn");
-                button.innerHTML = markup;
-                dropdown.style.display = "block";
-            } else {
-                let ele = document.getElementById("recruiterlogout");
-                let ele2 = document.getElementById("allsignin");
-                if (ele != null) {
-                    ele.style.display = "block";
-                }
-                if (ele2 != null) {
-                    ele2.style.display = "none";
-                }
+                seekernav.style.display = "flex";
+                recruiternav.style.display = "none";
             }
-        } else {
-            signins[i].style.display = "block";
-            if (dropdown != null) {
-                dropdown.style.display = "none";
+            if (type === elementConsts.RECRUITER) {
+                seekernav.style.display = "none";
+                recruiternav.style.display = "flex";
             }
-            let ele = document.getElementById("recruiterlogout");
-            if (ele != null) {
-                ele.style.display = "none";
+        // }
+    } else {
+        // document.getElementById("signoutlink").style.display = "none";
+        document.getElementById("allsignin").style.display = "block";
+       
+        let signout = document.querySelector(".signout");
+
+        console.log("signout = "+signout);
+        // for (var i = 0; i < signouts.length; i++) {
+            if (signout != undefined) {
+                signout.style.display = "none";
             }
-        }
+          
+        // }
+
+        // if (document.URL.includes("index.html") === false) {
+
+            recruiternav.style.display = "none";
+            seekernav.style.display = "none";
+        // }
     }
+
+    // for (var i = 0; i < signins.length; i++) {
+    //     console.log("*** loggedIn = " + loggedIn);
+    //     if (loggedIn) {
+    //         if (type === elementConsts.JOBSEEKER) {
+    //             let markup = `${name}'s account
+    //                 <i class="left-icon icon far fa-user"></i>
+    //                 <i class="right-icon fa fa-caret-down"></i>`
+    //             signins[i].style.display = "none";
+    //             let button = document.getElementById("accountmenubtn");
+    //             button.innerHTML = markup;
+    //             dropdown.style.display = "block";
+    //         } else {
+    //             let ele = document.getElementById("recruiterlogout");
+    //             let ele2 = document.getElementById("allsignin");
+    //             if (ele != null) {
+    //                 ele.style.display = "block";
+    //             }
+    //             if (ele2 != null) {
+    //                 ele2.style.display = "none";
+    //             }
+    //         }
+    //     } else {
+    //         signins[i].style.display = "block";
+    //         if (dropdown != null) {
+    //             dropdown.style.display = "none";
+    //         }
+    //         let ele = document.getElementById("recruiterlogout");
+    //         if (ele != null) {
+    //             ele.style.display = "none";
+    //         }
+    //     }
+    // }
 
 }
 
@@ -887,7 +928,7 @@ export const getSkills = (skills) => {
     for (var i = 0; i < skillsArr.length; i++) {
         if (skillsArr[i].charAt(0) === '"' && skillsArr[i].charAt(skillsArr[i].length - 1) === '"') {
             skillsArr[i] = skillsArr[i].substr(1, skillsArr[i].length - 2);
-        } 
+        }
     }
     return skillsArr;
 }

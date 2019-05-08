@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -25,29 +24,52 @@
             </div>
         </div>
         <div>
-            <nav class="navbar">
+            <!-- <nav class="navbar">
                 <ul class="navbar-menu navbar__left">
                     <li class="item-1"><a href="recruiter-dashboard.html">Dashboard</a></li>
                     <li><a href="jobcredits.html">Job Credits</a></li>
                     <li><a href="managejobads.html">Job Ads</a></li>
                 </ul>
                 <ul class="navbar__right">
-                    <!-- <li class="signin"><a href="#" class="link-icon">Log Out</a></li> -->
                     <li id="recruiterlogout" class="signin"><a href="#" class="link-icon">Log Out</a>
                     </li>
+                </ul>
+            </nav> -->
+            <nav class="navbar animated slideInRight delay-2s">
+                <ul id="seekernav" class="navbar-menu navbar__left">
+                    <li><a href="jobseeker-account.html">My Account</a></li>
+                    <li> <a href="jobseeker-dashboard.html">My Profile</a></li>
+                    <li><a href="jobseeker-applications.html">My Applications</a></li>
+                </ul>
+                <ul id="recruiternav" class="navbar-menu navbar__left">
+                    <li class="item-1"><a href="recruiter-dashboard.html">Dashboard</a></li>
+                    <li><a href="jobcredits.html">Job Credits</a></li>
+                    <li><a href="managejobads.html">Job Ads</a></li>
+                    <li><a href="cvsearchcredits.html">Search CVs</a></li>
+                </ul>
+                <ul class="navbar__right">
+                    <li id="saved">
+                        <a href="favourites.html" class="link-icon"><i class="starwithnocircle fa fa-star"></i>Saved
+                            Jobs</a>
+                    </li>
+                    <li id="allsignin" class="signin" style="display: none;"><a href="register.html"
+                            class="link-icon"><i class="icon far fa-user"></i>Sign
+                            In</a>
+                    </li>
+                    <li class="signin signout"> <a id="signoutlink" class="signin signout" href="#">Sign Out</a></li>
                 </ul>
             </nav>
             <div id="jobapplications" class="container applications">
                 <div class="main animated slideInUp delay-2s">
                     <p id="jobreftitle" class="main__title1">
-                        Applications for Job Ref. 
+                        Applications for Job Ref.
                     </p>
                     <p class="main__title2">
                         Here are the applicants who have applied for this job:
                     </p>
                     <div class="items">
                         <div class="items__title">
-                           
+
                         </div>
                         <ul style="list-style: none;" class="results_list">
                             <!-- <li>
