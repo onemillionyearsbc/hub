@@ -11,7 +11,7 @@ const bnUtil = require('../bn-connection-util');
 const axios = require('axios');
 const fetch = require('node-fetch');
 
-let ukdata = false; // true = generates jobs in Swindon, Wiltshire area of UK
+let ukdata = false; // true = generates jobs in or near Swindon, Wiltshire area of UK
 
 
 async function getGithubData(location) {

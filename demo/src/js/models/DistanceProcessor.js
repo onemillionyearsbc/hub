@@ -7,6 +7,7 @@ export default class DistanceProcessor {
 
     async getCoords(location) {
         try {
+            console.log("DISTANCE API URL: " + `${this.proxy}https://www.distance24.org/route.json?stops=${location}`);
             let res = await axios(`${this.proxy}https://www.distance24.org/route.json?stops=${location}`);
             let long1 = parseFloat(res["data"].stops[0].longitude);
             let lat1 = parseFloat(res["data"].stops[0].latitude);

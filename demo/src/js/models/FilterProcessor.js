@@ -183,6 +183,9 @@ export default class FilterProcessor {
 
     filterByCompany(item) {
         console.log("looking for company " + item);
+        for (let i = 0; i < this.jobs; i++) {
+            console.log("Company = " + posting.company);
+        }
         return (this.jobs.filter(posting => posting.company === item));
     }
 
@@ -220,14 +223,19 @@ export default class FilterProcessor {
         if (item === "true") {
             var1 = true;
         }
+        console.log("var1 = " + var1);
         return (this.jobs.filter(posting => posting.remote === var1));
     }
 
     filterByLocation(item) {
+        for (let i = 0; i < this.jobs.length; i++) {
+            console.log("location = " + this.jobs[i].location + "; city = " + this.jobs[i].city);
+        }
         return (this.jobs.filter(posting => posting.location === item || posting.city === item));
     }
 
     async filterByLocationAndDistance(item, distance) {
+        console.log("PARSNIP: looking for jobs in " + item);
         let jobsWithinDistance = [];
         let dp = new DistanceProcessor();
         console.log("Getting coords for " + item);

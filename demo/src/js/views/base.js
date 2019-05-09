@@ -232,6 +232,8 @@ var buyTokensTransaction = 'io.onemillionyearsbc.hubtutorial.tokens.BuyTokens';
 var cashoutTransaction = 'io.onemillionyearsbc.hubtutorial.tokens.CashOutTokens';
 var buyRankPtsTransaction = 'io.onemillionyearsbc.hubtutorial.tokens.BuyRankingPoints';
 var getERC20TotalTransaction = 'io.onemillionyearsbc.hubtutorial.tokens.GetERC20TokenTotal';
+var removeHubUserAndAccountTransction = 'io.onemillionyearsbc.hubtutorial.tokens.RemoveHubUser';
+
 
 
 export const strings = {
@@ -276,8 +278,8 @@ export const strings = {
     cashoutTransaction: `${cashoutTransaction}`,
     buyRankPtsTransaction: `${buyRankPtsTransaction}`,
     getERC20TotalTransaction: `${getERC20TotalTransaction}`,
+    removeHubUserAndAccountTransction: `${removeHubUserAndAccountTransction}`,
     
-
     loginRecruiterUrl: `http://${ipAddress}:${port}/api/${recruiterLoginTransaction}`,
     loginJobSeekerUrl: `http://${ipAddress}:${port}/api/${jobSeekerLoginTransaction}`,
     registerRecruiterUrl: `http://${ipAddress}:${port}/api/${recruiterRegisterTransaction}`,
@@ -316,6 +318,7 @@ export const strings = {
     cashoutUrl: `http://${ipAddress}:${port}/api/${cashoutTransaction}`,
     buyRankPtsUrl: `http://${ipAddress}:${port}/api/${buyRankPtsTransaction}`,
     getERC20TotalUrl: `http://${ipAddress}:${port}/api/${getERC20TotalTransaction}`,
+    removeHubUserUrl: `http://${ipAddress}:${port}/api/${removeHubUserAndAccountTransction}`,
     
 
     beginningOfTime: "1970-01-01T15:11:47.728Z",
@@ -753,14 +756,15 @@ export function autocomplete(inp, arr) {
     });
 }
 
-export const addToFavouritesHandler = async (button, jobRef) => {
+export const addToFavouritesHandler = async (button, jobRef, type) => {
     // let ele = document.getElementById(jobRef);
     // renderLoaderEndByNumber(ele, 50);
 
     var data = {
         $class: strings.addToFavouritesTransaction,
         email: sessionStorage.getItem('myemail'),
-        jobReference: jobRef
+        jobReference: jobRef,
+        accountType: type
     };
     let tp = new TransactionProcessor(data, strings.addToFavouritesUrl);
 
@@ -881,7 +885,14 @@ export const setButtonHandlers = () => {
             e.preventDefault();
             let jobRef = e.currentTarget.dataset.id;
 
-            addToFavouritesHandler(e.currentTarget, jobRef);
+            let user = sessionStorage.getItem("user");
+            let type = parseInt(user);
+            let accType = "RECRUITER";
+            if (type === elementConsts.JOBSEEKER) {
+                accType = "JOBSEEKER";
+            }
+            console.log("ADDING TO FAVOURITE: " + jobRef);
+            addToFavouritesHandler(e.currentTarget, jobRef, accType);
         });
     }
 }

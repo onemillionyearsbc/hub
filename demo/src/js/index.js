@@ -17,8 +17,9 @@ import * as profileView from './views/profileView';
 import * as alertView from './views/alertView';
 import * as accountView from './views/accountView';
 import * as cvSearchView from './views/cvSearchView';
+import * as searchView from './views/searchView';
 
-import { getFormFor, clearError, elements, dbelements, elementConsts, inputType, renderLoader, renderLoaderEnd, renderLoaderEndByNumber, renderLoaderByREMFromTop, renderLoaderFromBottom, clearLoader, navBarSetLoggedIn, setLoggedIn, strings, enableCreateJobButton, autocomplete, jobTitles, setButtonHandlers, displayErrorPopup, displaySuccessPopup, updateFavouritesTotal, addFavouritesLinkListener, countriesArray } from './views/base';
+import { getFormFor, clearError, elements, dbelements, elementConsts, inputType, renderLoader, renderLoaderEnd, renderLoaderEndByNumber, renderLoaderByREMFromTop, renderLoaderFromBottom, clearLoader, navBarSetLoggedIn, setLoggedIn, strings, enableCreateJobButton, autocomplete, jobTitles, setButtonHandlers, displayErrorPopup, displaySuccessPopup, updateFavouritesTotal, addFavouritesLinkListener, countriesArray, addToFavouritesHandler } from './views/base';
 import { setCompanyName, setContactName, getJobAdsData, setJobAdsData, setCVSearchData, setJobCreditsRemaining } from './views/recruiterDashboardView';
 import { setJobAdsNumber, setTotalJobPrice, restyle, adjustSlider, getBuyJobCreditsData } from './views/jobCreditsView';
 import { setCVSearchNumber, setTotalCVSearchPrice, restyleCV, adjustSliderCV, getBuyCVSearchData, getTokensToMint } from './views/cvCreditsView';
@@ -105,6 +106,7 @@ const signInHandler = async (e, view, url, transaction) => {
                     await getAlerts();
                     window.location = "jobseeker-account.html";
                 } else {
+                    clearCache();
                     setLoggedIn(state, true);
                     console.log("getting favourites...");
                     sessionStorage.setItem("user", elementConsts.RECRUITER);
@@ -277,10 +279,11 @@ const searchJobsHandler = async () => {
     } else {
         await loadCache(true);
     }
+    console.log(">>>>>>>>>>>> SEARCH JOBS CONTROLLER >>>>> CHECKING WHAT AND WHERE...");
+    console.log("WHERE = " + sessionStorage.getItem("where"));
     clearLoader();
     let what = sessionStorage.getItem("what");
     if (what != null && what != "") {
-        console.log("WHAT = " + what);
         let filterItem = { filter: strings.whatFilter, item: "", name: what };
         state.filters = [];
         state.filters.push(filterItem);
@@ -363,7 +366,7 @@ async function loadCache(render = false) {
 
 
             cdata = JSON.stringify(rows);
-
+            setTotalJobsBucket(rows);
             // TODO look at Max quota for session storage
             // sessionStorage.setItem("jobs", cdata);
 
@@ -393,6 +396,7 @@ async function loadCache(render = false) {
         }
 
     }
+
     return cdata;
 }
 const getFavourites = async () => {
@@ -501,7 +505,8 @@ const getApplicationsForJobSeeker = async () => {
 }
 
 const expireJobHandler = async () => {
-    renderLoaderEndByNumber(elements.lower, 120);
+    var clientHeight = document.getElementById('jobdescription').clientHeight;
+    renderLoaderByREMFromTop(elements.lower, (clientHeight / 10) + 30);
     const email = sessionStorage.getItem('myemail');
     const jobid = sessionStorage.getItem('jobReference');
 
@@ -817,13 +822,21 @@ const queryAndDisplayJobHandler = async (jobRef) => {
 }
 
 // test if a job already applied for by user {email}
-async function alreadyAppliedFor() {
-    let ref = sessionStorage.getItem("jobReference");
+async function alreadyAppliedFor(jobReference) {
+    if (state.loggedIn === false) {
+        return false;
+    }
+    let ref = jobReference;
+    if (ref === undefined) {
+        ref = sessionStorage.getItem("jobReference");
+    }
+
     let aData = sessionStorage.getItem("apps");
 
     let applicationData;
-    if (aData === null) {
-        renderLoader(elements.jobApplications);
+    console.log("checking if job " + jobReference + " already applied for");
+    console.log("loggedIn = " + state.loggedIn);
+    if (aData === null || aData === undefined) {
         await getApplicationsForJobSeeker();
         applicationData = state.applications;
     } else {
@@ -837,12 +850,10 @@ async function alreadyAppliedFor() {
 async function applyButtons() {
     let already = await alreadyAppliedFor();
     if (isExpired() === true || already === true) {
-        console.log("YAY")
         elements.buttonPanel.innerHTML = `<button id="applyjobbutton" class="btn btn--disabled" disabled>Already Applied
         </button>`;
     } else {
-        console.log("BOOO")
-        elements.buttonPanel.innerHTML = `<button id="applyjobbutton" class="btn btn--orange">Apply</button>`;
+        elements.buttonPanel.innerHTML = `<button id="applyjobbutton" class="btn btn--orangeandgrey">Apply</button>`;
         document.getElementById("applyjobbutton").addEventListener('click', e => {
             e.preventDefault();
             applyForJobHandler();
@@ -973,9 +984,9 @@ if (document.URL.includes("managejobads")) {
 
 // VIEW JOB
 if (document.URL.includes("displayjob")) {
-
+   
     getFavourites();
-    
+
     // if the user has clicked here from an email
     // location.search will have a value (the job ref)
     var x = location.search;
@@ -993,15 +1004,21 @@ if (document.URL.includes("displayjob")) {
         // only allow amend/expire if the job belongs to this user
         if (email === myemail) {
             elements.buttonPanel.style = "block";
+            if (isExpired() === true) {
+                console.log("YAY!!!!")
+                elements.expirejobbutton.disabled = true;
+            } else {
+                elements.expirejobbutton.addEventListener('click', e => {
+                    e.preventDefault();
+                    expireJobHandler();
+                });
+            }
             elements.amendjobbutton.addEventListener('click', e => {
                 e.preventDefault();
                 sessionStorage.setItem("amend", "true");
                 window.location = "createjobad.html";
             });
-            elements.expirejobbutton.addEventListener('click', e => {
-                e.preventDefault();
-                expireJobHandler();
-            });
+           
 
         } else {
             elements.buttonPanel.style = "none";
@@ -1012,20 +1029,22 @@ if (document.URL.includes("displayjob")) {
     elements.jobcompany.addEventListener('click', e => {
         e.preventDefault();
         sessionStorage.setItem("searchtype", "companytotals");
-        console.log("Setting search target to: " + e.target.text);
-        sessionStorage.setItem("what", e.target.text);
-        window.location = "search.html";
+        sessionStorage.setItem("where", "");
+        setTargetAndMoveOn("what", e.target.text);
     });
-
-
+    elements.joblocation.addEventListener('click', e => {
+        e.preventDefault();
+        sessionStorage.setItem("searchtype", strings.locationFilter);
+        sessionStorage.setItem("what", "");
+        setTargetAndMoveOn("where", e.target.innerHTML);
+    });
 }
 
-async function applyForJobHandler() {
-    var clientHeight = document.getElementById('jobdescription').clientHeight;
-    renderLoaderByREMFromTop(elements.lower, (clientHeight / 10) + 30);
-
-    let ref = sessionStorage.getItem("jobReference");
-    let mail = sessionStorage.getItem('myemail');
+function setTargetAndMoveOn(property, value) {
+    sessionStorage.setItem(property, value);
+    window.location = "search.html";
+}
+async function doApplyJobTransaction(ref, mail) {
     console.log("Applying For Job: " + ref);
 
     var data = {
@@ -1042,14 +1061,50 @@ async function applyForJobHandler() {
         err = resp.error;
     }
 
-    if (err != null) {
-        clearLoader();
+    if (err != null) {   
         await displayErrorPopup('Failed to Apply for Job: ' + err.message);
+        return false;
     } else {
         clearLoader();
-        elements.buttonPanel.innerHTML = `<button id="applyjobbutton" class="btn btn--disabled" disabled>Apply</button>`;
         await displaySuccessPopup('Job Application Submitted!');
         await getApplicationsForJobSeeker();  // force cache update
+        return true;
+    }
+}
+
+async function applyForJobHandlerFromFavourites(id, ref) {
+    
+    let ele = document.getElementById("loadpanel-" + ref);
+  
+    renderLoaderEndByNumber(ele, 10);
+    let mail = sessionStorage.getItem('myemail');
+    let result = await doApplyJobTransaction(ref, mail);
+    if (result) {
+        let favs = sessionStorage.getItem("favourites");
+        if (favs != null) {
+            favs = JSON.parse(favs);
+            console.log("...got " + favs.length + " cached favourites");
+        }
+        await display(favs);
+        sessionStorage.setItem("favourites", JSON.stringify(favs));
+        addButtonListeners();
+        clearLoader();
+    }
+}
+
+async function applyForJobHandler() {
+    if (state.loggedIn === false) {
+        window.location= "register.html";
+    }
+    
+    var clientHeight = document.getElementById('jobdescription').clientHeight;
+    renderLoaderByREMFromTop(elements.lower, (clientHeight / 10) + 30);
+
+    let ref = sessionStorage.getItem("jobReference");
+    let mail = sessionStorage.getItem('myemail');
+    let result = await doApplyJobTransaction(ref, mail);
+    if (result) {
+        elements.buttonPanel.innerHTML = `<button id="applyjobbutton" class="btn btn--disabled" disabled>Apply</button>`;
     }
 }
 
@@ -1095,48 +1150,92 @@ function addShowCandidateProfileHandler() {
         });
     }
 }
+const getAppliedForJobs = async (favourites) => {
+    let appliedForJobs = [];
+    for (let i = 0; i < favourites.length; i++) {
+        let apf = await alreadyAppliedFor(favourites[i].jobReference);
+        console.log("....apf = " + apf);
+        if (apf) {
+            appliedForJobs.push(favourites[i].jobReference);
+        }
+    }
+    return appliedForJobs;
+}
 
-// FAVOURITES CONTROLLER
-if (document.URL.includes("favourites")) {
+async function display(favourites) {
+    let user = sessionStorage.getItem("user");
+    let type = parseInt(user);
+    if (type === elementConsts.JOBSEEKER) {
+        let appliedForJobs = await getAppliedForJobs(favourites);
+        console.log("appliedForJobs = " + appliedForJobs);
+        renderFavouriteResults(favourites, appliedForJobs, false);
+    } else {
+        renderFavouriteResults(favourites, [], true);
+    }
+}
 
+const favouritesHandler = async () => {
     state.page = elementConsts.FAVOURITESPAGE;
 
     let favourites = sessionStorage.getItem("favourites");
 
     if (favourites != null) {
         favourites = JSON.parse(favourites);
-        renderFavouriteResults(favourites);
-        addButtonListeners();
     } else {
         console.log("+++ NO FAVOURITES FOUND +++");
     }
+    await display(favourites);
+    addButtonListeners();
     elements.removeAllBtn.addEventListener("click", (e) => {
         removeAllFavourites();
     });
 }
 
+// FAVOURITES CONTROLLER
+if (document.URL.includes("favourites")) {
+    favouritesHandler();
+}
 
 
 function addButtonListeners() {
-    let removeButtons = document.getElementsByClassName("abtn");
+    console.log("ADDING LISTENERS...")
+    let removeButtons = document.getElementsByClassName("xxxxx");
+    console.log("FOUND NUM BUTTONS = " + removeButtons.length);
     for (let b of removeButtons) {
+
+        console.log("add...button...")
         b.addEventListener("click", (e) => {
-            let ref = b.dataset.id;
-            removeJobFromFavourites(ref);
+
+            var ref1 = b.dataset.id;
+            removeJobFromFavourites(ref1);
+        });
+    }
+    let applyButtons = document.getElementsByClassName("applybtn");
+    for (let b of applyButtons) {
+        b.addEventListener("click", (e) => {
+            var ref2 = b.dataset.id;
+            applyForJobHandlerFromFavourites(e.target.id, ref2);
         });
     }
 }
 
 const removeAllFavourites = async () => {
+    console.log("REMOVE ALL FAVOURITES...");
     let theEmail = sessionStorage.getItem('myemail');
     if (theEmail === null) {
         return;
     }
     // renderLoaderEndByNumber(elements.savedJobs, 50);
-
+    let user = sessionStorage.getItem("user");
+    let type = parseInt(user);
+    let accType = "RECRUITER";
+    if (type === elementConsts.JOBSEEKER) {
+        accType = "JOBSEEKER";
+    }
     var data = {
         $class: strings.removeAllFavouritesTransaction,
-        email: theEmail
+        email: theEmail,
+        accountType: accType
     };
     let tp = new TransactionProcessor(data, strings.removeAllFavouritesUrl);
 
@@ -1168,19 +1267,26 @@ const removeAllFavourites = async () => {
 }
 
 const removeJobFromFavourites = async (ref) => {
+    console.log("REMOVE FAVOURITE JOB REF = " + ref);
     let theEmail = sessionStorage.getItem('myemail');
     if (theEmail === null) {
         return;
     }
-    let ele = document.getElementById(ref);
+    // let ele = document.getElementById(ref);
     // renderLoaderEndByNumber(ele, 50);
-
+    let user = sessionStorage.getItem("user");
+    let type = parseInt(user);
+    let accType = "RECRUITER";
+    if (type === elementConsts.JOBSEEKER) {
+        accType = "JOBSEEKER";
+    }
     var data = {
         $class: strings.removeFromFavouritesTransaction,
         email: theEmail,
-        jobReference: ref
+        jobReference: ref,
+        accountType: accType
     };
-    let tp = new TransactionProcessor(data, strings.removeFromFavouritesUrl);
+    let tp = await new TransactionProcessor(data, strings.removeFromFavouritesUrl);
 
     var resp = tp.transaction();
 
@@ -1201,12 +1307,10 @@ const removeJobFromFavourites = async (ref) => {
             console.log("...got " + favs.length + " cached favourites");
             favs = removeRef(favs, ref);
         }
-        renderFavouriteResults(favs);
-        console.log("new length of favourites = " + favs.length);
+        await display(favs);
         sessionStorage.setItem("favourites", JSON.stringify(favs));
         addButtonListeners();
         clearLoader();
-        // await displaySuccessPopup('favourite removed');
     }
 
 }
@@ -1223,10 +1327,8 @@ function searchScreenController() {
 
     let nextb = document.getElementById("next");
     nextb.addEventListener('click', handleNext);
-    nextb.addEventListener('click', setButtonHandlers);
     let prevb = document.getElementById("previous");
     prevb.addEventListener('click', handlePrev);
-    prevb.addEventListener('click', setButtonHandlers);
 
 
 
@@ -1638,6 +1740,7 @@ async function getSeekerAndDownloadCV(seekerEmail) {
 }
 // JOBSEEKER APPLICATION CONTROLLER 
 async function seekerJobApplicationsController() {
+    getFavourites();
     state.page = elementConsts.APPLICATIONPAGE;
     let aData = sessionStorage.getItem("apps");
     let applicationData = JSON.parse(aData);
@@ -1703,6 +1806,7 @@ if (document.URL.includes("createalert.html")) {
 
 // JOBSEEKER ACCOUNT CONTROLLER 
 if (document.URL.includes("jobseeker-account.html")) {
+    getFavourites();
     state.page = elementConsts.ACCOUNTPAGE;
     let userData = sessionStorage.getItem("userdata");
     let aData = sessionStorage.getItem("alerts");
@@ -1772,6 +1876,7 @@ async function showApplicationsPage() {
 }
 // JOBSEEKER ACCOUNT SETTINGS CONTROLLER 
 if (document.URL.includes("account-settings.html")) {
+    getFavourites();
     elements.backLink.addEventListener('click', e => {
         e.preventDefault();
         window.location = "jobseeker-account.html";
@@ -1922,7 +2027,6 @@ async function walletHandler() {
 function displayProfileForRecruiter() {
     let userData = sessionStorage.getItem("userdata");
     let data = JSON.parse(userData);
-    console.log("QUACK !!!!!! userData = " + userData);
     setJobSeekerEmail(data.email);
     data.readonly = true;
     setProfileFields(data);
@@ -2401,11 +2505,7 @@ window.onload = () => {
 }
 
 var el = document.getElementById('signoutlink');
-// let user = sessionStorage.getItem("user");
-// let type = parseInt(user);
-// if (type === elementConsts.RECRUITER) {
-//     el = document.getElementById('recruiterlogout');
-// }
+
 if (el != null) {
     el.onclick = function () {
         console.log("SIGN OUT CLICKED...!!");
@@ -2413,30 +2513,6 @@ if (el != null) {
     };
 }
 
-// getImage();
-
-
-// async function getImage() {
-//     // var xhr = new XMLHttpRequest();
-//     var imageURL = 'http://localhost:8083/img/bubbles.jpg';
-//     var response = await fetch(imageURL);
-//     console.log(">>>>>>>>>>>>>>>>>>>>>>>BEGIN>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-//     console.log(response);
-//     console.log(">>>>>>>>>>>>>>>>>>>>>>>END>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-
-//     var blob = await response.blob();
-//     console.log(blob);
-//     console.log(">>>>>>>>>>>>>>>>>>>>>>>END 2 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-//     var reader = new FileReader();
-//     reader.readAsDataURL(blob);
-//     reader.onloadend = function () {
-//         console.log(reader.result);
-//         console.log(">>>>>>>>>>>>>>>>>>>>>>>END 3 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-//         console.log("STRING LEN = " + reader.result.length);
-//     };
-
-// }
-// getImage();
 var idbSupported = false;
 var db;
 var indexdbtransaction;
@@ -2531,6 +2607,13 @@ async function addIndexedData(data) {
     };
 }
 
+let savedLink = document.getElementById("saved");
+if (savedLink != null) {
+    savedLink.addEventListener('click', e => {
+        console.log("CLICKED!");
+        window.location = "favourites.html";
+    });
+}
 
 let A = state.loggedIn === false;
 let B = document.URL.includes("index") === false;

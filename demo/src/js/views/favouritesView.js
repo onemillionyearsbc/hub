@@ -1,6 +1,6 @@
 import { elements, getJobTypeFor, getJobTimeFor, } from './base';
 
-const renderJobItem = (jobItem, count) => {
+const renderJobItem = (jobItem, count , appliedFor, isRecruiter) => {
     let cityloc = "";
 
     if (jobItem.remote === true) {
@@ -15,12 +15,19 @@ const renderJobItem = (jobItem, count) => {
     }
 
     let exp = getJobTimeFor(jobItem.expiryDate, jobItem.datePosted);
+    let applybtnmarkup = "";
 
-    let applybtnmarkup = `<button data-id="apply-${jobItem.jobReference}" id="applyBtn" class="abtn btn btn--orange">Apply</button>`;
-    if (exp === "EXPIRED") {
-        applybtnmarkup = `<p class="expiredlabel">EXPIRED</p>`;
-    } 
-
+    // do not display apply buttons for recruiters
+    if (!isRecruiter) {
+        applybtnmarkup = `<button data-id="${jobItem.jobReference}" id="applyBtn" class="abtn applybtn btn btn--orange">Apply</button>`;
+        if (exp === "EXPIRED") {
+            applybtnmarkup = `<p class="expiredlabel">EXPIRED</p>`;
+        } 
+        if (appliedFor) {
+            applybtnmarkup = `<button data-id="apply-${jobItem.jobReference}" id="applyBtn" disabled class="abtn btn btn--orange">Applied</button>`;
+        } 
+    }
+   
     const markup = `
         <li>
             <div id="${jobItem.jobReference}" class="item-job">
@@ -28,7 +35,7 @@ const renderJobItem = (jobItem, count) => {
                     <div id="jobtitle" class="title">
                         <p class="savedtitle" data-index=${count}>${jobItem.jobTitle}</p>
                     </div>
-                    <div class="top">
+                    <div id="loadpanel-${jobItem.jobReference}" class="top" >
                         <div class="left">
                             <div class="left__item">
                                 <div class="loggy">
@@ -64,12 +71,12 @@ const renderJobItem = (jobItem, count) => {
                         </div>
                     </div>
                 </div>
-                <div class="bpanel">
-                    <div class="applybtn">
+                <div class="bpanel" id="panel-${jobItem.jobReference}">
+                    <div>
                         ${applybtnmarkup}
                     </div>
-                    <div  class="removebtn">
-                        <button data-id=${jobItem.jobReference} id="removeBtn" class="abtn btn btn--orange">Remove</button>
+                    <div>
+                        <button data-id=${jobItem.jobReference} class="abtn removeybutton xxxxx btn btn--orange">Remove</button>
                     </div>
                 </div>
             </div>
@@ -84,7 +91,10 @@ function clearResults() {
     elements.searchResList.innerHTML="";
 }
 
-export const renderFavouriteResults = (jobs) => {
+export const renderFavouriteResults = (jobs, appliedForJobs, isRecruiter) => {
+    if (appliedForJobs === undefined) {
+        appliedForJobs = [];
+    }
     let s = "";
     if (jobs.length != 1) {
         s = "s";
@@ -93,8 +103,8 @@ export const renderFavouriteResults = (jobs) => {
     clearResults();
     elements.numBanner.innerHTML = `You have ${jobs.length} saved job${s}`
     for (var i = 0; i < jobs.length; i++) {
-        console.log("RENDERING JOB, REF = " + jobs[i].jobReference);
-        renderJobItem(jobs[i], i);
+        let appliedFor = appliedForJobs.includes(jobs[i].jobReference);
+        renderJobItem(jobs[i], i, appliedFor, isRecruiter);
     }
 
     let jobtitles = document.getElementsByClassName("savedtitle");

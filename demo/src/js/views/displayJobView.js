@@ -79,6 +79,8 @@ export const isExpired = () => {
     let expiryDate = sessionStorage.getItem("expiryDate");
     let postedDate = sessionStorage.getItem("datePosted");
     let jtime = getJobTimeFor(expiryDate, postedDate);
+    console.log("expiryDate = " + expiryDate);
+    console.log("TOMATO jtime = "+ jtime);
     return (jtime === "EXPIRED");
 }
 

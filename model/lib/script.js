@@ -229,6 +229,8 @@ async function RemoveHubUser(credentials) {
 
     // 2 remove user from registry
     await participantRegistry.remove(credentials.email);
+
+    await RemoveHubAccount(credentials);
 }
 /* TODO RemoveAccountAndHubTokensAndUser */
 /* For full implementation we would need to return the user's tokens to the supply 
@@ -627,8 +629,12 @@ async function AddJobToFavourites(credentials) {
  */
 async function RemoveAllFavourites(credentials) {
     var NS = 'io.onemillionyearsbc.hubtutorial';
+    var accountType = '.HubRecruiter';
 
-    const participantRegistry = await getParticipantRegistry(NS + '.HubRecruiter');
+    if (credentials.accountType === 'JOBSEEKER') {
+        accountType = '.HubJobSeeker';
+    }
+    const participantRegistry = await getParticipantRegistry(NS + accountType);
 
     var recruiter = await participantRegistry.get(credentials.email);
 
@@ -758,8 +764,12 @@ async function ApplyForJob(credentials) {
  */
 async function RemoveJobFromFavourites(credentials) {
     var NS = 'io.onemillionyearsbc.hubtutorial';
+    var accountType = '.HubRecruiter';
 
-    const participantRegistry = await getParticipantRegistry(NS + '.HubRecruiter');
+    if (credentials.accountType === 'JOBSEEKER') {
+        accountType = '.HubJobSeeker';
+    }
+    const participantRegistry = await getParticipantRegistry(NS + accountType);
 
     var recruiter = await participantRegistry.get(credentials.email);
 

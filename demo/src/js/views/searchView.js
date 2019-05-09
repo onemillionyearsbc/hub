@@ -193,6 +193,7 @@ export const setTotalJobsBucket = (jobs) => {
     state.cachedData = jobs;
     setGlobalCached(jobs);
     state.filteredjobs = jobs;
+    state.jobs = jobs;
 }
 
 export const renderResults = (jobs, page = 1, resPerPage = 10) => {
@@ -247,7 +248,7 @@ export const renderResults = (jobs, page = 1, resPerPage = 10) => {
                 let filterItem = { filter: strings.locationFilter, name: "", item: "REMOTE" };
                 state.filters = [];
                 state.filters.push(filterItem);
-
+                console.log("QUACK 2");
                 applyFilter(strings.locationFilter, "", "REMOTE");
             } else {
                 console.log("+++++++++++++ LOCATION job search, location = " + location);
@@ -418,6 +419,10 @@ export const filterByWhere = (location) => {
     applyFilter(strings.locationFilter, location, distance);
 }
 
+export const setJobsForSearch = (jobs) => {
+    console.log("TOMATO: state.jobs length = " + state.jobs);
+    state.jobs = jobs;
+}
 
 // filter = type (eg companytotals)
 // item - item to search for
@@ -439,12 +444,11 @@ export const applyFilter = async (filter, item, name) => {
         console.log("item = " + item);
         console.log("name = " + name);
         if (name === "REMOTE") {
-            if (item === "false") {
+            if (item === "false" || item === false) {
                 state.filteredjobs = fp.filterByLocationType("false");
             } else {
                 state.filteredjobs = fp.filterByLocationType("true");
             }
-            state.filteredjobs = fp.filterByLocationType("true");
             state.label = "REMOTE";
         } else {
             if (name != "") {
@@ -710,7 +714,7 @@ const addEventHandlers = () => {
                 return; // hack. this list item is not part of the filtering
             }
 
-            let name = li.innerText.substring(0, li.innerText.indexOf('('));
+            let name = li.innerText.substring(0, li.innerText.lastIndexOf('('));
             let filterName = li.parentElement.className;
             console.log("filterName = " + filterName);
             console.log("className = " + className);
@@ -751,15 +755,15 @@ const addEventHandlers = () => {
 
                 state.filteredjobs = state.jobs
                 for (var i = 0; i < state.filters.length; i++) {
-                    // console.log("filter.filter = " + state.filters[i].filter + "; filter.item = " + state.filters[i].item + "; filter.name = " + state.filters[i].name);
-
+                    console.log("filter.filter = " + state.filters[i].filter + "; filter.item = " + state.filters[i].item + "; filter.name = " + state.filters[i].name);
+                    console.log("QUACK 54");
                     applyFilter(state.filters[i].filter, state.filters[i].item, state.filters[i].name);
                 }
             } else {
                 // otherwise just add this filter to the list and apply it
                 let filterItem = { filter: li.parentElement.className, item: li.id, name: name };
                 state.filters.push(filterItem);
-
+                console.log("QUACKY 665 name = " + name);
                 applyFilter(li.parentElement.className, li.id, name);
 
             }
@@ -768,7 +772,9 @@ const addEventHandlers = () => {
 }
 
 function reapplyRemainingFilters() {
-    state.filteredjobs = state.jobs
+    if (state.jobs != undefined) {
+        state.filteredjobs = state.jobs;
+    }
 
     if (state.filters.length === 0) {
         // clear out the filters from the front screen
@@ -780,6 +786,7 @@ function reapplyRemainingFilters() {
     }
     state.label = undefined;
     for (var i = 0; i < state.filters.length; i++) {
+        console.log("QUACK 1");
         applyFilter(state.filters[i].filter, state.filters[i].item, state.filters[i].name);
     }
 }
