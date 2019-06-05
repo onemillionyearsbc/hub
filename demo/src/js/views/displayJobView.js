@@ -5,9 +5,9 @@ export const setJobFields = () => {
     let description = sessionStorage.getItem("description");
     elements.jobdescription.innerHTML = description;
 
-    
+
     let location = sessionStorage.getItem("location");
- 
+
     if (sessionStorage.getItem("remote") === "true") {
         elements.joblocation.innerHTML = "REMOTE";
         elements.joblocation.style.color = "red";
@@ -22,9 +22,9 @@ export const setJobFields = () => {
             elements.joblocation.innerHTML = loc;
         } else if (city.length != 0) {
             elements.joblocation.innerHTML = city;
-        }  
+        }
     }
-   
+
     let title = sessionStorage.getItem("jobTitle");
     elements.jobtitle.innerHTML = title;
 
@@ -66,7 +66,7 @@ export const setApplications = (usertype) => {
         let numApplications = sessionStorage.getItem("applications");
         elements.jobApplications.innerHTML = "<span>Applications: </span>" + numApplications;
     } else {
-        elements.jobApplications.innerHTML = ""; 
+        elements.jobApplications.innerHTML = "";
     }
 }
 
@@ -80,7 +80,7 @@ export const isExpired = () => {
     let postedDate = sessionStorage.getItem("datePosted");
     let jtime = getJobTimeFor(expiryDate, postedDate);
     console.log("expiryDate = " + expiryDate);
-    console.log("TOMATO jtime = "+ jtime);
+    console.log("TOMATO jtime = " + jtime);
     return (jtime === "EXPIRED");
 }
 
@@ -91,7 +91,7 @@ export const getExpireJobData = (mail, ref) => {
         jobReference: ref
     };
     return expireJobData;
- }
+}
 
 
 

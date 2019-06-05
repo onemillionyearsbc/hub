@@ -172,15 +172,6 @@ export const elements = {
 
 };
 
-export const dbelements = {
-    databaseInsertUri: "http://localhost:8083/sqlinsert.php", // TODO change to ip of server (CONFIG)
-    databaseSelectUri: "http://localhost:8083/sqlselectbyid.php", // TODO change to ip of server
-    databaseTable: "company_logo",
-    databaseName: "hubdb",
-    databaseSelectCVUri: "http://localhost:8083/sqlselectbyemail.php", // TODO change to ip of server
-    databaseCVTable: "profile_cv",
-};
-
 //------------------------------------------------------------------
 // UK Sky Hub (Linux)
 // var ipAddress = '90.200.134.28';
@@ -190,9 +181,21 @@ export const dbelements = {
 // var ipAddress = '192.168.0.66';
 
 // localhost (Windows)
-var ipAddress = "localhost";
+var ipAddress = "192.168.0.157"
+// var ipAddress = "localhost";
 var port = "3000";
 //-------------------------------------------------------------------
+
+export const dbelements = {
+    databaseInsertUri: `http://${ipAddress}:8083/sqlinsert.php`, // TODO change to ip of server (CONFIG)
+    databaseSelectUri: `http://${ipAddress}:8083/sqlselectbyid.php`, // TODO change to ip of server
+    databaseTable: "company_logo",
+    databaseName: "hubdb",
+    databaseSelectCVUri: `http://${ipAddress}:8083/sqlselectbyemail.php`, // TODO change to ip of server
+    databaseCVTable: "profile_cv",
+};
+
+
 
 var recruiterLoginTransaction = 'io.onemillionyearsbc.hubtutorial.GetHubRecruiter';
 var jobSeekerLoginTransaction = 'io.onemillionyearsbc.hubtutorial.GetHubJobSeeker';

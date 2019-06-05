@@ -116,6 +116,13 @@ export const renderFavouriteResults = (jobs, appliedForJobs, isRecruiter) => {
             for (var propName in data) {
                 propValue = data[propName];
                 sessionStorage.setItem(propName, propValue);
+                if (data.applications === undefined) {
+                    console.log("setting applicaton to 0");
+                    sessionStorage.setItem("applications", 0);
+                } else {
+                    console.log(">>>>>>>>>>>>>>>>>> QUACKETY setting applicatons to " + data.applications.length); 
+                    sessionStorage.setItem("applications", data.applications.length);
+                }
             }
             window.location = "displayjob.html";
         });
