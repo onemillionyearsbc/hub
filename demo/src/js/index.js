@@ -1820,7 +1820,10 @@ if (document.URL.includes("jobseeker-account.html")) {
         e.preventDefault();
         window.location = "account-settings.html";
     });
-
+    elements.manageTok.addEventListener('click', e => {
+        e.preventDefault();
+        window.location = "account-settings.html";
+    });
     elements.createAlertBtn.addEventListener('click', e => {
         e.preventDefault();
         sessionStorage.setItem("amend", false);

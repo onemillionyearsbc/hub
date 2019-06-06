@@ -1,4 +1,4 @@
-import { elements, getJobTypeFor } from './base';
+import { elements, getJobTypeFor, getJobTimeFor } from './base';
 
 export const displayApplications = (cachedData, applications) => {
 
@@ -35,7 +35,8 @@ export const displayApplications = (cachedData, applications) => {
         let now = new Date();
         let current_datetime = new Date(jobApplication.dateApplied);
         let mdiff = monthDiff(current_datetime, now);
-        if (mdiff < 3) {
+        if (mdiff < 3 && jobPostings[0] != undefined) {
+            console.log("jobPostings[0] = " + jobPostings[0]);
             renderJobApplication(jobPostings[0], jobApplication);
         }
     }
@@ -100,6 +101,8 @@ function renderJobApplication(job, jobApp) {
         minutes = "0" + minutes;
     }
     let formatted_date = "Applied: " + current_datetime.getFullYear() + "-" + month + "-" + days + " " + hours + ":" + minutes;
+    console.log("expiry date = " + job.expiryDate);
+    let posted = getJobTimeFor(job.expiryDate, job.datePosted);
     let markup = ` <li>
         <div class="item-job">
             <div class="mainbody">
@@ -136,7 +139,7 @@ function renderJobApplication(job, jobApp) {
                         <div class="left__item">
                             <div class="loggy">
                                 <i class="loggy__icon far fa-clock fa-fw"></i>
-                                <p id="jobtime" class="loggy__label">Posted 2 days ago</p>
+                                <p id="jobtime" class="loggy__label">${posted}</p>
                             </div>
                         </div>
                     </div>
