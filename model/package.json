@@ -36,7 +36,7 @@
   "dependencies": {
     "atob": "^2.1.2",
     
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "base64topdf": "^1.1.8",
     "blob-util": "^2.0.2",
     "csvtojson": "^2.0.8",
