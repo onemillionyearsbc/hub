@@ -45,7 +45,7 @@
     "email-templates": "^5.0.4",
     "font-awesome": "^4.7.0",
     "fs": "0.0.1-security",
-    "handlebars": "^4.1.1",
+    "handlebars": "^4.7.7",
     "jquery": "^3.4.0",
     "mariadb": "^2.0.3",
     "mysql": "^2.16.0",
